@@ -76,9 +76,19 @@ public class ScenarioLensMojo extends AbstractMojo {
             int totalMethods = 0;
             int totalScenarios = 0;
 
-            for (File file : packageDir.listFiles((dir, name) -> name.endsWith(".java"))) {
+            List<File> javaFiles = new java.util.ArrayList<>();
+            try (java.util.stream.Stream<java.nio.file.Path> walk = java.nio.file.Files.walk(packageDir.toPath())) {
+                walk.filter(p -> p.toString().endsWith(".java"))
+                    .map(java.nio.file.Path::toFile)
+                    .forEach(javaFiles::add);
+            }
+            
+            for (File file : javaFiles) {
                 classesAnalyzed++;
-                File testFile = new File(testPackageDir, file.getName().replace(".java", "Test.java"));
+                // Mirror the relative path in the test directory (handles subpackages)
+                java.nio.file.Path relativePath = packageDir.toPath().relativize(file.toPath());
+                String testFileName = file.getName().replace(".java", "Test.java");
+                File testFile = testPackageDir.toPath().resolve(relativePath).getParent().resolve(testFileName).toFile();
                 
                 MethodParser parser = new MethodParser(sourceDirectory);
                 List<MethodDeclaration> methods = parser.parseAll(file);

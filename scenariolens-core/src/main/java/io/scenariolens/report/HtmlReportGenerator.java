@@ -65,24 +65,32 @@ public class HtmlReportGenerator {
                 .append("<tbody>").append(rows).append("</tbody></table></div>\n</section>\n");
         }
 
-        return "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n" +
+        return "<!DOCTYPE html>\n<html lang=\"en\" data-theme=\"dark\">\n<head>\n" +
             "<meta charset=\"UTF-8\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n" +
             "<title>ScenarioLens Report</title>\n" +
             "<style>\n" +
-            ":root{--bg:#0f1117;--surface:#1a1d27;--surface2:#252836;--border:#2e3247;--text:#e2e8f0;--muted:#8892a4;--green:#22c55e;--red:#ef4444;--blue:#3b82f6;--yellow:#f59e0b;--purple:#a855f7;}\n" +
+            /* ── Dark theme (default) ── */
+            ":root{--bg:#0f1117;--surface:#1a1d27;--surface2:#252836;--border:#2e3247;--text:#e2e8f0;--muted:#8892a4;--green:#22c55e;--red:#ef4444;--blue:#3b82f6;--yellow:#f59e0b;--purple:#a855f7;--header-bg:linear-gradient(135deg,#1e2235 0%,#12141f 100%);--hover-row:rgba(255,255,255,.02);}\n" +
+            /* ── Light theme overrides ── */
+            "[data-theme=light]{--bg:#f8fafc;--surface:#ffffff;--surface2:#f1f5f9;--border:#e2e8f0;--text:#0f172a;--muted:#64748b;--header-bg:linear-gradient(135deg,#e0e7ff 0%,#f0f4ff 100%);--hover-row:rgba(0,0,0,.02);}\n" +
             "*{box-sizing:border-box;margin:0;padding:0;}\n" +
-            "body{background:var(--bg);color:var(--text);font-family:'Inter','Segoe UI',system-ui,sans-serif;font-size:14px;line-height:1.6;}\n" +
+            "body{background:var(--bg);color:var(--text);font-family:'Inter','Segoe UI',system-ui,sans-serif;font-size:14px;line-height:1.6;transition:background .2s,color .2s;}\n" +
             "a{color:var(--blue);text-decoration:none;}\n" +
-            ".header{background:linear-gradient(135deg,#1e2235 0%,#12141f 100%);border-bottom:1px solid var(--border);padding:28px 40px;display:flex;align-items:center;justify-content:space-between;}\n" +
+            ".header{background:var(--header-bg);border-bottom:1px solid var(--border);padding:22px 40px;display:flex;align-items:center;justify-content:space-between;}\n" +
             ".logo{display:flex;align-items:center;gap:12px;}\n" +
             ".logo-icon{width:36px;height:36px;background:linear-gradient(135deg,var(--blue),var(--purple));border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:18px;}\n" +
             ".logo-text{font-size:20px;font-weight:700;letter-spacing:-0.3px;}\n" +
             ".logo-text span{color:var(--blue);}\n" +
+            ".header-right{display:flex;align-items:center;gap:20px;}\n" +
             ".meta{text-align:right;color:var(--muted);font-size:12px;}\n" +
             ".meta strong{color:var(--text);display:block;font-size:16px;font-weight:600;margin-bottom:2px;}\n" +
+            /* ── Theme toggle button ── */
+            ".theme-btn{display:flex;align-items:center;gap:6px;padding:7px 14px;border-radius:20px;border:1px solid var(--border);background:var(--surface);color:var(--text);font-size:12px;font-weight:500;cursor:pointer;transition:background .15s,border-color .15s;white-space:nowrap;}\n" +
+            ".theme-btn:hover{background:var(--surface2);}\n" +
+            ".theme-btn .icon{font-size:15px;transition:transform .3s;}\n" +
             ".main{max-width:1100px;margin:0 auto;padding:32px 24px;}\n" +
             ".stats{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:32px;}\n" +
-            ".stat{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:20px 24px;}\n" +
+            ".stat{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:20px 24px;transition:background .2s;}\n" +
             ".stat-label{color:var(--muted);font-size:12px;text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px;}\n" +
             ".stat-value{font-size:32px;font-weight:700;line-height:1;}\n" +
             ".stat-value.green{color:var(--green);} .stat-value.red{color:var(--red);} .stat-value.blue{color:var(--blue);} .stat-value.yellow{color:var(--yellow);}\n" +
@@ -93,29 +101,34 @@ public class HtmlReportGenerator {
             ".nav-pill{padding:5px 14px;border-radius:20px;border:1px solid var(--border);background:var(--surface);color:var(--text);font-size:12px;font-weight:500;transition:background .15s;}\n" +
             ".nav-pill:hover{background:var(--surface2);}\n" +
             ".method-section{margin-bottom:40px;}\n" +
-            ".method-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;padding:14px 18px;background:var(--surface);border:1px solid var(--border);border-radius:10px;}\n" +
+            ".method-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;padding:14px 18px;background:var(--surface);border:1px solid var(--border);border-radius:10px;transition:background .2s;}\n" +
             ".method-name{font-family:'JetBrains Mono','Fira Code',monospace;font-size:15px;font-weight:600;color:var(--blue);}\n" +
             ".badge{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:600;}\n" +
             ".badge.missing{background:rgba(239,68,68,.15);color:var(--red);border:1px solid rgba(239,68,68,.3);}\n" +
             ".badge.covered{background:rgba(34,197,94,.15);color:var(--green);border:1px solid rgba(34,197,94,.3);}\n" +
-            ".table-wrap{background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden;margin-bottom:8px;}\n" +
+            ".table-wrap{background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden;margin-bottom:8px;transition:background .2s;}\n" +
             "table{width:100%;border-collapse:collapse;}\n" +
-            "thead tr{background:var(--surface2);}\n" +
+            "thead tr{background:var(--surface2);transition:background .2s;}\n" +
             "th{padding:10px 16px;text-align:left;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);border-bottom:1px solid var(--border);}\n" +
             "td{padding:10px 16px;border-bottom:1px solid var(--border);vertical-align:top;}\n" +
             "tr:last-child td{border-bottom:none;}\n" +
-            "tr:hover td{background:rgba(255,255,255,.02);}\n" +
+            "tr:hover td{background:var(--hover-row);}\n" +
             ".id{font-family:'JetBrains Mono','Fira Code',monospace;font-size:12px;color:var(--muted);white-space:nowrap;}\n" +
             ".stub-line{font-family:'JetBrains Mono','Fira Code',monospace;font-size:12px;color:var(--blue);margin-bottom:3px;}\n" +
             ".stub-line span{color:var(--purple);}\n" +
             ".status-covered{display:inline-flex;align-items:center;gap:5px;color:var(--green);font-weight:600;font-size:12px;}\n" +
             ".status-missing{display:inline-flex;align-items:center;gap:5px;color:var(--red);font-weight:600;font-size:12px;}\n" +
             ".footer{text-align:center;color:var(--muted);font-size:12px;padding:24px;border-top:1px solid var(--border);margin-top:16px;}\n" +
-            "@media(max-width:700px){.stats{grid-template-columns:repeat(2,1fr);}}\n" +
+            "@media(max-width:700px){.stats{grid-template-columns:repeat(2,1fr);}.header{flex-direction:column;gap:12px;}.header-right{flex-direction:row-reverse;}}\n" +
             "</style></head>\n<body>\n" +
             "<header class=\"header\">\n" +
             "  <div class=\"logo\"><div class=\"logo-icon\">🔬</div><div class=\"logo-text\">Scenario<span>Lens</span></div></div>\n" +
-            "  <div class=\"meta\"><strong>" + reports.size() + " methods analyzed</strong>Generated " + generated + "</div>\n" +
+            "  <div class=\"header-right\">\n" +
+            "    <button class=\"theme-btn\" id=\"themeToggle\" onclick=\"toggleTheme()\" title=\"Toggle light/dark mode\">\n" +
+            "      <span class=\"icon\" id=\"themeIcon\">☀️</span><span id=\"themeLabel\">Light</span>\n" +
+            "    </button>\n" +
+            "    <div class=\"meta\"><strong>" + reports.size() + " methods analyzed</strong>Generated " + generated + "</div>\n" +
+            "  </div>\n" +
             "</header>\n" +
             "<div class=\"main\">\n" +
             "  <div class=\"stats\">\n" +
@@ -128,8 +141,27 @@ public class HtmlReportGenerator {
             sections +
             "</div>\n" +
             "<footer class=\"footer\">Generated by <a href=\"https://github.com/scenariolens/scenariolens\">ScenarioLens</a> · Mock-Aware Combinatorial Dependency Coverage (MCDC²)</footer>\n" +
+            "<script>\n" +
+            "  const html = document.documentElement;\n" +
+            "  const icon = document.getElementById('themeIcon');\n" +
+            "  const label = document.getElementById('themeLabel');\n" +
+            "  // Apply saved preference on load\n" +
+            "  const saved = localStorage.getItem('sl-theme') || 'dark';\n" +
+            "  applyTheme(saved);\n" +
+            "  function toggleTheme() {\n" +
+            "    const next = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';\n" +
+            "    applyTheme(next);\n" +
+            "    localStorage.setItem('sl-theme', next);\n" +
+            "  }\n" +
+            "  function applyTheme(t) {\n" +
+            "    html.setAttribute('data-theme', t);\n" +
+            "    icon.textContent = t === 'dark' ? '\\u2600\\uFE0F' : '\\uD83C\\uDF19';\n" +
+            "    label.textContent = t === 'dark' ? 'Light' : 'Dark';\n" +
+            "  }\n" +
+            "</script>\n" +
             "</body></html>\n";
     }
+
 
     private String html(GapReport report) {
         int total   = report.getTotalScenarios();

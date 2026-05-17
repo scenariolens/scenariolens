@@ -20,8 +20,8 @@ public class PathPrunerTest {
 
     @Test
     public void processRefund_prunesTo9Scenarios() throws Exception {
-        // Use the actual PaymentService.java from test-project (with full type resolution)
-        File sourceDir = new File("../test-project/src/main/java");
+        // Use the actual PaymentService.java from examples/payment-service (with full type resolution)
+        File sourceDir = new File("../examples/payment-service/src/main/java");
         File paymentServiceFile = new File(sourceDir, "com/example/payment/PaymentService.java");
 
         MethodParser parser = new MethodParser(sourceDir);

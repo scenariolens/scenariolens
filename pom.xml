@@ -12,7 +12,7 @@
     <modules>
         <module>scenariolens-core</module>
         <module>scenariolens-maven-plugin</module>
-        <module>test-project</module>
+        <module>examples/payment-service</module>
     </modules>
 
     <properties>

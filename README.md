@@ -93,6 +93,24 @@ flowchart TD
 
 ---
 
+## Quick Demo
+
+The [`examples/payment-service/`](examples/payment-service/) directory contains a realistic `PaymentService` with a deliberately incomplete test suite.
+
+**Run it yourself:**
+```bash
+git clone https://github.com/scenariolens/scenariolens.git
+cd scenariolens
+mvn install -DskipTests -q
+cd examples/payment-service
+mvn scenariolens:analyze -DtargetPackage=com.example.payment
+# → opens target/scenariolens/report.html
+```
+
+**Or view the pre-generated report:** [`docs/sample-report/report.html`](docs/sample-report/report.html)
+
+---
+
 ## What It Catches That Other Tools Miss
 
 | Gap | JaCoCo | SonarQube | PIT | ScenarioLens |

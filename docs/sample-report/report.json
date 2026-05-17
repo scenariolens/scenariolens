@@ -1,4 +1,5 @@
 [ {
+  "methodName" : "send",
   "totalScenarios" : 1,
   "coveredScenarios" : 0,
   "scenarioCoveragePercent" : 0,
@@ -10,6 +11,7 @@
   } ],
   "coveredRows" : [ ]
 }, {
+  "methodName" : "reserve",
   "totalScenarios" : 1,
   "coveredScenarios" : 0,
   "scenarioCoveragePercent" : 0,
@@ -21,6 +23,7 @@
   } ],
   "coveredRows" : [ ]
 }, {
+  "methodName" : "release",
   "totalScenarios" : 1,
   "coveredScenarios" : 0,
   "scenarioCoveragePercent" : 0,
@@ -32,6 +35,7 @@
   } ],
   "coveredRows" : [ ]
 }, {
+  "methodName" : "processOrder",
   "totalScenarios" : 11,
   "coveredScenarios" : 0,
   "scenarioCoveragePercent" : 0,
@@ -512,6 +516,7 @@
   } ],
   "coveredRows" : [ ]
 }, {
+  "methodName" : "cancelOrder",
   "totalScenarios" : 9,
   "coveredScenarios" : 0,
   "scenarioCoveragePercent" : 0,
@@ -906,6 +911,7 @@
   } ],
   "coveredRows" : [ ]
 }, {
+  "methodName" : "checkStatus",
   "totalScenarios" : 3,
   "coveredScenarios" : 0,
   "scenarioCoveragePercent" : 0,
@@ -1003,6 +1009,7 @@
   } ],
   "coveredRows" : [ ]
 }, {
+  "methodName" : "success",
   "totalScenarios" : 1,
   "coveredScenarios" : 1,
   "scenarioCoveragePercent" : 100,
@@ -1014,6 +1021,7 @@
     "expectedOutcome" : "RefundResponse.success"
   } ]
 }, {
+  "methodName" : "failed",
   "totalScenarios" : 1,
   "coveredScenarios" : 1,
   "scenarioCoveragePercent" : 100,
@@ -1025,6 +1033,7 @@
     "expectedOutcome" : "RefundResponse.success"
   } ]
 }, {
+  "methodName" : "getCode",
   "totalScenarios" : 1,
   "coveredScenarios" : 1,
   "scenarioCoveragePercent" : 100,
@@ -1036,6 +1045,7 @@
     "expectedOutcome" : "RefundResponse.success"
   } ]
 }, {
+  "methodName" : "from",
   "totalScenarios" : 1,
   "coveredScenarios" : 1,
   "scenarioCoveragePercent" : 100,
@@ -1047,6 +1057,7 @@
     "expectedOutcome" : "RefundResponse.success"
   } ]
 }, {
+  "methodName" : "findById",
   "totalScenarios" : 1,
   "coveredScenarios" : 1,
   "scenarioCoveragePercent" : 100,
@@ -1058,6 +1069,7 @@
     "expectedOutcome" : "RefundResponse.success"
   } ]
 }, {
+  "methodName" : "refund",
   "totalScenarios" : 1,
   "coveredScenarios" : 1,
   "scenarioCoveragePercent" : 100,
@@ -1069,6 +1081,7 @@
     "expectedOutcome" : "RefundResponse.success"
   } ]
 }, {
+  "methodName" : "transfer",
   "totalScenarios" : 1,
   "coveredScenarios" : 1,
   "scenarioCoveragePercent" : 100,
@@ -1080,6 +1093,7 @@
     "expectedOutcome" : "RefundResponse.success"
   } ]
 }, {
+  "methodName" : "publish",
   "totalScenarios" : 1,
   "coveredScenarios" : 1,
   "scenarioCoveragePercent" : 100,
@@ -1091,6 +1105,7 @@
     "expectedOutcome" : "RefundResponse.success"
   } ]
 }, {
+  "methodName" : "log",
   "totalScenarios" : 1,
   "coveredScenarios" : 1,
   "scenarioCoveragePercent" : 100,
@@ -1102,6 +1117,7 @@
     "expectedOutcome" : "RefundResponse.success"
   } ]
 }, {
+  "methodName" : "getPremiumPolicy",
   "totalScenarios" : 1,
   "coveredScenarios" : 1,
   "scenarioCoveragePercent" : 100,
@@ -1113,6 +1129,7 @@
     "expectedOutcome" : "RefundResponse.success"
   } ]
 }, {
+  "methodName" : "getStandardPolicy",
   "totalScenarios" : 1,
   "coveredScenarios" : 1,
   "scenarioCoveragePercent" : 100,
@@ -1124,6 +1141,7 @@
     "expectedOutcome" : "RefundResponse.success"
   } ]
 }, {
+  "methodName" : "processRefund",
   "totalScenarios" : 12,
   "coveredScenarios" : 1,
   "scenarioCoveragePercent" : 8,
@@ -1647,6 +1665,7 @@
     "expectedOutcome" : "RefundResponse.success"
   } ]
 }, {
+  "methodName" : "processRefundWithRetry",
   "totalScenarios" : 14,
   "coveredScenarios" : 1,
   "scenarioCoveragePercent" : 7,
@@ -2256,6 +2275,7 @@
     "expectedOutcome" : "RefundResponse.success"
   } ]
 }, {
+  "methodName" : "getRefundPolicy",
   "totalScenarios" : 8,
   "coveredScenarios" : 1,
   "scenarioCoveragePercent" : 12,
@@ -2503,6 +2523,7 @@
     "expectedOutcome" : "RefundResponse.success"
   } ]
 }, {
+  "methodName" : "isValidAmount",
   "totalScenarios" : 1,
   "coveredScenarios" : 1,
   "scenarioCoveragePercent" : 100,
@@ -2514,6 +2535,7 @@
     "expectedOutcome" : "RefundResponse.success"
   } ]
 }, {
+  "methodName" : "transfer",
   "totalScenarios" : 12,
   "coveredScenarios" : 1,
   "scenarioCoveragePercent" : 8,

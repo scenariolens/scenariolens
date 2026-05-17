@@ -136,10 +136,10 @@ public class ScenarioLensMojo extends AbstractMojo {
 
             if (!allReports.isEmpty()) {
                 HtmlReportGenerator htmlGen = new HtmlReportGenerator();
-                htmlGen.generate(allReports.get(0), outputDirectory); // Just generate first one for HTML to not break
+                htmlGen.generateAll(allReports, outputDirectory);
 
                 JsonReportGenerator jsonGen = new JsonReportGenerator();
-                jsonGen.generate(allReports, outputDirectory); // generate list
+                jsonGen.generate(allReports, outputDirectory);
             }
             
         } catch (Exception e) {

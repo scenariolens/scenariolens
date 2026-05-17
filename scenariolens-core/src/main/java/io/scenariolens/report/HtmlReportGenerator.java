@@ -12,14 +12,123 @@ import java.util.stream.Collectors;
 public class HtmlReportGenerator {
 
     public void generate(GapReport report, File outputDir) {
+        generateAll(java.util.Collections.singletonList(report), outputDir);
+    }
+
+    public void generateAll(java.util.List<GapReport> reports, File outputDir) {
         if (!outputDir.exists()) outputDir.mkdirs();
         File file = new File(outputDir, "report.html");
-
         try (FileWriter w = new FileWriter(file)) {
-            w.write(html(report));
+            w.write(htmlAll(reports));
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    private String htmlAll(java.util.List<GapReport> reports) {
+        int totalScenarios = reports.stream().mapToInt(GapReport::getTotalScenarios).sum();
+        int totalCovered   = reports.stream().mapToInt(GapReport::getCoveredScenarios).sum();
+        int totalMissing   = totalScenarios - totalCovered;
+        int covPct = totalScenarios == 0 ? 100 : (int)((totalCovered * 100.0) / totalScenarios);
+        String generated   = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
+
+        // Build method nav pills
+        StringBuilder nav = new StringBuilder();
+        for (GapReport r : reports) {
+            if (r.getTotalScenarios() <= 1 && r.getMissingScenarios().isEmpty() && r.getCoveredRows().isEmpty()) continue;
+            String id = "m-" + r.getMethodName();
+            int pct = r.getScenarioCoveragePercent();
+            String color = pct == 100 ? "var(--green)" : pct == 0 ? "var(--red)" : "var(--yellow)";
+            nav.append("<a href=\"#").append(id).append("\" class=\"nav-pill\" style=\"border-color:").append(color).append("\">")
+               .append(r.getMethodName()).append(" <span style=\"color:").append(color).append("\">").append(pct).append("%</span></a>");
+        }
+
+        // Build per-method sections
+        StringBuilder sections = new StringBuilder();
+        for (GapReport r : reports) {
+            if (r.getTotalScenarios() <= 1 && r.getMissingScenarios().isEmpty() && r.getCoveredRows().isEmpty()) continue;
+            String id = "m-" + r.getMethodName();
+            int missing = r.getTotalScenarios() - r.getCoveredScenarios();
+            StringBuilder rows = new StringBuilder();
+            for (ScenarioRow sr : r.getCoveredRows()) rows.append(row(sr, "covered", "✓ COVERED"));
+            for (ScenarioRow sr : r.getMissingScenarios()) rows.append(row(sr, "missing", "✗ MISSING"));
+
+            sections.append("<section id=\"").append(id).append("\" class=\"method-section\">\n")
+                .append("<div class=\"method-header\">")
+                .append("<span class=\"method-name\">").append(r.getMethodName()).append("()</span>")
+                .append("<span style=\"display:flex;gap:8px;\">")
+                .append("<span class=\"badge covered\">✓ ").append(r.getCoveredScenarios()).append(" covered</span>")
+                .append("<span class=\"badge missing\">✗ ").append(missing).append(" missing</span>")
+                .append("</span></div>\n")
+                .append("<div class=\"table-wrap\"><table>")
+                .append("<thead><tr><th style=\"width:60px\">ID</th><th>Stub Configuration</th><th>Expected Outcome</th><th style=\"width:110px\">Status</th></tr></thead>")
+                .append("<tbody>").append(rows).append("</tbody></table></div>\n</section>\n");
+        }
+
+        return "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n" +
+            "<meta charset=\"UTF-8\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n" +
+            "<title>ScenarioLens Report</title>\n" +
+            "<style>\n" +
+            ":root{--bg:#0f1117;--surface:#1a1d27;--surface2:#252836;--border:#2e3247;--text:#e2e8f0;--muted:#8892a4;--green:#22c55e;--red:#ef4444;--blue:#3b82f6;--yellow:#f59e0b;--purple:#a855f7;}\n" +
+            "*{box-sizing:border-box;margin:0;padding:0;}\n" +
+            "body{background:var(--bg);color:var(--text);font-family:'Inter','Segoe UI',system-ui,sans-serif;font-size:14px;line-height:1.6;}\n" +
+            "a{color:var(--blue);text-decoration:none;}\n" +
+            ".header{background:linear-gradient(135deg,#1e2235 0%,#12141f 100%);border-bottom:1px solid var(--border);padding:28px 40px;display:flex;align-items:center;justify-content:space-between;}\n" +
+            ".logo{display:flex;align-items:center;gap:12px;}\n" +
+            ".logo-icon{width:36px;height:36px;background:linear-gradient(135deg,var(--blue),var(--purple));border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:18px;}\n" +
+            ".logo-text{font-size:20px;font-weight:700;letter-spacing:-0.3px;}\n" +
+            ".logo-text span{color:var(--blue);}\n" +
+            ".meta{text-align:right;color:var(--muted);font-size:12px;}\n" +
+            ".meta strong{color:var(--text);display:block;font-size:16px;font-weight:600;margin-bottom:2px;}\n" +
+            ".main{max-width:1100px;margin:0 auto;padding:32px 24px;}\n" +
+            ".stats{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:32px;}\n" +
+            ".stat{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:20px 24px;}\n" +
+            ".stat-label{color:var(--muted);font-size:12px;text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px;}\n" +
+            ".stat-value{font-size:32px;font-weight:700;line-height:1;}\n" +
+            ".stat-value.green{color:var(--green);} .stat-value.red{color:var(--red);} .stat-value.blue{color:var(--blue);} .stat-value.yellow{color:var(--yellow);}\n" +
+            ".stat-sub{color:var(--muted);font-size:11px;margin-top:4px;}\n" +
+            ".progress-bar{background:var(--surface2);border-radius:4px;height:6px;margin-top:10px;overflow:hidden;}\n" +
+            ".progress-fill{height:100%;border-radius:4px;background:linear-gradient(90deg,var(--blue),var(--purple));}\n" +
+            ".nav{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:28px;}\n" +
+            ".nav-pill{padding:5px 14px;border-radius:20px;border:1px solid var(--border);background:var(--surface);color:var(--text);font-size:12px;font-weight:500;transition:background .15s;}\n" +
+            ".nav-pill:hover{background:var(--surface2);}\n" +
+            ".method-section{margin-bottom:40px;}\n" +
+            ".method-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;padding:14px 18px;background:var(--surface);border:1px solid var(--border);border-radius:10px;}\n" +
+            ".method-name{font-family:'JetBrains Mono','Fira Code',monospace;font-size:15px;font-weight:600;color:var(--blue);}\n" +
+            ".badge{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:600;}\n" +
+            ".badge.missing{background:rgba(239,68,68,.15);color:var(--red);border:1px solid rgba(239,68,68,.3);}\n" +
+            ".badge.covered{background:rgba(34,197,94,.15);color:var(--green);border:1px solid rgba(34,197,94,.3);}\n" +
+            ".table-wrap{background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden;margin-bottom:8px;}\n" +
+            "table{width:100%;border-collapse:collapse;}\n" +
+            "thead tr{background:var(--surface2);}\n" +
+            "th{padding:10px 16px;text-align:left;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);border-bottom:1px solid var(--border);}\n" +
+            "td{padding:10px 16px;border-bottom:1px solid var(--border);vertical-align:top;}\n" +
+            "tr:last-child td{border-bottom:none;}\n" +
+            "tr:hover td{background:rgba(255,255,255,.02);}\n" +
+            ".id{font-family:'JetBrains Mono','Fira Code',monospace;font-size:12px;color:var(--muted);white-space:nowrap;}\n" +
+            ".stub-line{font-family:'JetBrains Mono','Fira Code',monospace;font-size:12px;color:var(--blue);margin-bottom:3px;}\n" +
+            ".stub-line span{color:var(--purple);}\n" +
+            ".status-covered{display:inline-flex;align-items:center;gap:5px;color:var(--green);font-weight:600;font-size:12px;}\n" +
+            ".status-missing{display:inline-flex;align-items:center;gap:5px;color:var(--red);font-weight:600;font-size:12px;}\n" +
+            ".footer{text-align:center;color:var(--muted);font-size:12px;padding:24px;border-top:1px solid var(--border);margin-top:16px;}\n" +
+            "@media(max-width:700px){.stats{grid-template-columns:repeat(2,1fr);}}\n" +
+            "</style></head>\n<body>\n" +
+            "<header class=\"header\">\n" +
+            "  <div class=\"logo\"><div class=\"logo-icon\">🔬</div><div class=\"logo-text\">Scenario<span>Lens</span></div></div>\n" +
+            "  <div class=\"meta\"><strong>" + reports.size() + " methods analyzed</strong>Generated " + generated + "</div>\n" +
+            "</header>\n" +
+            "<div class=\"main\">\n" +
+            "  <div class=\"stats\">\n" +
+            "    <div class=\"stat\"><div class=\"stat-label\">Total Scenarios</div><div class=\"stat-value blue\">" + totalScenarios + "</div><div class=\"stat-sub\">after CFG pruning</div></div>\n" +
+            "    <div class=\"stat\"><div class=\"stat-label\">Covered</div><div class=\"stat-value green\">" + totalCovered + "</div><div class=\"stat-sub\">by existing tests</div></div>\n" +
+            "    <div class=\"stat\"><div class=\"stat-label\">Missing</div><div class=\"stat-value red\">" + totalMissing + "</div><div class=\"stat-sub\">gaps to fill</div></div>\n" +
+            "    <div class=\"stat\"><div class=\"stat-label\">Coverage</div><div class=\"stat-value yellow\">" + covPct + "%</div><div class=\"stat-sub\">scenario coverage</div><div class=\"progress-bar\"><div class=\"progress-fill\" style=\"width:" + covPct + "%\"></div></div></div>\n" +
+            "  </div>\n" +
+            "  <div class=\"nav\">" + nav + "</div>\n" +
+            sections +
+            "</div>\n" +
+            "<footer class=\"footer\">Generated by <a href=\"https://github.com/scenariolens/scenariolens\">ScenarioLens</a> · Mock-Aware Combinatorial Dependency Coverage (MCDC²)</footer>\n" +
+            "</body></html>\n";
     }
 
     private String html(GapReport report) {

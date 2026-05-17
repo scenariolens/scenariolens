@@ -75,10 +75,10 @@ flowchart TD
     GA --> HTML
     GA --> JSON
 
-    style INPUT fill:#1e293b,stroke:#334155,color:#94a3b8
-    style PLUGIN fill:#1e3a5f,stroke:#2563eb,color:#93c5fd
-    style CORE fill:#1a2e1a,stroke:#166534,color:#86efac
-    style OUTPUT fill:#2d1b1b,stroke:#991b1b,color:#fca5a5
+    style INPUT fill:none,stroke:#334155,stroke-width:2px,color:#94a3b8
+    style PLUGIN fill:none,stroke:#2563eb,stroke-width:2px,color:#93c5fd
+    style CORE fill:none,stroke:#166534,stroke-width:2px,color:#86efac
+    style OUTPUT fill:none,stroke:#991b1b,stroke-width:2px,color:#fca5a5
 ```
 
 ### Key Design Decisions

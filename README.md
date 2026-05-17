@@ -215,14 +215,14 @@ No overlap in what they catch. Fully additive signal.
 
 ## Academic Context
 
-ScenarioLens introduces **Mock-Aware Combinatorial Dependency Coverage (MCDC2)** — a new test adequacy criterion measuring what percentage of the feasible input x mock-response scenario space is exercised by an existing test suite, derived from static CFG analysis of the method under test.
+ScenarioLens introduces **Dependency Scenario Coverage (DSC)** — a new test adequacy criterion measuring what percentage of the feasible input x mock-response scenario space is exercised by an existing test suite, derived from static CFG analysis of the method under test.
 
 This is distinct from all existing named criteria:
 
 - **Line coverage** — measures execution
 - **Branch coverage** — measures decision path traversal
 - **Mutation score** — measures assertion strength
-- **MCDC2** — measures scenario space completeness against integration boundaries
+- **DSC** — measures scenario space completeness against integration boundaries
 
 Adjacent academic work (MockMill 2026, TestGeneralizer 2026, SPARC 2025) validates the philosophy of scenario-based test adequacy but does not implement CFG-pruned combinatorial mock state analysis or gap reporting against existing test assets.
 

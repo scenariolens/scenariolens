@@ -202,6 +202,10 @@ public class HtmlReportGenerator {
             "tr:last-child td{border-bottom:none;}\n" +
             "tr:hover td{background:var(--hover-row);}\n" +
             ".id{font-family:'JetBrains Mono','Fira Code',monospace;font-size:12px;color:var(--muted);white-space:nowrap;}\n" +
+            ".stub-line{font-family:'JetBrains Mono','Fira Code',monospace;font-size:12px;color:var(--blue);margin-bottom:3px;}\n" +
+            ".stub-line span{color:var(--purple);}\n" +
+            ".status-covered{display:inline-flex;align-items:center;gap:5px;color:var(--green);font-weight:600;font-size:12px;}\n" +
+            ".status-missing{display:inline-flex;align-items:center;gap:5px;color:var(--red);font-weight:600;font-size:12px;}\n" +
             ".footer{text-align:center;color:var(--muted);font-size:12px;padding:20px;border-top:1px solid var(--border);margin-top:16px;}\n" +
             "@media(max-width:800px){.stats{grid-template-columns:repeat(2,1fr);}.header{flex-direction:column;gap:12px;}.header-right{flex-direction:row-reverse;}.header-score{text-align:left;}}\n" +
             "</style></head>\n<body>\n" +
@@ -417,6 +421,10 @@ public class HtmlReportGenerator {
                 s.getCallNode().getVariableName() + "." + s.getCallNode().getMethodName() +
                 "() <span>→ " + escape(s.getExactValue()) + "</span></div>")
             .collect(Collectors.joining());
+            
+        if (stubs.isEmpty()) {
+            stubs = "<span style=\"color:var(--muted);font-style:italic;font-size:12px\">No dependencies</span>";
+        }
 
         String statusHtml = "covered".equals(cssClass)
             ? "<span class=\"status-covered\">✓ COVERED</span>"

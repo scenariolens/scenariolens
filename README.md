@@ -111,6 +111,16 @@ mvn scenariolens:analyze -DtargetPackage=com.example.payment
 
 ---
 
+## AI Agent Workflow
+
+LLM integration is intentionally not built into ScenarioLens. The JSON report is already LLM-ready. Any agent (Claude, Gemini, Copilot, etc.) can drive the iteration loop with this single instruction:
+
+> Run the ScenarioLens Maven plugin which generates a coverage gap analysis report at `target/scenariolens/report.json`. Review the report and generate missing tests. Repeat until DSC score is above 80%.
+
+This works today with any agent that can run shell commands and read files. No API keys, no provider lock-in, no maintenance burden.
+
+---
+
 ## What It Catches That Other Tools Miss
 
 | Gap | JaCoCo | SonarQube | PIT | ScenarioLens |

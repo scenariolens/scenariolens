@@ -3,3 +3,7 @@ target/
 *.jar
 .DS_Store
 spring-petclinic/
+baeldung-tutorials/
+baeldung-audit/
+.vscode/
+handover.md

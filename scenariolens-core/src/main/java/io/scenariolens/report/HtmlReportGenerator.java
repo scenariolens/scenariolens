@@ -440,7 +440,7 @@ public class HtmlReportGenerator {
             } else if (scenarioRow.getStubs().isEmpty()) {
                 reasoning = "<span style=\"color:var(--text);font-size:12px\"><strong>Missing core flow test.</strong> The basic execution path without any external dependency interactions is completely untested.</span>";
             } else {
-                reasoning = "<span style=\"color:var(--text);font-size:12px\"><strong>Missing combination test.</strong> A scenario where the dependencies return these exact values is missing. We cannot guarantee the system will result in <code>" + exactOut + "</code>.</span>";
+                reasoning = "<span style=\"color:var(--text);font-size:12px\"><strong>Missing combination test.</strong> A scenario where the dependencies behave exactly like this is missing. We cannot guarantee the system will result in <code>" + exactOut + "</code>.</span>";
             }
         }
 

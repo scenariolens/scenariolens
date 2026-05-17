@@ -29,6 +29,70 @@ ScenarioLens performs static analysis on your Java method and its unit tests to 
 
 ---
 
+## Architecture
+
+```mermaid
+flowchart TD
+    subgraph INPUT["Input"]
+        SRC["📄 Source .java files\n(method under test)"]
+        TST["🧪 Test .java files\n(existing Mockito unit tests)"]
+    end
+
+    subgraph PLUGIN["scenariolens-maven-plugin"]
+        MOJO["ScenarioLensMojo\nmvn scenariolens:analyze"]
+    end
+
+    subgraph CORE["scenariolens-core — Analysis Pipeline"]
+        direction TB
+
+        MP["MethodParser\nJavaParser + Symbol Solver\n→ MethodDeclaration AST"]
+        OCD["OutgoingCallDetector\n→ List&lt;CallNode&gt;\nFields-only filter\nHeuristic fallback"]
+        CFG["CfgBuilder\n→ CfgNode graph\nif/try/catch/return edges\nCONDITION_TRUE · CONDITION_FALSE · EXCEPTION"]
+        RVE["ReturnVariationEnumerator\n→ StubVariation per call\nVALID · NULL · THROWS · BOOLEAN · NOT_CALLED"]
+        CP["ScenarioMatrix\nCartesian product\nraw combinations"]
+        PP["PathPruner\n→ pruned combinations\nRule 2: reachability\nRule 3: branch data flow\nException edge consistency"]
+        GA["GapAnalyzer\nMockitoStubExtractor\nAssertionClassifier\n→ GapReport"]
+        TCP["TestClassParser\n→ existing when() stubs"]
+    end
+
+    subgraph OUTPUT["Output"]
+        HTML["📊 report.html\nscenario matrix + gaps"]
+        JSON["📋 report.json\nmachine-readable gaps"]
+    end
+
+    SRC --> MOJO
+    TST --> MOJO
+    MOJO --> MP
+    MP --> OCD
+    OCD --> CFG
+    OCD --> RVE
+    CFG --> PP
+    RVE --> CP
+    CP --> PP
+    PP --> GA
+    TST --> TCP
+    TCP --> GA
+    GA --> HTML
+    GA --> JSON
+
+    style INPUT fill:#1e293b,stroke:#334155,color:#94a3b8
+    style PLUGIN fill:#1e3a5f,stroke:#2563eb,color:#93c5fd
+    style CORE fill:#1a2e1a,stroke:#166534,color:#86efac
+    style OUTPUT fill:#2d1b1b,stroke:#991b1b,color:#fca5a5
+```
+
+### Key Design Decisions
+
+| Component | Decision | Rationale |
+|---|---|---|
+| `OutgoingCallDetector` | Field-only filter + heuristic fallback | Eliminates local variable calls (DTOs, params); works without full classpath |
+| `CfgBuilder` | AST-driven, not bytecode | Works on source directly; no compilation required |
+| `PathPruner` | 3-rule engine (reachability, exception edges, data flow) | Precisely models which stubs can coexist on the same execution path |
+| `ReturnVariationEnumerator` | `NOT_CALLED` for all non-void types | Boolean and reference returns can both be unreachable depending on path |
+| `ScenarioMatrix` | Cartesian product then prune | Simpler than constraint solving; fast enough for real service methods |
+
+---
+
 ## What It Catches That Other Tools Miss
 
 | Gap | JaCoCo | SonarQube | PIT | ScenarioLens |
@@ -148,7 +212,17 @@ Adjacent academic work (MockMill 2026, TestGeneralizer 2026, SPARC 2025) validat
 
 ## Status
 
-Active development — Phase 1 in progress
+**Phase 1 complete.** Stress-tested across three corpora with zero crashes:
+
+| Corpus | Methods | Final Scenarios | Pruning |
+|--------|---------|-----------------|---------|
+| test-project (PaymentService) | 22 | 84 | 82–86% per method |
+| Spring PetClinic | 79 | 93 | up to 99.97% |
+| Baeldung Mockito module | 63 | 68 | 75–82% per method |
+
+Processing time: under 750ms per package.
+
+Phase 2 (LLM integration) planning in progress.
 
 Website: https://scenariolens.io
 

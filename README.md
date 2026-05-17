@@ -192,34 +192,32 @@ No overlap in what they catch. Fully additive signal.
 
 ## Roadmap
 
-### Phase 1 — Scenario matrix generation and gap analysis
+See [`ROADMAP.md`](ROADMAP.md) for a detailed, prioritized backlog.
 
+### Phase 1 — COMPLETE ✅
 - JavaParser AST extraction and CFG construction
 - Path pruning to eliminate impossible stub combinations
-- Enum value expansion from return types
-- Null return detection where no null guard exists
 - Mockito stub extraction (when/thenReturn, when/thenThrow, doReturn)
 - Assertion strength classification (STRONG vs WEAK)
 - Maven plugin with HTML and JSON report output
 - Configurable build failure threshold on scenario coverage percentage
 
-### Phase 2 — LLM integration
-- Structured JSON gap spec designed as LLM prompt input
-- Auto-generate missing tests via Claude, GPT, or local Ollama
-- Re-run gap analysis to verify generated tests cover intended scenarios
-- Close the generation-verification loop no existing tool provides
-
-### Phase 3 — Hybrid boundary resolution
+### Phase 2 — Hybrid boundary resolution
 - Purity gate check before any code execution
 - Execute pure static methods to resolve literal boundary values
 - Read @Value properties files for config-driven thresholds
-- Generate value-1, value, value+1 scenarios at each detected boundary
+- Extract boundaries from existing test Mockito stubs
 
-### Phase 4 — Ecosystem expansion
+### Phase 3 — Ecosystem expansion
+- SonarQube generic coverage XML
+- LCOV format output (GitHub Actions, VS Code gutters)
 - WireMock stub extraction for IT/FT suite awareness
-- Feign client and RestTemplate outgoing call detection
 - Gradle plugin
-- SonarQube custom metric integration
+
+### Phase 4 — Advanced analysis
+- Multi-method flow tracing
+- Numeric boundary generation without annotation
+- Assertion causal correctness hints
 
 ---
 
@@ -250,7 +248,7 @@ Adjacent academic work (MockMill 2026, TestGeneralizer 2026, SPARC 2025) validat
 
 Processing time: under 750ms per package.
 
-Phase 2 (LLM integration) planning in progress.
+Phase 2 and Ecosystem Expansion planning is in progress.
 
 Website: https://scenariolens.io
 
@@ -258,7 +256,9 @@ Website: https://scenariolens.io
 
 ## Contributing
 
-Phase 1 architecture and design are being finalized. If you are interested in contributing, open an issue to discuss.
+Phase 1 is complete and the core architecture is stable! We are now focused on ecosystem expansion (SonarQube XML, LCOV, Gradle) and hybrid boundary resolution. 
+
+If you are interested in contributing, check out [`ROADMAP.md`](ROADMAP.md) for prioritized features and open an issue to discuss.
 
 ---
 

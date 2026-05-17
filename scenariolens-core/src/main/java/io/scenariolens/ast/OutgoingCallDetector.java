@@ -13,6 +13,11 @@ public class OutgoingCallDetector {
 
     public List<CallNode> detect(MethodDeclaration method) {
         List<CallNode> callNodes = new ArrayList<>();
+        
+        // Phase 1: extract field names of the enclosing class to filter out non-dependency calls
+        // Only calls on injected class fields (e.g. private OrderRepository orderRepository) are relevant
+        // Calls on local variables, method params, or new objects are excluded
+        java.util.Set<String> classFieldNames = extractClassFieldNames(method);
 
         method.findAll(MethodCallExpr.class).forEach(call -> {
             try {
@@ -28,10 +33,9 @@ public class OutgoingCallDetector {
                 
                 String variableName = extractVariableName(call);
 
-                // Skip calls on local method-scope variables that are NOT injected fields
-                // (e.g. exception catch variables like "e.getCode()")
-                // Heuristic: if variableName is empty or a single-char, skip (likely a catch param)
-                if (variableName.isEmpty() || variableName.length() == 1) return;
+                // Only track calls on class fields (injected dependencies)
+                // Calls on method params (messageDTO.getText()) or local objects are excluded
+                if (!classFieldNames.contains(variableName)) return;
 
                 CallNode.CallCategory category = classifyCall(declaringType, methodName);
                 
@@ -43,12 +47,11 @@ public class OutgoingCallDetector {
 
             } catch (Exception e) {
                 // Fallback: use heuristic detection by variable name scope when resolution is unavailable
-                // (e.g. in unit tests without a full type solver, or unresolvable external types)
                 String variableName = extractVariableName(call);
                 String methodName = call.getNameAsString();
                 
-                if (!variableName.isEmpty()) {
-                    // Infer return type from the assignment target in the parent expression/statement
+                // Only track calls on known class fields
+                if (!variableName.isEmpty() && classFieldNames.contains(variableName)) {
                     String returnType = inferReturnType(call);
                     CallNode.CallCategory category = classifyByHeuristic(variableName, methodName);
                     if (category != CallNode.CallCategory.UNKNOWN) {
@@ -61,6 +64,26 @@ public class OutgoingCallDetector {
         });
 
         return callNodes;
+    }
+
+    /**
+     * Extracts the names of all fields declared in the class that contains the given method.
+     * Used to filter out calls on method parameters, local variables, or constructor-created objects —
+     * only calls on injected class fields (dependencies) are relevant for scenario generation.
+     * Phase 1: uses simple field declaration traversal, does not resolve types.
+     */
+    private java.util.Set<String> extractClassFieldNames(MethodDeclaration method) {
+        java.util.Set<String> fieldNames = new java.util.HashSet<>();
+        method.getParentNode().ifPresent(parent -> {
+            if (parent instanceof com.github.javaparser.ast.body.ClassOrInterfaceDeclaration) {
+                com.github.javaparser.ast.body.ClassOrInterfaceDeclaration clazz =
+                    (com.github.javaparser.ast.body.ClassOrInterfaceDeclaration) parent;
+                clazz.getFields().forEach(field ->
+                    field.getVariables().forEach(v -> fieldNames.add(v.getNameAsString()))
+                );
+            }
+        });
+        return fieldNames;
     }
 
     private String extractVariableName(MethodCallExpr call) {

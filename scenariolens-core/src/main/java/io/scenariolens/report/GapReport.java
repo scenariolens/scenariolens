@@ -1,0 +1,29 @@
+package io.scenariolens.report;
+
+import io.scenariolens.matrix.ScenarioRow;
+import java.util.List;
+
+public class GapReport {
+    private final int totalScenarios;
+    private final int coveredScenarios;
+    private final int scenarioCoveragePercent;
+    private final int assertionStrengthPercent;
+    private final List<ScenarioRow> missingScenarios;
+    private final List<ScenarioRow> coveredRows;
+
+    public GapReport(int totalScenarios, int coveredScenarios, int scenarioCoveragePercent, int assertionStrengthPercent, List<ScenarioRow> missingScenarios, List<ScenarioRow> coveredRows) {
+        this.totalScenarios = totalScenarios;
+        this.coveredScenarios = coveredScenarios;
+        this.scenarioCoveragePercent = scenarioCoveragePercent;
+        this.assertionStrengthPercent = assertionStrengthPercent;
+        this.missingScenarios = missingScenarios;
+        this.coveredRows = coveredRows;
+    }
+
+    public int getTotalScenarios() { return totalScenarios; }
+    public int getCoveredScenarios() { return coveredScenarios; }
+    public int getScenarioCoveragePercent() { return scenarioCoveragePercent; }
+    public int getAssertionStrengthPercent() { return assertionStrengthPercent; }
+    public List<ScenarioRow> getMissingScenarios() { return missingScenarios; }
+    public List<ScenarioRow> getCoveredRows() { return coveredRows; }
+}

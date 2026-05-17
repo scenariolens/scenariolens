@@ -30,7 +30,6 @@ public class HtmlReportGenerator {
         int totalCovered   = reports.stream().mapToInt(GapReport::getCoveredScenarios).sum();
         int totalMissing   = totalScenarios - totalCovered;
         int covPct = totalScenarios == 0 ? 100 : (int)((totalCovered * 100.0) / totalScenarios);
-        String generated   = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
 
         // Group reports by className (preserve insertion order)
         java.util.LinkedHashMap<String, java.util.List<GapReport>> byClass = new java.util.LinkedHashMap<>();
@@ -132,7 +131,6 @@ public class HtmlReportGenerator {
             .filter(ms -> ms.stream().anyMatch(r -> !r.getMissingScenarios().isEmpty()))
             .count();
         int totalClasses = byClass.size();
-        String dscColor = covPct >= 80 ? "var(--green)" : covPct >= 60 ? "var(--yellow)" : "var(--red)";
 
         return "<!DOCTYPE html>\n<html lang=\"en\" data-theme=\"dark\">\n<head>\n" +
             "<meta charset=\"UTF-8\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n" +
@@ -149,11 +147,6 @@ public class HtmlReportGenerator {
             ".logo-text{font-size:19px;font-weight:700;letter-spacing:-0.3px;}\n" +
             ".logo-text span{color:var(--blue);}\n" +
             ".header-right{display:flex;align-items:center;gap:16px;}\n" +
-            ".header-score{text-align:right;}\n" +
-            ".header-score .score-val{font-size:28px;font-weight:800;line-height:1;}\n" +
-            ".header-score .score-label{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;}\n" +
-            ".header-score .score-sub{font-size:12px;color:var(--muted);margin-top:2px;}\n" +
-            ".header-divider{width:1px;height:40px;background:var(--border);}\n" +
             ".theme-btn{display:flex;align-items:center;gap:5px;padding:6px 12px;border-radius:20px;border:1px solid var(--border);background:var(--surface);color:var(--text);font-size:12px;font-weight:500;cursor:pointer;transition:background .15s;white-space:nowrap;}\n" +
             ".theme-btn:hover{background:var(--surface2);}\n" +
             ".main{max-width:1160px;margin:0 auto;padding:28px 24px;}\n" +
@@ -207,7 +200,7 @@ public class HtmlReportGenerator {
             ".status-covered{display:inline-flex;align-items:center;gap:5px;color:var(--green);font-weight:600;font-size:12px;}\n" +
             ".status-missing{display:inline-flex;align-items:center;gap:5px;color:var(--red);font-weight:600;font-size:12px;}\n" +
             ".footer{text-align:center;color:var(--muted);font-size:12px;padding:20px;border-top:1px solid var(--border);margin-top:16px;}\n" +
-            "@media(max-width:800px){.stats{grid-template-columns:repeat(2,1fr);}.header{flex-direction:column;gap:12px;}.header-right{flex-direction:row-reverse;}.header-score{text-align:left;}}\n" +
+            "@media(max-width:800px){.stats{grid-template-columns:repeat(2,1fr);}.header{flex-direction:column;gap:12px;}.header-right{flex-direction:row-reverse;}}\n" +
             "</style></head>\n<body>\n" +
             "<header class=\"header\">\n" +
             "  <div class=\"logo\"><div class=\"logo-icon\">🔬</div><div class=\"logo-text\">Scenario<span>Lens</span></div></div>\n" +
@@ -215,12 +208,6 @@ public class HtmlReportGenerator {
             "    <button class=\"theme-btn\" id=\"themeToggle\" onclick=\"toggleTheme()\" title=\"Toggle light/dark mode\">\n" +
             "      <span id=\"themeIcon\">☀️</span><span id=\"themeLabel\">Light</span>\n" +
             "    </button>\n" +
-            "    <div class=\"header-divider\"></div>\n" +
-            "    <div class=\"header-score\">\n" +
-            "      <div class=\"score-label\">DSC Score</div>\n" +
-            "      <div class=\"score-val\" style=\"color:" + dscColor + "\">" + covPct + "%</div>\n" +
-            "      <div class=\"score-sub\">" + totalMissing + " gaps · " + generated + "</div>\n" +
-            "    </div>\n" +
             "  </div>\n" +
             "</header>\n" +
             "<div class=\"main\">\n" +

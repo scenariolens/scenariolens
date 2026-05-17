@@ -42,20 +42,30 @@ public class HtmlReportGenerator {
         // Build class-grouped nav
         StringBuilder nav = new StringBuilder();
         for (java.util.Map.Entry<String, java.util.List<GapReport>> entry : byClass.entrySet()) {
-            String cls = entry.getKey();
+            String fqn = entry.getKey();
+            String simpleName = fqn;
+            int lastDot = fqn.lastIndexOf('.');
+            if (lastDot != -1) {
+                simpleName = fqn.substring(lastDot + 1);
+            }
             java.util.List<GapReport> methods = entry.getValue();
             int clsTotal   = methods.stream().mapToInt(GapReport::getTotalScenarios).sum();
             int clsCovered = methods.stream().mapToInt(GapReport::getCoveredScenarios).sum();
             int clsPct = clsTotal == 0 ? 100 : (int)((clsCovered * 100.0) / clsTotal);
             String color = clsPct == 100 ? "var(--green)" : clsPct == 0 ? "var(--red)" : "var(--yellow)";
-            nav.append("<a href=\"#cls-").append(cls).append("\" class=\"nav-pill\" style=\"border-color:").append(color).append("\">")
-               .append(cls).append(" <span style=\"color:").append(color).append("\">").append(clsPct).append("%</span></a>");
+            nav.append("<a href=\"#cls-").append(fqn).append("\" class=\"nav-pill\" title=\"").append(fqn).append("\" style=\"border-color:").append(color).append("\">")
+               .append(simpleName).append(" <span style=\"color:").append(color).append("\">").append(clsPct).append("%</span></a>");
         }
 
         // Build class-grouped sections
         StringBuilder sections = new StringBuilder();
         for (java.util.Map.Entry<String, java.util.List<GapReport>> entry : byClass.entrySet()) {
-            String cls = entry.getKey();
+            String fqn = entry.getKey();
+            String simpleName = fqn;
+            int lastDot = fqn.lastIndexOf('.');
+            if (lastDot != -1) {
+                simpleName = fqn.substring(lastDot + 1);
+            }
             java.util.List<GapReport> methods = entry.getValue();
             int clsTotal   = methods.stream().mapToInt(GapReport::getTotalScenarios).sum();
             int clsCovered = methods.stream().mapToInt(GapReport::getCoveredScenarios).sum();
@@ -64,11 +74,14 @@ public class HtmlReportGenerator {
             String clsColor = clsPct == 100 ? "var(--green)" : clsPct == 0 ? "var(--red)" : "var(--yellow)";
 
             // Class header
-            sections.append("<div id=\"cls-").append(cls).append("\" class=\"class-section\">\n")
+            sections.append("<div id=\"cls-").append(fqn).append("\" class=\"class-section\">\n")
                 .append("<div class=\"class-header\">\n")
                 .append("  <div class=\"class-title-row\">\n")
                 .append("    <span class=\"class-icon\">☕</span>\n")
-                .append("    <span class=\"class-name\">").append(cls).append("</span>\n")
+                .append("    <div>\n")
+                .append("      <div class=\"class-simple\">").append(simpleName).append("</div>\n")
+                .append("      <div class=\"class-fqn\">").append(fqn).append("</div>\n")
+                .append("    </div>\n")
                 .append("    <span class=\"class-dsc\" style=\"color:").append(clsColor).append("\">DSC ").append(clsPct).append("%</span>\n")
                 .append("  </div>\n")
                 .append("  <div class=\"class-stats\">\n")
@@ -81,116 +94,139 @@ public class HtmlReportGenerator {
 
             // Per-method subsections
             for (GapReport r : methods) {
-                String id = "m-" + cls + "-" + r.getMethodName();
+                String id = "m-" + fqn + "-" + r.getMethodName();
                 int missing = r.getTotalScenarios() - r.getCoveredScenarios();
                 int pct = r.getScenarioCoveragePercent();
                 String pctColor = pct == 100 ? "var(--green)" : pct == 0 ? "var(--red)" : "var(--yellow)";
+                String openAttr = missing > 0 ? " open" : "";
+                
                 StringBuilder rows = new StringBuilder();
                 for (ScenarioRow sr : r.getCoveredRows()) rows.append(row(sr, "covered", "✓ COVERED"));
                 for (ScenarioRow sr : r.getMissingScenarios()) rows.append(row(sr, "missing", "✗ MISSING"));
 
                 sections.append("<div id=\"").append(id).append("\" class=\"method-section\">\n")
-                    .append("<div class=\"method-header\">\n")
-                    .append("  <span class=\"method-name\">").append(r.getMethodName()).append("()</span>\n")
-                    .append("  <div style=\"display:flex;align-items:center;gap:10px;\">\n")
-                    .append("    <span class=\"method-pct\" style=\"color:").append(pctColor).append("\">").append(pct).append("% DSC</span>\n")
-                    .append("    <span class=\"badge covered\">✓ ").append(r.getCoveredScenarios()).append("</span>\n")
-                    .append("    <span class=\"badge missing\">✗ ").append(missing).append("</span>\n")
+                    .append("<details class=\"method-detail\"").append(openAttr).append(">\n")
+                    .append("  <summary>\n")
+                    .append("    <div class=\"summary-left\">\n")
+                    .append("      <span class=\"chevron\">▶</span>\n")
+                    .append("      <span class=\"method-name\">").append(r.getMethodName()).append("()</span>\n")
+                    .append("    </div>\n")
+                    .append("    <div class=\"summary-right\">\n")
+                    .append("      <span class=\"method-pct\" style=\"color:").append(pctColor).append("\">").append(pct).append("% DSC</span>\n")
+                    .append("      <span class=\"badge covered\">✓ ").append(r.getCoveredScenarios()).append("</span>\n")
+                    .append("      <span class=\"badge missing\">✗ ").append(missing).append("</span>\n")
+                    .append("    </div>\n")
+                    .append("  </summary>\n")
+                    .append("  <div class=\"table-wrap\">\n")
+                    .append("    <table>\n")
+                    .append("      <thead><tr><th style=\"width:60px\">ID</th><th>Stub Configuration</th><th>Expected Outcome</th><th style=\"width:110px\">Status</th></tr></thead>\n")
+                    .append("      <tbody>").append(rows).append("</tbody>\n")
+                    .append("    </table>\n")
                     .append("  </div>\n")
-                    .append("</div>\n")
-                    .append("<div class=\"table-wrap\"><table>")
-                    .append("<thead><tr><th style=\"width:60px\">ID</th><th>Stub Configuration</th><th>Expected Outcome</th><th style=\"width:110px\">Status</th></tr></thead>")
-                    .append("<tbody>").append(rows).append("</tbody></table></div>\n</div>\n");
+                    .append("</details>\n")
+                    .append("</div>\n");
             }
             sections.append("</div>\n"); // end class-section
         }
 
+        // Compute derived stats for redesigned cards
+        long classesWithGaps = byClass.values().stream()
+            .filter(ms -> ms.stream().anyMatch(r -> !r.getMissingScenarios().isEmpty()))
+            .count();
+        int totalClasses = byClass.size();
+        String dscColor = covPct >= 80 ? "var(--green)" : covPct >= 60 ? "var(--yellow)" : "var(--red)";
 
         return "<!DOCTYPE html>\n<html lang=\"en\" data-theme=\"dark\">\n<head>\n" +
             "<meta charset=\"UTF-8\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n" +
             "<title>ScenarioLens Report</title>\n" +
             "<style>\n" +
-            /* ── Dark theme (default) ── */
             ":root{--bg:#0f1117;--surface:#1a1d27;--surface2:#252836;--border:#2e3247;--text:#e2e8f0;--muted:#8892a4;--green:#22c55e;--red:#ef4444;--blue:#3b82f6;--yellow:#f59e0b;--purple:#a855f7;--header-bg:linear-gradient(135deg,#1e2235 0%,#12141f 100%);--hover-row:rgba(255,255,255,.02);}\n" +
-            /* ── Light theme overrides ── */
             "[data-theme=light]{--bg:#f8fafc;--surface:#ffffff;--surface2:#f1f5f9;--border:#e2e8f0;--text:#0f172a;--muted:#64748b;--header-bg:linear-gradient(135deg,#e0e7ff 0%,#f0f4ff 100%);--hover-row:rgba(0,0,0,.02);}\n" +
             "*{box-sizing:border-box;margin:0;padding:0;}\n" +
             "body{background:var(--bg);color:var(--text);font-family:'Inter','Segoe UI',system-ui,sans-serif;font-size:14px;line-height:1.6;transition:background .2s,color .2s;}\n" +
             "a{color:var(--blue);text-decoration:none;}\n" +
-            ".header{background:var(--header-bg);border-bottom:1px solid var(--border);padding:22px 40px;display:flex;align-items:center;justify-content:space-between;}\n" +
+            ".header{background:var(--header-bg);border-bottom:1px solid var(--border);padding:18px 40px;display:flex;align-items:center;justify-content:space-between;}\n" +
             ".logo{display:flex;align-items:center;gap:12px;}\n" +
-            ".logo-icon{width:36px;height:36px;background:linear-gradient(135deg,var(--blue),var(--purple));border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:18px;}\n" +
-            ".logo-text{font-size:20px;font-weight:700;letter-spacing:-0.3px;}\n" +
+            ".logo-icon{width:34px;height:34px;background:linear-gradient(135deg,var(--blue),var(--purple));border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:17px;}\n" +
+            ".logo-text{font-size:19px;font-weight:700;letter-spacing:-0.3px;}\n" +
             ".logo-text span{color:var(--blue);}\n" +
-            ".header-right{display:flex;align-items:center;gap:20px;}\n" +
-            ".meta{text-align:right;color:var(--muted);font-size:12px;}\n" +
-            ".meta strong{color:var(--text);display:block;font-size:16px;font-weight:600;margin-bottom:2px;}\n" +
-            /* ── Theme toggle button ── */
-            ".theme-btn{display:flex;align-items:center;gap:6px;padding:7px 14px;border-radius:20px;border:1px solid var(--border);background:var(--surface);color:var(--text);font-size:12px;font-weight:500;cursor:pointer;transition:background .15s,border-color .15s;white-space:nowrap;}\n" +
+            ".header-right{display:flex;align-items:center;gap:16px;}\n" +
+            ".header-score{text-align:right;}\n" +
+            ".header-score .score-val{font-size:28px;font-weight:800;line-height:1;}\n" +
+            ".header-score .score-label{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;}\n" +
+            ".header-score .score-sub{font-size:12px;color:var(--muted);margin-top:2px;}\n" +
+            ".header-divider{width:1px;height:40px;background:var(--border);}\n" +
+            ".theme-btn{display:flex;align-items:center;gap:5px;padding:6px 12px;border-radius:20px;border:1px solid var(--border);background:var(--surface);color:var(--text);font-size:12px;font-weight:500;cursor:pointer;transition:background .15s;white-space:nowrap;}\n" +
             ".theme-btn:hover{background:var(--surface2);}\n" +
-            ".theme-btn .icon{font-size:15px;transition:transform .3s;}\n" +
-            ".main{max-width:1100px;margin:0 auto;padding:32px 24px;}\n" +
-            ".stats{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:32px;}\n" +
-            ".stat{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:20px 24px;transition:background .2s;}\n" +
-            ".stat-label{color:var(--muted);font-size:12px;text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px;}\n" +
-            ".stat-value{font-size:32px;font-weight:700;line-height:1;}\n" +
+            ".main{max-width:1160px;margin:0 auto;padding:28px 24px;}\n" +
+            ".stats{display:grid;grid-template-columns:1.4fr 1fr 1fr 1fr;gap:14px;margin-bottom:28px;}\n" +
+            ".stat{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:18px 22px;transition:background .2s;}\n" +
+            ".stat.hero{border-color:var(--blue);box-shadow:0 0 0 1px var(--blue) inset;}\n" +
+            ".stat-label{color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px;}\n" +
+            ".stat-value{font-size:30px;font-weight:800;line-height:1;}\n" +
+            ".stat-value.dsc{font-size:38px;}\n" +
             ".stat-value.green{color:var(--green);} .stat-value.red{color:var(--red);} .stat-value.blue{color:var(--blue);} .stat-value.yellow{color:var(--yellow);}\n" +
-            ".stat-sub{color:var(--muted);font-size:11px;margin-top:4px;}\n" +
-            ".progress-bar{background:var(--surface2);border-radius:4px;height:6px;margin-top:10px;overflow:hidden;}\n" +
+            ".stat-sub{color:var(--muted);font-size:11px;margin-top:5px;}\n" +
+            ".progress-bar{background:var(--surface2);border-radius:4px;height:5px;margin-top:10px;overflow:hidden;}\n" +
             ".progress-fill{height:100%;border-radius:4px;background:linear-gradient(90deg,var(--blue),var(--purple));}\n" +
-            ".nav{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:28px;}\n" +
-            ".nav-pill{padding:5px 14px;border-radius:20px;border:1px solid var(--border);background:var(--surface);color:var(--text);font-size:12px;font-weight:500;transition:background .15s;}\n" +
+            ".nav{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:24px;align-items:center;}\n" +
+            ".nav-label{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-right:4px;}\n" +
+            ".nav-pill{padding:4px 12px;border-radius:20px;border:1px solid var(--border);background:var(--surface);color:var(--text);font-size:12px;font-weight:500;transition:background .15s;}\n" +
             ".nav-pill:hover{background:var(--surface2);}\n" +
-            /* ── Class grouping ── */
-            ".class-section{margin-bottom:40px;}\n" +
-            ".class-header{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:18px 22px;margin-bottom:14px;transition:background .2s;}\n" +
-            ".class-title-row{display:flex;align-items:center;gap:10px;margin-bottom:10px;}\n" +
-            ".class-icon{font-size:18px;}\n" +
-            ".class-name{font-size:18px;font-weight:700;color:var(--text);font-family:'JetBrains Mono','Fira Code',monospace;}\n" +
-            ".class-dsc{margin-left:auto;font-size:14px;font-weight:700;}\n" +
+            ".class-section{margin-bottom:36px;}\n" +
+            ".class-header{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:16px 20px;margin-bottom:10px;transition:background .2s;}\n" +
+            ".class-title-row{display:flex;align-items:center;gap:10px;margin-bottom:8px;}\n" +
+            ".class-icon{font-size:16px;}\n" +
+            ".class-name{font-size:17px;font-weight:700;color:var(--text);font-family:'JetBrains Mono','Fira Code',monospace;}\n" +
+            ".class-dsc{margin-left:auto;font-size:13px;font-weight:700;white-space:nowrap;}\n" +
             ".class-stats{display:flex;flex-wrap:wrap;align-items:center;gap:10px;}\n" +
             ".cs{color:var(--muted);font-size:12px;}\n" +
             ".cs-val{font-weight:700;color:var(--text);}\n" +
-            /* ── Method subsection (indented under class) ── */
-            ".method-section{margin-bottom:16px;margin-left:20px;border-left:2px solid var(--border);padding-left:16px;}\n" +
-            ".method-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;padding:10px 14px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;transition:background .2s;}\n" +
+            ".method-section{margin-bottom:8px;margin-left:18px;border-left:2px solid var(--border);padding-left:14px;}\n" +
+            ".method-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;padding:9px 14px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;}\n" +
             ".method-name{font-family:'JetBrains Mono','Fira Code',monospace;font-size:13px;font-weight:600;color:var(--blue);}\n" +
             ".method-pct{font-size:12px;font-weight:600;}\n" +
-            ".badge{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:600;}\n" +
+            ".badge{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:20px;font-size:11px;font-weight:600;}\n" +
             ".badge.missing{background:rgba(239,68,68,.15);color:var(--red);border:1px solid rgba(239,68,68,.3);}\n" +
             ".badge.covered{background:rgba(34,197,94,.15);color:var(--green);border:1px solid rgba(34,197,94,.3);}\n" +
-            ".table-wrap{background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden;margin-bottom:8px;transition:background .2s;}\n" +
+            ".table-wrap{background:var(--surface);border:1px solid var(--border);border-radius:8px;overflow:hidden;margin-bottom:8px;}\n" +
             "table{width:100%;border-collapse:collapse;}\n" +
-            "thead tr{background:var(--surface2);transition:background .2s;}\n" +
-            "th{padding:10px 16px;text-align:left;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);border-bottom:1px solid var(--border);}\n" +
-            "td{padding:10px 16px;border-bottom:1px solid var(--border);vertical-align:top;}\n" +
+            "thead tr{background:var(--surface2);}\n" +
+            "th{padding:9px 14px;text-align:left;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);border-bottom:1px solid var(--border);}\n" +
+            "td{padding:9px 14px;border-bottom:1px solid var(--border);vertical-align:top;}\n" +
             "tr:last-child td{border-bottom:none;}\n" +
             "tr:hover td{background:var(--hover-row);}\n" +
             ".id{font-family:'JetBrains Mono','Fira Code',monospace;font-size:12px;color:var(--muted);white-space:nowrap;}\n" +
-            ".stub-line{font-family:'JetBrains Mono','Fira Code',monospace;font-size:12px;color:var(--blue);margin-bottom:3px;}\n" +
-            ".stub-line span{color:var(--purple);}\n" +
-            ".status-covered{display:inline-flex;align-items:center;gap:5px;color:var(--green);font-weight:600;font-size:12px;}\n" +
-            ".status-missing{display:inline-flex;align-items:center;gap:5px;color:var(--red);font-weight:600;font-size:12px;}\n" +
-            ".footer{text-align:center;color:var(--muted);font-size:12px;padding:24px;border-top:1px solid var(--border);margin-top:16px;}\n" +
-            "@media(max-width:700px){.stats{grid-template-columns:repeat(2,1fr);}.header{flex-direction:column;gap:12px;}.header-right{flex-direction:row-reverse;}}\n" +
+            ".footer{text-align:center;color:var(--muted);font-size:12px;padding:20px;border-top:1px solid var(--border);margin-top:16px;}\n" +
+            "@media(max-width:800px){.stats{grid-template-columns:repeat(2,1fr);}.header{flex-direction:column;gap:12px;}.header-right{flex-direction:row-reverse;}.header-score{text-align:left;}}\n" +
             "</style></head>\n<body>\n" +
             "<header class=\"header\">\n" +
             "  <div class=\"logo\"><div class=\"logo-icon\">🔬</div><div class=\"logo-text\">Scenario<span>Lens</span></div></div>\n" +
             "  <div class=\"header-right\">\n" +
             "    <button class=\"theme-btn\" id=\"themeToggle\" onclick=\"toggleTheme()\" title=\"Toggle light/dark mode\">\n" +
-            "      <span class=\"icon\" id=\"themeIcon\">☀️</span><span id=\"themeLabel\">Light</span>\n" +
+            "      <span id=\"themeIcon\">☀️</span><span id=\"themeLabel\">Light</span>\n" +
             "    </button>\n" +
-            "    <div class=\"meta\"><strong>" + reports.size() + " methods analyzed</strong>Generated " + generated + "</div>\n" +
+            "    <div class=\"header-divider\"></div>\n" +
+            "    <div class=\"header-score\">\n" +
+            "      <div class=\"score-label\">DSC Score</div>\n" +
+            "      <div class=\"score-val\" style=\"color:" + dscColor + "\">" + covPct + "%</div>\n" +
+            "      <div class=\"score-sub\">" + totalMissing + " gaps · " + generated + "</div>\n" +
+            "    </div>\n" +
             "  </div>\n" +
             "</header>\n" +
             "<div class=\"main\">\n" +
             "  <div class=\"stats\">\n" +
-            "    <div class=\"stat\"><div class=\"stat-label\">Total Scenarios</div><div class=\"stat-value blue\">" + totalScenarios + "</div><div class=\"stat-sub\">after CFG pruning</div></div>\n" +
-            "    <div class=\"stat\"><div class=\"stat-label\">Covered</div><div class=\"stat-value green\">" + totalCovered + "</div><div class=\"stat-sub\">by existing tests</div></div>\n" +
-            "    <div class=\"stat\"><div class=\"stat-label\">Missing</div><div class=\"stat-value red\">" + totalMissing + "</div><div class=\"stat-sub\">gaps to fill</div></div>\n" +
-            "    <div class=\"stat\"><div class=\"stat-label\">Coverage</div><div class=\"stat-value yellow\">" + covPct + "%</div><div class=\"stat-sub\">scenario coverage</div><div class=\"progress-bar\"><div class=\"progress-fill\" style=\"width:" + covPct + "%\"></div></div></div>\n" +
+            "    <div class=\"stat hero\">\n" +
+            "      <div class=\"stat-label\">DSC Score</div>\n" +
+            "      <div class=\"stat-value dsc " + (covPct >= 80 ? "green" : covPct >= 60 ? "yellow" : "red") + "\">" + covPct + "%</div>\n" +
+            "      <div class=\"stat-sub\">Dependency Scenario Coverage</div>\n" +
+            "      <div class=\"progress-bar\"><div class=\"progress-fill\" style=\"width:" + covPct + "%\"></div></div>\n" +
+            "    </div>\n" +
+            "    <div class=\"stat\"><div class=\"stat-label\">Gaps to Fix</div><div class=\"stat-value red\">" + totalMissing + "</div><div class=\"stat-sub\">missing scenarios</div></div>\n" +
+            "    <div class=\"stat\"><div class=\"stat-label\">Classes with Gaps</div><div class=\"stat-value " + (classesWithGaps == 0 ? "green" : "yellow") + "\">" + classesWithGaps + " <span style=\"font-size:16px;font-weight:400;color:var(--muted)\">/ " + totalClasses + "</span></div><div class=\"stat-sub\">need attention</div></div>\n" +
+            "    <div class=\"stat\"><div class=\"stat-label\">Scenarios Covered</div><div class=\"stat-value green\">" + totalCovered + "</div><div class=\"stat-sub\">of " + totalScenarios + " total</div></div>\n" +
             "  </div>\n" +
-            "  <div class=\"nav\">" + nav + "</div>\n" +
+            "  <div class=\"nav\"><span class=\"nav-label\">Jump to</span>" + nav + "</div>\n" +
             sections +
             "</div>\n" +
             "<footer class=\"footer\">Generated by <a href=\"https://github.com/scenariolens/scenariolens\">ScenarioLens</a> · Dependency Scenario Coverage (DSC)</footer>\n" +
@@ -198,13 +234,11 @@ public class HtmlReportGenerator {
             "  const html = document.documentElement;\n" +
             "  const icon = document.getElementById('themeIcon');\n" +
             "  const label = document.getElementById('themeLabel');\n" +
-            "  // Apply saved preference on load\n" +
             "  const saved = localStorage.getItem('sl-theme') || 'dark';\n" +
             "  applyTheme(saved);\n" +
             "  function toggleTheme() {\n" +
             "    const next = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';\n" +
-            "    applyTheme(next);\n" +
-            "    localStorage.setItem('sl-theme', next);\n" +
+            "    applyTheme(next); localStorage.setItem('sl-theme', next);\n" +
             "  }\n" +
             "  function applyTheme(t) {\n" +
             "    html.setAttribute('data-theme', t);\n" +
@@ -214,7 +248,6 @@ public class HtmlReportGenerator {
             "</script>\n" +
             "</body></html>\n";
     }
-
 
     private String html(GapReport report) {
         int total   = report.getTotalScenarios();

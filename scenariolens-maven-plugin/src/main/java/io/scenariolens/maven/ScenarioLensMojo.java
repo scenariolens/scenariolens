@@ -119,8 +119,12 @@ public class ScenarioLensMojo extends AbstractMojo {
                     getLog().info("  raw: " + rawCount + " | pruned: " + (rawCount - prunedCount) + " | final: " + prunedCount + " | pruning ratio: " + ratio + "%");
                     
                     GapAnalyzer analyzer = new GapAnalyzer();
-                    String className = file.getName().replace(".java", "");
-                    GapReport report = analyzer.analyze(className, method.getNameAsString(), matrix, tests);
+                    String simpleClassName = file.getName().replace(".java", "");
+                    // Derive FQN: base package + any subpackage from relative path + simple class name
+                    String subPkg = packageDir.toPath().relativize(file.toPath().getParent()).toString()
+                        .replace(java.io.File.separatorChar, '.');
+                    String fqn = (subPkg.isEmpty() ? pkg : pkg + "." + subPkg) + "." + simpleClassName;
+                    GapReport report = analyzer.analyze(fqn, method.getNameAsString(), matrix, tests);
                     // Add some hacky fields to Json string or just use the generator
                     allReports.add(report);
                     

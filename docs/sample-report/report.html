@@ -9,83 +9,97 @@
 *{box-sizing:border-box;margin:0;padding:0;}
 body{background:var(--bg);color:var(--text);font-family:'Inter','Segoe UI',system-ui,sans-serif;font-size:14px;line-height:1.6;transition:background .2s,color .2s;}
 a{color:var(--blue);text-decoration:none;}
-.header{background:var(--header-bg);border-bottom:1px solid var(--border);padding:22px 40px;display:flex;align-items:center;justify-content:space-between;}
+.header{background:var(--header-bg);border-bottom:1px solid var(--border);padding:18px 40px;display:flex;align-items:center;justify-content:space-between;}
 .logo{display:flex;align-items:center;gap:12px;}
-.logo-icon{width:36px;height:36px;background:linear-gradient(135deg,var(--blue),var(--purple));border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:18px;}
-.logo-text{font-size:20px;font-weight:700;letter-spacing:-0.3px;}
+.logo-icon{width:34px;height:34px;background:linear-gradient(135deg,var(--blue),var(--purple));border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:17px;}
+.logo-text{font-size:19px;font-weight:700;letter-spacing:-0.3px;}
 .logo-text span{color:var(--blue);}
-.header-right{display:flex;align-items:center;gap:20px;}
-.meta{text-align:right;color:var(--muted);font-size:12px;}
-.meta strong{color:var(--text);display:block;font-size:16px;font-weight:600;margin-bottom:2px;}
-.theme-btn{display:flex;align-items:center;gap:6px;padding:7px 14px;border-radius:20px;border:1px solid var(--border);background:var(--surface);color:var(--text);font-size:12px;font-weight:500;cursor:pointer;transition:background .15s,border-color .15s;white-space:nowrap;}
+.header-right{display:flex;align-items:center;gap:16px;}
+.header-score{text-align:right;}
+.header-score .score-val{font-size:28px;font-weight:800;line-height:1;}
+.header-score .score-label{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;}
+.header-score .score-sub{font-size:12px;color:var(--muted);margin-top:2px;}
+.header-divider{width:1px;height:40px;background:var(--border);}
+.theme-btn{display:flex;align-items:center;gap:5px;padding:6px 12px;border-radius:20px;border:1px solid var(--border);background:var(--surface);color:var(--text);font-size:12px;font-weight:500;cursor:pointer;transition:background .15s;white-space:nowrap;}
 .theme-btn:hover{background:var(--surface2);}
-.theme-btn .icon{font-size:15px;transition:transform .3s;}
-.main{max-width:1100px;margin:0 auto;padding:32px 24px;}
-.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:32px;}
-.stat{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:20px 24px;transition:background .2s;}
-.stat-label{color:var(--muted);font-size:12px;text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px;}
-.stat-value{font-size:32px;font-weight:700;line-height:1;}
+.main{max-width:1160px;margin:0 auto;padding:28px 24px;}
+.stats{display:grid;grid-template-columns:1.4fr 1fr 1fr 1fr;gap:14px;margin-bottom:28px;}
+.stat{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:18px 22px;transition:background .2s;}
+.stat.hero{border-color:var(--blue);box-shadow:0 0 0 1px var(--blue) inset;}
+.stat-label{color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px;}
+.stat-value{font-size:30px;font-weight:800;line-height:1;}
+.stat-value.dsc{font-size:38px;}
 .stat-value.green{color:var(--green);} .stat-value.red{color:var(--red);} .stat-value.blue{color:var(--blue);} .stat-value.yellow{color:var(--yellow);}
-.stat-sub{color:var(--muted);font-size:11px;margin-top:4px;}
-.progress-bar{background:var(--surface2);border-radius:4px;height:6px;margin-top:10px;overflow:hidden;}
+.stat-sub{color:var(--muted);font-size:11px;margin-top:5px;}
+.progress-bar{background:var(--surface2);border-radius:4px;height:5px;margin-top:10px;overflow:hidden;}
 .progress-fill{height:100%;border-radius:4px;background:linear-gradient(90deg,var(--blue),var(--purple));}
-.nav{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:28px;}
-.nav-pill{padding:5px 14px;border-radius:20px;border:1px solid var(--border);background:var(--surface);color:var(--text);font-size:12px;font-weight:500;transition:background .15s;}
+.nav{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:24px;align-items:center;}
+.nav-label{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-right:4px;}
+.nav-pill{padding:4px 12px;border-radius:20px;border:1px solid var(--border);background:var(--surface);color:var(--text);font-size:12px;font-weight:500;transition:background .15s;}
 .nav-pill:hover{background:var(--surface2);}
-.class-section{margin-bottom:40px;}
-.class-header{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:18px 22px;margin-bottom:14px;transition:background .2s;}
-.class-title-row{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
-.class-icon{font-size:18px;}
-.class-name{font-size:18px;font-weight:700;color:var(--text);font-family:'JetBrains Mono','Fira Code',monospace;}
-.class-dsc{margin-left:auto;font-size:14px;font-weight:700;}
+.class-section{margin-bottom:36px;}
+.class-header{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:16px 20px;margin-bottom:10px;transition:background .2s;}
+.class-title-row{display:flex;align-items:center;gap:10px;margin-bottom:8px;}
+.class-icon{font-size:16px;}
+.class-name{font-size:17px;font-weight:700;color:var(--text);font-family:'JetBrains Mono','Fira Code',monospace;}
+.class-dsc{margin-left:auto;font-size:13px;font-weight:700;white-space:nowrap;}
 .class-stats{display:flex;flex-wrap:wrap;align-items:center;gap:10px;}
 .cs{color:var(--muted);font-size:12px;}
 .cs-val{font-weight:700;color:var(--text);}
-.method-section{margin-bottom:16px;margin-left:20px;border-left:2px solid var(--border);padding-left:16px;}
-.method-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;padding:10px 14px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;transition:background .2s;}
+.method-section{margin-bottom:8px;margin-left:18px;border-left:2px solid var(--border);padding-left:14px;}
+.method-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;padding:9px 14px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;}
 .method-name{font-family:'JetBrains Mono','Fira Code',monospace;font-size:13px;font-weight:600;color:var(--blue);}
 .method-pct{font-size:12px;font-weight:600;}
-.badge{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:600;}
+.badge{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:20px;font-size:11px;font-weight:600;}
 .badge.missing{background:rgba(239,68,68,.15);color:var(--red);border:1px solid rgba(239,68,68,.3);}
 .badge.covered{background:rgba(34,197,94,.15);color:var(--green);border:1px solid rgba(34,197,94,.3);}
-.table-wrap{background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden;margin-bottom:8px;transition:background .2s;}
+.table-wrap{background:var(--surface);border:1px solid var(--border);border-radius:8px;overflow:hidden;margin-bottom:8px;}
 table{width:100%;border-collapse:collapse;}
-thead tr{background:var(--surface2);transition:background .2s;}
-th{padding:10px 16px;text-align:left;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);border-bottom:1px solid var(--border);}
-td{padding:10px 16px;border-bottom:1px solid var(--border);vertical-align:top;}
+thead tr{background:var(--surface2);}
+th{padding:9px 14px;text-align:left;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);border-bottom:1px solid var(--border);}
+td{padding:9px 14px;border-bottom:1px solid var(--border);vertical-align:top;}
 tr:last-child td{border-bottom:none;}
 tr:hover td{background:var(--hover-row);}
 .id{font-family:'JetBrains Mono','Fira Code',monospace;font-size:12px;color:var(--muted);white-space:nowrap;}
-.stub-line{font-family:'JetBrains Mono','Fira Code',monospace;font-size:12px;color:var(--blue);margin-bottom:3px;}
-.stub-line span{color:var(--purple);}
-.status-covered{display:inline-flex;align-items:center;gap:5px;color:var(--green);font-weight:600;font-size:12px;}
-.status-missing{display:inline-flex;align-items:center;gap:5px;color:var(--red);font-weight:600;font-size:12px;}
-.footer{text-align:center;color:var(--muted);font-size:12px;padding:24px;border-top:1px solid var(--border);margin-top:16px;}
-@media(max-width:700px){.stats{grid-template-columns:repeat(2,1fr);}.header{flex-direction:column;gap:12px;}.header-right{flex-direction:row-reverse;}}
+.footer{text-align:center;color:var(--muted);font-size:12px;padding:20px;border-top:1px solid var(--border);margin-top:16px;}
+@media(max-width:800px){.stats{grid-template-columns:repeat(2,1fr);}.header{flex-direction:column;gap:12px;}.header-right{flex-direction:row-reverse;}.header-score{text-align:left;}}
 </style></head>
 <body>
 <header class="header">
   <div class="logo"><div class="logo-icon">🔬</div><div class="logo-text">Scenario<span>Lens</span></div></div>
   <div class="header-right">
     <button class="theme-btn" id="themeToggle" onclick="toggleTheme()" title="Toggle light/dark mode">
-      <span class="icon" id="themeIcon">☀️</span><span id="themeLabel">Light</span>
+      <span id="themeIcon">☀️</span><span id="themeLabel">Light</span>
     </button>
-    <div class="meta"><strong>22 methods analyzed</strong>Generated 2026-05-17 23:37</div>
+    <div class="header-divider"></div>
+    <div class="header-score">
+      <div class="score-label">DSC Score</div>
+      <div class="score-val" style="color:var(--red)">19%</div>
+      <div class="score-sub">68 gaps · 2026-05-17 23:46</div>
+    </div>
   </div>
 </header>
 <div class="main">
   <div class="stats">
-    <div class="stat"><div class="stat-label">Total Scenarios</div><div class="stat-value blue">84</div><div class="stat-sub">after CFG pruning</div></div>
-    <div class="stat"><div class="stat-label">Covered</div><div class="stat-value green">16</div><div class="stat-sub">by existing tests</div></div>
-    <div class="stat"><div class="stat-label">Missing</div><div class="stat-value red">68</div><div class="stat-sub">gaps to fill</div></div>
-    <div class="stat"><div class="stat-label">Coverage</div><div class="stat-value yellow">19%</div><div class="stat-sub">scenario coverage</div><div class="progress-bar"><div class="progress-fill" style="width:19%"></div></div></div>
+    <div class="stat hero">
+      <div class="stat-label">DSC Score</div>
+      <div class="stat-value dsc red">19%</div>
+      <div class="stat-sub">Dependency Scenario Coverage</div>
+      <div class="progress-bar"><div class="progress-fill" style="width:19%"></div></div>
+    </div>
+    <div class="stat"><div class="stat-label">Gaps to Fix</div><div class="stat-value red">68</div><div class="stat-sub">missing scenarios</div></div>
+    <div class="stat"><div class="stat-label">Classes with Gaps</div><div class="stat-value yellow">2 <span style="font-size:16px;font-weight:400;color:var(--muted)">/ 2</span></div><div class="stat-sub">need attention</div></div>
+    <div class="stat"><div class="stat-label">Scenarios Covered</div><div class="stat-value green">16</div><div class="stat-sub">of 84 total</div></div>
   </div>
-  <div class="nav"><a href="#cls-OrderService" class="nav-pill" style="border-color:var(--red)">OrderService <span style="color:var(--red)">0%</span></a><a href="#cls-PaymentService" class="nav-pill" style="border-color:var(--yellow)">PaymentService <span style="color:var(--yellow)">27%</span></a></div>
-<div id="cls-OrderService" class="class-section">
+  <div class="nav"><span class="nav-label">Jump to</span><a href="#cls-com.example.payment.OrderService" class="nav-pill" title="com.example.payment.OrderService" style="border-color:var(--red)">OrderService <span style="color:var(--red)">0%</span></a><a href="#cls-com.example.payment.PaymentService" class="nav-pill" title="com.example.payment.PaymentService" style="border-color:var(--yellow)">PaymentService <span style="color:var(--yellow)">27%</span></a></div>
+<div id="cls-com.example.payment.OrderService" class="class-section">
 <div class="class-header">
   <div class="class-title-row">
     <span class="class-icon">☕</span>
-    <span class="class-name">OrderService</span>
+    <div>
+      <div class="class-simple">OrderService</div>
+      <div class="class-fqn">com.example.payment.OrderService</div>
+    </div>
     <span class="class-dsc" style="color:var(--red)">DSC 0%</span>
   </div>
   <div class="class-stats">
@@ -95,78 +109,141 @@ tr:hover td{background:var(--hover-row);}
     <span class="badge missing">✗ 26 missing</span>
   </div>
 </div>
-<div id="m-OrderService-send" class="method-section">
-<div class="method-header">
-  <span class="method-name">send()</span>
-  <div style="display:flex;align-items:center;gap:10px;">
-    <span class="method-pct" style="color:var(--red)">0% DSC</span>
-    <span class="badge covered">✓ 0</span>
-    <span class="badge missing">✗ 1</span>
+<div id="m-com.example.payment.OrderService-send" class="method-section">
+<details class="method-detail" open>
+  <summary>
+    <div class="summary-left">
+      <span class="chevron">▶</span>
+      <span class="method-name">send()</span>
+    </div>
+    <div class="summary-right">
+      <span class="method-pct" style="color:var(--red)">0% DSC</span>
+      <span class="badge covered">✓ 0</span>
+      <span class="badge missing">✗ 1</span>
+    </div>
+  </summary>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th style="width:60px">ID</th><th>Stub Configuration</th><th>Expected Outcome</th><th style="width:110px">Status</th></tr></thead>
+      <tbody><tr><td><span class="id">S01</span></td><td></td><td><span class="outcome">RefundResponse.success</span></td><td><span class="status-missing">✗ MISSING</span></td></tr></tbody>
+    </table>
   </div>
+</details>
 </div>
-<div class="table-wrap"><table><thead><tr><th style="width:60px">ID</th><th>Stub Configuration</th><th>Expected Outcome</th><th style="width:110px">Status</th></tr></thead><tbody><tr><td><span class="id">S01</span></td><td></td><td><span class="outcome">RefundResponse.success</span></td><td><span class="status-missing">✗ MISSING</span></td></tr></tbody></table></div>
-</div>
-<div id="m-OrderService-reserve" class="method-section">
-<div class="method-header">
-  <span class="method-name">reserve()</span>
-  <div style="display:flex;align-items:center;gap:10px;">
-    <span class="method-pct" style="color:var(--red)">0% DSC</span>
-    <span class="badge covered">✓ 0</span>
-    <span class="badge missing">✗ 1</span>
+<div id="m-com.example.payment.OrderService-reserve" class="method-section">
+<details class="method-detail" open>
+  <summary>
+    <div class="summary-left">
+      <span class="chevron">▶</span>
+      <span class="method-name">reserve()</span>
+    </div>
+    <div class="summary-right">
+      <span class="method-pct" style="color:var(--red)">0% DSC</span>
+      <span class="badge covered">✓ 0</span>
+      <span class="badge missing">✗ 1</span>
+    </div>
+  </summary>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th style="width:60px">ID</th><th>Stub Configuration</th><th>Expected Outcome</th><th style="width:110px">Status</th></tr></thead>
+      <tbody><tr><td><span class="id">S01</span></td><td></td><td><span class="outcome">RefundResponse.success</span></td><td><span class="status-missing">✗ MISSING</span></td></tr></tbody>
+    </table>
   </div>
+</details>
 </div>
-<div class="table-wrap"><table><thead><tr><th style="width:60px">ID</th><th>Stub Configuration</th><th>Expected Outcome</th><th style="width:110px">Status</th></tr></thead><tbody><tr><td><span class="id">S01</span></td><td></td><td><span class="outcome">RefundResponse.success</span></td><td><span class="status-missing">✗ MISSING</span></td></tr></tbody></table></div>
-</div>
-<div id="m-OrderService-release" class="method-section">
-<div class="method-header">
-  <span class="method-name">release()</span>
-  <div style="display:flex;align-items:center;gap:10px;">
-    <span class="method-pct" style="color:var(--red)">0% DSC</span>
-    <span class="badge covered">✓ 0</span>
-    <span class="badge missing">✗ 1</span>
+<div id="m-com.example.payment.OrderService-release" class="method-section">
+<details class="method-detail" open>
+  <summary>
+    <div class="summary-left">
+      <span class="chevron">▶</span>
+      <span class="method-name">release()</span>
+    </div>
+    <div class="summary-right">
+      <span class="method-pct" style="color:var(--red)">0% DSC</span>
+      <span class="badge covered">✓ 0</span>
+      <span class="badge missing">✗ 1</span>
+    </div>
+  </summary>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th style="width:60px">ID</th><th>Stub Configuration</th><th>Expected Outcome</th><th style="width:110px">Status</th></tr></thead>
+      <tbody><tr><td><span class="id">S01</span></td><td></td><td><span class="outcome">RefundResponse.success</span></td><td><span class="status-missing">✗ MISSING</span></td></tr></tbody>
+    </table>
   </div>
+</details>
 </div>
-<div class="table-wrap"><table><thead><tr><th style="width:60px">ID</th><th>Stub Configuration</th><th>Expected Outcome</th><th style="width:110px">Status</th></tr></thead><tbody><tr><td><span class="id">S01</span></td><td></td><td><span class="outcome">RefundResponse.success</span></td><td><span class="status-missing">✗ MISSING</span></td></tr></tbody></table></div>
-</div>
-<div id="m-OrderService-processOrder" class="method-section">
-<div class="method-header">
-  <span class="method-name">processOrder()</span>
-  <div style="display:flex;align-items:center;gap:10px;">
-    <span class="method-pct" style="color:var(--red)">0% DSC</span>
-    <span class="badge covered">✓ 0</span>
-    <span class="badge missing">✗ 11</span>
+<div id="m-com.example.payment.OrderService-processOrder" class="method-section">
+<details class="method-detail" open>
+  <summary>
+    <div class="summary-left">
+      <span class="chevron">▶</span>
+      <span class="method-name">processOrder()</span>
+    </div>
+    <div class="summary-right">
+      <span class="method-pct" style="color:var(--red)">0% DSC</span>
+      <span class="badge covered">✓ 0</span>
+      <span class="badge missing">✗ 11</span>
+    </div>
+  </summary>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th style="width:60px">ID</th><th>Stub Configuration</th><th>Expected Outcome</th><th style="width:110px">Status</th></tr></thead>
+      <tbody><tr><td><span class="id">S01</span></td><td><div class="stub-line">orderRepository.findById() <span>→ Order(valid)</span></div><div class="stub-line">inventoryService.reserve() <span>→ true</span></div><div class="stub-line">notificationClient.send() <span>→ completes normally</span></div></td><td><span class="outcome">RefundResponse.success</span></td><td><span class="status-missing">✗ MISSING</span></td></tr><tr><td><span class="id">S02</span></td><td><div class="stub-line">orderRepository.findById() <span>→ Order(valid)</span></div><div class="stub-line">inventoryService.reserve() <span>→ true</span></div><div class="stub-line">notificationClient.send() <span>→ RuntimeException</span></div></td><td><span class="outcome">Exception Propagated</span></td><td><span class="status-missing">✗ MISSING</span></td></tr><tr><td><span class="id">S03</span></td><td><div class="stub-line">orderRepository.findById() <span>→ Order(valid)</span></div><div class="stub-line">inventoryService.reserve() <span>→ true</span></div><div class="stub-line">notificationClient.send() <span>→ MUST_BE_CALLED</span></div></td><td><span class="outcome">RefundResponse.success</span></td><td><span class="status-missing">✗ MISSING</span></td></tr><tr><td><span class="id">S04</span></td><td><div class="stub-line">orderRepository.findById() <span>→ Order(valid)</span></div><div class="stub-line">inventoryService.reserve() <span>→ true</span></div><div class="stub-line">notificationClient.send() <span>→ NOT_CALLED</span></div></td><td><span class="outcome">RefundResponse.success</span></td><td><span class="status-missing">✗ MISSING</span></td></tr><tr><td><span class="id">S05</span></td><td><div class="stub-line">orderRepository.findById() <span>→ Order(valid)</span></div><div class="stub-line">inventoryService.reserve() <span>→ false</span></div><div class="stub-line">notificationClient.send() <span>→ completes normally</span></div></td><td><span class="outcome">RefundResponse.failed</span></td><td><span class="status-missing">✗ MISSING</span></td></tr><tr><td><span class="id">S06</span></td><td><div class="stub-line">orderRepository.findById() <span>→ Order(valid)</span></div><div class="stub-line">inventoryService.reserve() <span>→ false</span></div><div class="stub-line">notificationClient.send() <span>→ RuntimeException</span></div></td><td><span class="outcome">RefundResponse.failed</span></td><td><span class="status-missing">✗ MISSING</span></td></tr><tr><td><span class="id">S07</span></td><td><div class="stub-line">orderRepository.findById() <span>→ Order(valid)</span></div><div class="stub-line">inventoryService.reserve() <span>→ false</span></div><div class="stub-line">notificationClient.send() <span>→ MUST_BE_CALLED</span></div></td><td><span class="outcome">RefundResponse.failed</span></td><td><span class="status-missing">✗ MISSING</span></td></tr><tr><td><span class="id">S08</span></td><td><div class="stub-line">orderRepository.findById() <span>→ Order(valid)</span></div><div class="stub-line">inventoryService.reserve() <span>→ false</span></div><div class="stub-line">notificationClient.send() <span>→ NOT_CALLED</span></div></td><td><span class="outcome">RefundResponse.failed</span></td><td><span class="status-missing">✗ MISSING</span></td></tr><tr><td><span class="id">S09</span></td><td><div class="stub-line">orderRepository.findById() <span>→ Order(valid)</span></div><div class="stub-line">inventoryService.reserve() <span>→ RuntimeException</span></div><div class="stub-line">notificationClient.send() <span>→ NOT_CALLED</span></div></td><td><span class="outcome">Exception Propagated</span></td><td><span class="status-missing">✗ MISSING</span></td></tr><tr><td><span class="id">S10</span></td><td><div class="stub-line">orderRepository.findById() <span>→ null</span></div><div class="stub-line">inventoryService.reserve() <span>→ NOT_CALLED</span></div><div class="stub-line">notificationClient.send() <span>→ NOT_CALLED</span></div></td><td><span class="outcome">OrderNotFoundException / NPE risk</span></td><td><span class="status-missing">✗ MISSING</span></td></tr><tr><td><span class="id">S11</span></td><td><div class="stub-line">orderRepository.findById() <span>→ RuntimeException</span></div><div class="stub-line">inventoryService.reserve() <span>→ NOT_CALLED</span></div><div class="stub-line">notificationClient.send() <span>→ NOT_CALLED</span></div></td><td><span class="outcome">Exception Propagated</span></td><td><span class="status-missing">✗ MISSING</span></td></tr></tbody>
+    </table>
   </div>
+</details>
 </div>
-<div class="table-wrap"><table><thead><tr><th style="width:60px">ID</th><th>Stub Configuration</th><th>Expected Outcome</th><th style="width:110px">Status</th></tr></thead><tbody><tr><td><span class="id">S01</span></td><td><div class="stub-line">orderRepository.findById() <span>→ Order(valid)</span></div><div class="stub-line">inventoryService.reserve() <span>→ true</span></div><div class="stub-line">notificationClient.send() <span>→ completes normally</span></div></td><td><span class="outcome">RefundResponse.success</span></td><td><span class="status-missing">✗ MISSING</span></td></tr><tr><td><span class="id">S02</span></td><td><div class="stub-line">orderRepository.findById() <span>→ Order(valid)</span></div><div class="stub-line">inventoryService.reserve() <span>→ true</span></div><div class="stub-line">notificationClient.send() <span>→ RuntimeException</span></div></td><td><span class="outcome">Exception Propagated</span></td><td><span class="status-missing">✗ MISSING</span></td></tr><tr><td><span class="id">S03</span></td><td><div class="stub-line">orderRepository.findById() <span>→ Order(valid)</span></div><div class="stub-line">inventoryService.reserve() <span>→ true</span></div><div class="stub-line">notificationClient.send() <span>→ MUST_BE_CALLED</span></div></td><td><span class="outcome">RefundResponse.success</span></td><td><span class="status-missing">✗ MISSING</span></td></tr><tr><td><span class="id">S04</span></td><td><div class="stub-line">orderRepository.findById() <span>→ Order(valid)</span></div><div class="stub-line">inventoryService.reserve() <span>→ true</span></div><div class="stub-line">notificationClient.send() <span>→ NOT_CALLED</span></div></td><td><span class="outcome">RefundResponse.success</span></td><td><span class="status-missing">✗ MISSING</span></td></tr><tr><td><span class="id">S05</span></td><td><div class="stub-line">orderRepository.findById() <span>→ Order(valid)</span></div><div class="stub-line">inventoryService.reserve() <span>→ false</span></div><div class="stub-line">notificationClient.send() <span>→ completes normally</span></div></td><td><span class="outcome">RefundResponse.failed</span></td><td><span class="status-missing">✗ MISSING</span></td></tr><tr><td><span class="id">S06</span></td><td><div class="stub-line">orderRepository.findById() <span>→ Order(valid)</span></div><div class="stub-line">inventoryService.reserve() <span>→ false</span></div><div class="stub-line">notificationClient.send() <span>→ RuntimeException</span></div></td><td><span class="outcome">RefundResponse.failed</span></td><td><span class="status-missing">✗ MISSING</span></td></tr><tr><td><span class="id">S07</span></td><td><div class="stub-line">orderRepository.findById() <span>→ Order(valid)</span></div><div class="stub-line">inventoryService.reserve() <span>→ false</span></div><div class="stub-line">notificationClient.send() <span>→ MUST_BE_CALLED</span></div></td><td><span class="outcome">RefundResponse.failed</span></td><td><span class="status-missing">✗ MISSING</span></td></tr><tr><td><span class="id">S08</span></td><td><div class="stub-line">orderRepository.findById() <span>→ Order(valid)</span></div><div class="stub-line">inventoryService.reserve() <span>→ false</span></div><div class="stub-line">notificationClient.send() <span>→ NOT_CALLED</span></div></td><td><span class="outcome">RefundResponse.failed</span></td><td><span class="status-missing">✗ MISSING</span></td></tr><tr><td><span class="id">S09</span></td><td><div class="stub-line">orderRepository.findById() <span>→ Order(valid)</span></div><div class="stub-line">inventoryService.reserve() <span>→ RuntimeException</span></div><div class="stub-line">notificationClient.send() <span>→ NOT_CALLED</span></div></td><td><span class="outcome">Exception Propagated</span></td><td><span class="status-missing">✗ MISSING</span></td></tr><tr><td><span class="id">S10</span></td><td><div class="stub-line">orderRepository.findById() <span>→ null</span></div><div class="stub-line">inventoryService.reserve() <span>→ NOT_CALLED</span></div><div class="stub-line">notificationClient.send() <span>→ NOT_CALLED</span></div></td><td><span class="outcome">OrderNotFoundException / NPE risk</span></td><td><span class="status-missing">✗ MISSING</span></td></tr><tr><td><span class="id">S11</span></td><td><div class="stub-line">orderRepository.findById() <span>→ RuntimeException</span></div><div class="stub-line">inventoryService.reserve() <span>→ NOT_CALLED</span></div><div class="stub-line">notificationClient.send() <span>→ NOT_CALLED</span></div></td><td><span class="outcome">Exception Propagated</span></td><td><span class="status-missing">✗ MISSING</span></td></tr></tbody></table></div>
-</div>
-<div id="m-OrderService-cancelOrder" class="method-section">
-<div class="method-header">
-  <span class="method-name">cancelOrder()</span>
-  <div style="display:flex;align-items:center;gap:10px;">
-    <span class="method-pct" style="color:var(--red)">0% DSC</span>
-    <span class="badge covered">✓ 0</span>
-    <span class="badge missing">✗ 9</span>
+<div id="m-com.example.payment.OrderService-cancelOrder" class="method-section">
+<details class="method-detail" open>
+  <summary>
+    <div class="summary-left">
+      <span class="chevron">▶</span>
+      <span class="method-name">cancelOrder()</span>
+    </div>
+    <div class="summary-right">
+      <span class="method-pct" style="color:var(--red)">0% DSC</span>
+      <span class="badge covered">✓ 0</span>
+      <span class="badge missing">✗ 9</span>
+    </div>
+  </summary>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th style="width:60px">ID</th><th>Stub Configuration</th><th>Expected Outcome</th><th style="width:110px">Status</th></tr></thead>
+      <tbody><tr><td><span class="id">S01</span></td><td><div class="stub-line">orderRepository.findById() <span>→ Order(valid)</span></div><div class="stub-line">inventoryService.release() <span>→ completes normally</span></div><div class="stub-line">notificationClient.send() <span>→ completes normally</span></div></td><td><span class="outcome">RefundResponse.success</span></td><td><span class="status-missing">✗ MISSING</span></td></tr><tr><td><span class="id">S02</span></td><td><div class="stub-line">orderRepository.findById() <span>→ Order(valid)</span></div><div class="stub-line">inventoryService.release() <span>→ completes normally</span></div><div class="stub-line">notificationClient.send() <span>→ RuntimeException</span></div></td><td><span class="outcome">Exception Propagated</span></td><td><span class="status-missing">✗ MISSING</span></td></tr><tr><td><span class="id">S03</span></td><td><div class="stub-line">orderRepository.findById() <span>→ Order(valid)</span></div><div class="stub-line">inventoryService.release() <span>→ completes normally</span></div><div class="stub-line">notificationClient.send() <span>→ MUST_BE_CALLED</span></div></td><td><span class="outcome">RefundResponse.success</span></td><td><span class="status-missing">✗ MISSING</span></td></tr><tr><td><span class="id">S04</span></td><td><div class="stub-line">orderRepository.findById() <span>→ Order(valid)</span></div><div class="stub-line">inventoryService.release() <span>→ RuntimeException</span></div><div class="stub-line">notificationClient.send() <span>→ NOT_CALLED</span></div></td><td><span class="outcome">Exception Propagated</span></td><td><span class="status-missing">✗ MISSING</span></td></tr><tr><td><span class="id">S05</span></td><td><div class="stub-line">orderRepository.findById() <span>→ Order(valid)</span></div><div class="stub-line">inventoryService.release() <span>→ MUST_BE_CALLED</span></div><div class="stub-line">notificationClient.send() <span>→ completes normally</span></div></td><td><span class="outcome">RefundResponse.success</span></td><td><span class="status-missing">✗ MISSING</span></td></tr><tr><td><span class="id">S06</span></td><td><div class="stub-line">orderRepository.findById() <span>→ Order(valid)</span></div><div class="stub-line">inventoryService.release() <span>→ MUST_BE_CALLED</span></div><div class="stub-line">notificationClient.send() <span>→ RuntimeException</span></div></td><td><span class="outcome">Exception Propagated</span></td><td><span class="status-missing">✗ MISSING</span></td></tr><tr><td><span class="id">S07</span></td><td><div class="stub-line">orderRepository.findById() <span>→ Order(valid)</span></div><div class="stub-line">inventoryService.release() <span>→ MUST_BE_CALLED</span></div><div class="stub-line">notificationClient.send() <span>→ MUST_BE_CALLED</span></div></td><td><span class="outcome">RefundResponse.success</span></td><td><span class="status-missing">✗ MISSING</span></td></tr><tr><td><span class="id">S08</span></td><td><div class="stub-line">orderRepository.findById() <span>→ null</span></div><div class="stub-line">inventoryService.release() <span>→ NOT_CALLED</span></div><div class="stub-line">notificationClient.send() <span>→ NOT_CALLED</span></div></td><td><span class="outcome">OrderNotFoundException / NPE risk</span></td><td><span class="status-missing">✗ MISSING</span></td></tr><tr><td><span class="id">S09</span></td><td><div class="stub-line">orderRepository.findById() <span>→ RuntimeException</span></div><div class="stub-line">inventoryService.release() <span>→ NOT_CALLED</span></div><div class="stub-line">notificationClient.send() <span>→ NOT_CALLED</span></div></td><td><span class="outcome">Exception Propagated</span></td><td><span class="status-missing">✗ MISSING</span></td></tr></tbody>
+    </table>
   </div>
+</details>
 </div>
-<div class="table-wrap"><table><thead><tr><th style="width:60px">ID</th><th>Stub Configuration</th><th>Expected Outcome</th><th style="width:110px">Status</th></tr></thead><tbody><tr><td><span class="id">S01</span></td><td><div class="stub-line">orderRepository.findById() <span>→ Order(valid)</span></div><div class="stub-line">inventoryService.release() <span>→ completes normally</span></div><div class="stub-line">notificationClient.send() <span>→ completes normally</span></div></td><td><span class="outcome">RefundResponse.success</span></td><td><span class="status-missing">✗ MISSING</span></td></tr><tr><td><span class="id">S02</span></td><td><div class="stub-line">orderRepository.findById() <span>→ Order(valid)</span></div><div class="stub-line">inventoryService.release() <span>→ completes normally</span></div><div class="stub-line">notificationClient.send() <span>→ RuntimeException</span></div></td><td><span class="outcome">Exception Propagated</span></td><td><span class="status-missing">✗ MISSING</span></td></tr><tr><td><span class="id">S03</span></td><td><div class="stub-line">orderRepository.findById() <span>→ Order(valid)</span></div><div class="stub-line">inventoryService.release() <span>→ completes normally</span></div><div class="stub-line">notificationClient.send() <span>→ MUST_BE_CALLED</span></div></td><td><span class="outcome">RefundResponse.success</span></td><td><span class="status-missing">✗ MISSING</span></td></tr><tr><td><span class="id">S04</span></td><td><div class="stub-line">orderRepository.findById() <span>→ Order(valid)</span></div><div class="stub-line">inventoryService.release() <span>→ RuntimeException</span></div><div class="stub-line">notificationClient.send() <span>→ NOT_CALLED</span></div></td><td><span class="outcome">Exception Propagated</span></td><td><span class="status-missing">✗ MISSING</span></td></tr><tr><td><span class="id">S05</span></td><td><div class="stub-line">orderRepository.findById() <span>→ Order(valid)</span></div><div class="stub-line">inventoryService.release() <span>→ MUST_BE_CALLED</span></div><div class="stub-line">notificationClient.send() <span>→ completes normally</span></div></td><td><span class="outcome">RefundResponse.success</span></td><td><span class="status-missing">✗ MISSING</span></td></tr><tr><td><span class="id">S06</span></td><td><div class="stub-line">orderRepository.findById() <span>→ Order(valid)</span></div><div class="stub-line">inventoryService.release() <span>→ MUST_BE_CALLED</span></div><div class="stub-line">notificationClient.send() <span>→ RuntimeException</span></div></td><td><span class="outcome">Exception Propagated</span></td><td><span class="status-missing">✗ MISSING</span></td></tr><tr><td><span class="id">S07</span></td><td><div class="stub-line">orderRepository.findById() <span>→ Order(valid)</span></div><div class="stub-line">inventoryService.release() <span>→ MUST_BE_CALLED</span></div><div class="stub-line">notificationClient.send() <span>→ MUST_BE_CALLED</span></div></td><td><span class="outcome">RefundResponse.success</span></td><td><span class="status-missing">✗ MISSING</span></td></tr><tr><td><span class="id">S08</span></td><td><div class="stub-line">orderRepository.findById() <span>→ null</span></div><div class="stub-line">inventoryService.release() <span>→ NOT_CALLED</span></div><div class="stub-line">notificationClient.send() <span>→ NOT_CALLED</span></div></td><td><span class="outcome">OrderNotFoundException / NPE risk</span></td><td><span class="status-missing">✗ MISSING</span></td></tr><tr><td><span class="id">S09</span></td><td><div class="stub-line">orderRepository.findById() <span>→ RuntimeException</span></div><div class="stub-line">inventoryService.release() <span>→ NOT_CALLED</span></div><div class="stub-line">notificationClient.send() <span>→ NOT_CALLED</span></div></td><td><span class="outcome">Exception Propagated</span></td><td><span class="status-missing">✗ MISSING</span></td></tr></tbody></table></div>
-</div>
-<div id="m-OrderService-checkStatus" class="method-section">
-<div class="method-header">
-  <span class="method-name">checkStatus()</span>
-  <div style="display:flex;align-items:center;gap:10px;">
-    <span class="method-pct" style="color:var(--red)">0% DSC</span>
-    <span class="badge covered">✓ 0</span>
-    <span class="badge missing">✗ 3</span>
+<div id="m-com.example.payment.OrderService-checkStatus" class="method-section">
+<details class="method-detail" open>
+  <summary>
+    <div class="summary-left">
+      <span class="chevron">▶</span>
+      <span class="method-name">checkStatus()</span>
+    </div>
+    <div class="summary-right">
+      <span class="method-pct" style="color:var(--red)">0% DSC</span>
+      <span class="badge covered">✓ 0</span>
+      <span class="badge missing">✗ 3</span>
+    </div>
+  </summary>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th style="width:60px">ID</th><th>Stub Configuration</th><th>Expected Outcome</th><th style="width:110px">Status</th></tr></thead>
+      <tbody><tr><td><span class="id">S01</span></td><td><div class="stub-line">orderRepository.findById() <span>→ Order(valid)</span></div><div class="stub-line">inventoryService.reserve() <span>→ NOT_CALLED</span></div></td><td><span class="outcome">RefundResponse.success</span></td><td><span class="status-missing">✗ MISSING</span></td></tr><tr><td><span class="id">S02</span></td><td><div class="stub-line">orderRepository.findById() <span>→ null</span></div><div class="stub-line">inventoryService.reserve() <span>→ NOT_CALLED</span></div></td><td><span class="outcome">OrderNotFoundException / NPE risk</span></td><td><span class="status-missing">✗ MISSING</span></td></tr><tr><td><span class="id">S03</span></td><td><div class="stub-line">orderRepository.findById() <span>→ RuntimeException</span></div><div class="stub-line">inventoryService.reserve() <span>→ NOT_CALLED</span></div></td><td><span class="outcome">Exception Propagated</span></td><td><span class="status-missing">✗ MISSING</span></td></tr></tbody>
+    </table>
   </div>
+</details>
 </div>
-<div class="table-wrap"><table><thead><tr><th style="width:60px">ID</th><th>Stub Configuration</th><th>Expected Outcome</th><th style="width:110px">Status</th></tr></thead><tbody><tr><td><span class="id">S01</span></td><td><div class="stub-line">orderRepository.findById() <span>→ Order(valid)</span></div><div class="stub-line">inventoryService.reserve() <span>→ NOT_CALLED</span></div></td><td><span class="outcome">RefundResponse.success</span></td><td><span class="status-missing">✗ MISSING</span></td></tr><tr><td><span class="id">S02</span></td><td><div class="stub-line">orderRepository.findById() <span>→ null</span></div><div class="stub-line">inventoryService.reserve() <span>→ NOT_CALLED</span></div></td><td><span class="outcome">OrderNotFoundException / NPE risk</span></td><td><span class="status-missing">✗ MISSING</span></td></tr><tr><td><span class="id">S03</span></td><td><div class="stub-line">orderRepository.findById() <span>→ RuntimeException</span></div><div class="stub-line">inventoryService.reserve() <span>→ NOT_CALLED</span></div></td><td><span class="outcome">Exception Propagated</span></td><td><span class="status-missing">✗ MISSING</span></td></tr></tbody></table></div>
 </div>
-</div>
-<div id="cls-PaymentService" class="class-section">
+<div id="cls-com.example.payment.PaymentService" class="class-section">
 <div class="class-header">
   <div class="class-title-row">
     <span class="class-icon">☕</span>
-    <span class="class-name">PaymentService</span>
+    <div>
+      <div class="class-simple">PaymentService</div>
+      <div class="class-fqn">com.example.payment.PaymentService</div>
+    </div>
     <span class="class-dsc" style="color:var(--yellow)">DSC 27%</span>
   </div>
   <div class="class-stats">
@@ -176,181 +253,341 @@ tr:hover td{background:var(--hover-row);}
     <span class="badge missing">✗ 42 missing</span>
   </div>
 </div>
-<div id="m-PaymentService-success" class="method-section">
-<div class="method-header">
-  <span class="method-name">success()</span>
-  <div style="display:flex;align-items:center;gap:10px;">
-    <span class="method-pct" style="color:var(--green)">100% DSC</span>
-    <span class="badge covered">✓ 1</span>
-    <span class="badge missing">✗ 0</span>
+<div id="m-com.example.payment.PaymentService-success" class="method-section">
+<details class="method-detail">
+  <summary>
+    <div class="summary-left">
+      <span class="chevron">▶</span>
+      <span class="method-name">success()</span>
+    </div>
+    <div class="summary-right">
+      <span class="method-pct" style="color:var(--green)">100% DSC</span>
+      <span class="badge covered">✓ 1</span>
+      <span class="badge missing">✗ 0</span>
+    </div>
+  </summary>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th style="width:60px">ID</th><th>Stub Configuration</th><th>Expected Outcome</th><th style="width:110px">Status</th></tr></thead>
+      <tbody><tr><td><span class="id">S01</span></td><td></td><td><span class="outcome">RefundResponse.success</span></td><td><span class="status-covered">✓ COVERED</span></td></tr></tbody>
+    </table>
   </div>
+</details>
 </div>
-<div class="table-wrap"><table><thead><tr><th style="width:60px">ID</th><th>Stub Configuration</th><th>Expected Outcome</th><th style="width:110px">Status</th></tr></thead><tbody><tr><td><span class="id">S01</span></td><td></td><td><span class="outcome">RefundResponse.success</span></td><td><span class="status-covered">✓ COVERED</span></td></tr></tbody></table></div>
-</div>
-<div id="m-PaymentService-failed" class="method-section">
-<div class="method-header">
-  <span class="method-name">failed()</span>
-  <div style="display:flex;align-items:center;gap:10px;">
-    <span class="method-pct" style="color:var(--green)">100% DSC</span>
-    <span class="badge covered">✓ 1</span>
-    <span class="badge missing">✗ 0</span>
+<div id="m-com.example.payment.PaymentService-failed" class="method-section">
+<details class="method-detail">
+  <summary>
+    <div class="summary-left">
+      <span class="chevron">▶</span>
+      <span class="method-name">failed()</span>
+    </div>
+    <div class="summary-right">
+      <span class="method-pct" style="color:var(--green)">100% DSC</span>
+      <span class="badge covered">✓ 1</span>
+      <span class="badge missing">✗ 0</span>
+    </div>
+  </summary>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th style="width:60px">ID</th><th>Stub Configuration</th><th>Expected Outcome</th><th style="width:110px">Status</th></tr></thead>
+      <tbody><tr><td><span class="id">S01</span></td><td></td><td><span class="outcome">RefundResponse.success</span></td><td><span class="status-covered">✓ COVERED</span></td></tr></tbody>
+    </table>
   </div>
+</details>
 </div>
-<div class="table-wrap"><table><thead><tr><th style="width:60px">ID</th><th>Stub Configuration</th><th>Expected Outcome</th><th style="width:110px">Status</th></tr></thead><tbody><tr><td><span class="id">S01</span></td><td></td><td><span class="outcome">RefundResponse.success</span></td><td><span class="status-covered">✓ COVERED</span></td></tr></tbody></table></div>
-</div>
-<div id="m-PaymentService-getCode" class="method-section">
-<div class="method-header">
-  <span class="method-name">getCode()</span>
-  <div style="display:flex;align-items:center;gap:10px;">
-    <span class="method-pct" style="color:var(--green)">100% DSC</span>
-    <span class="badge covered">✓ 1</span>
-    <span class="badge missing">✗ 0</span>
+<div id="m-com.example.payment.PaymentService-getCode" class="method-section">
+<details class="method-detail">
+  <summary>
+    <div class="summary-left">
+      <span class="chevron">▶</span>
+      <span class="method-name">getCode()</span>
+    </div>
+    <div class="summary-right">
+      <span class="method-pct" style="color:var(--green)">100% DSC</span>
+      <span class="badge covered">✓ 1</span>
+      <span class="badge missing">✗ 0</span>
+    </div>
+  </summary>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th style="width:60px">ID</th><th>Stub Configuration</th><th>Expected Outcome</th><th style="width:110px">Status</th></tr></thead>
+      <tbody><tr><td><span class="id">S01</span></td><td></td><td><span class="outcome">RefundResponse.success</span></td><td><span class="status-covered">✓ COVERED</span></td></tr></tbody>
+    </table>
   </div>
+</details>
 </div>
-<div class="table-wrap"><table><thead><tr><th style="width:60px">ID</th><th>Stub Configuration</th><th>Expected Outcome</th><th style="width:110px">Status</th></tr></thead><tbody><tr><td><span class="id">S01</span></td><td></td><td><span class="outcome">RefundResponse.success</span></td><td><span class="status-covered">✓ COVERED</span></td></tr></tbody></table></div>
-</div>
-<div id="m-PaymentService-from" class="method-section">
-<div class="method-header">
-  <span class="method-name">from()</span>
-  <div style="display:flex;align-items:center;gap:10px;">
-    <span class="method-pct" style="color:var(--green)">100% DSC</span>
-    <span class="badge covered">✓ 1</span>
-    <span class="badge missing">✗ 0</span>
+<div id="m-com.example.payment.PaymentService-from" class="method-section">
+<details class="method-detail">
+  <summary>
+    <div class="summary-left">
+      <span class="chevron">▶</span>
+      <span class="method-name">from()</span>
+    </div>
+    <div class="summary-right">
+      <span class="method-pct" style="color:var(--green)">100% DSC</span>
+      <span class="badge covered">✓ 1</span>
+      <span class="badge missing">✗ 0</span>
+    </div>
+  </summary>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th style="width:60px">ID</th><th>Stub Configuration</th><th>Expected Outcome</th><th style="width:110px">Status</th></tr></thead>
+      <tbody><tr><td><span class="id">S01</span></td><td></td><td><span class="outcome">RefundResponse.success</span></td><td><span class="status-covered">✓ COVERED</span></td></tr></tbody>
+    </table>
   </div>
+</details>
 </div>
-<div class="table-wrap"><table><thead><tr><th style="width:60px">ID</th><th>Stub Configuration</th><th>Expected Outcome</th><th style="width:110px">Status</th></tr></thead><tbody><tr><td><span class="id">S01</span></td><td></td><td><span class="outcome">RefundResponse.success</span></td><td><span class="status-covered">✓ COVERED</span></td></tr></tbody></table></div>
-</div>
-<div id="m-PaymentService-findById" class="method-section">
-<div class="method-header">
-  <span class="method-name">findById()</span>
-  <div style="display:flex;align-items:center;gap:10px;">
-    <span class="method-pct" style="color:var(--green)">100% DSC</span>
-    <span class="badge covered">✓ 1</span>
-    <span class="badge missing">✗ 0</span>
+<div id="m-com.example.payment.PaymentService-findById" class="method-section">
+<details class="method-detail">
+  <summary>
+    <div class="summary-left">
+      <span class="chevron">▶</span>
+      <span class="method-name">findById()</span>
+    </div>
+    <div class="summary-right">
+      <span class="method-pct" style="color:var(--green)">100% DSC</span>
+      <span class="badge covered">✓ 1</span>
+      <span class="badge missing">✗ 0</span>
+    </div>
+  </summary>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th style="width:60px">ID</th><th>Stub Configuration</th><th>Expected Outcome</th><th style="width:110px">Status</th></tr></thead>
+      <tbody><tr><td><span class="id">S01</span></td><td></td><td><span class="outcome">RefundResponse.success</span></td><td><span class="status-covered">✓ COVERED</span></td></tr></tbody>
+    </table>
   </div>
+</details>
 </div>
-<div class="table-wrap"><table><thead><tr><th style="width:60px">ID</th><th>Stub Configuration</th><th>Expected Outcome</th><th style="width:110px">Status</th></tr></thead><tbody><tr><td><span class="id">S01</span></td><td></td><td><span class="outcome">RefundResponse.success</span></td><td><span class="status-covered">✓ COVERED</span></td></tr></tbody></table></div>
-</div>
-<div id="m-PaymentService-refund" class="method-section">
-<div class="method-header">
-  <span class="method-name">refund()</span>
-  <div style="display:flex;align-items:center;gap:10px;">
-    <span class="method-pct" style="color:var(--green)">100% DSC</span>
-    <span class="badge covered">✓ 1</span>
-    <span class="badge missing">✗ 0</span>
+<div id="m-com.example.payment.PaymentService-refund" class="method-section">
+<details class="method-detail">
+  <summary>
+    <div class="summary-left">
+      <span class="chevron">▶</span>
+      <span class="method-name">refund()</span>
+    </div>
+    <div class="summary-right">
+      <span class="method-pct" style="color:var(--green)">100% DSC</span>
+      <span class="badge covered">✓ 1</span>
+      <span class="badge missing">✗ 0</span>
+    </div>
+  </summary>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th style="width:60px">ID</th><th>Stub Configuration</th><th>Expected Outcome</th><th style="width:110px">Status</th></tr></thead>
+      <tbody><tr><td><span class="id">S01</span></td><td></td><td><span class="outcome">RefundResponse.success</span></td><td><span class="status-covered">✓ COVERED</span></td></tr></tbody>
+    </table>
   </div>
+</details>
 </div>
-<div class="table-wrap"><table><thead><tr><th style="width:60px">ID</th><th>Stub Configuration</th><th>Expected Outcome</th><th style="width:110px">Status</th></tr></thead><tbody><tr><td><span class="id">S01</span></td><td></td><td><span class="outcome">RefundResponse.success</span></td><td><span class="status-covered">✓ COVERED</span></td></tr></tbody></table></div>
-</div>
-<div id="m-PaymentService-transfer" class="method-section">
-<div class="method-header">
-  <span class="method-name">transfer()</span>
-  <div style="display:flex;align-items:center;gap:10px;">
-    <span class="method-pct" style="color:var(--green)">100% DSC</span>
-    <span class="badge covered">✓ 1</span>
-    <span class="badge missing">✗ 0</span>
+<div id="m-com.example.payment.PaymentService-transfer" class="method-section">
+<details class="method-detail">
+  <summary>
+    <div class="summary-left">
+      <span class="chevron">▶</span>
+      <span class="method-name">transfer()</span>
+    </div>
+    <div class="summary-right">
+      <span class="method-pct" style="color:var(--green)">100% DSC</span>
+      <span class="badge covered">✓ 1</span>
+      <span class="badge missing">✗ 0</span>
+    </div>
+  </summary>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th style="width:60px">ID</th><th>Stub Configuration</th><th>Expected Outcome</th><th style="width:110px">Status</th></tr></thead>
+      <tbody><tr><td><span class="id">S01</span></td><td></td><td><span class="outcome">RefundResponse.success</span></td><td><span class="status-covered">✓ COVERED</span></td></tr></tbody>
+    </table>
   </div>
+</details>
 </div>
-<div class="table-wrap"><table><thead><tr><th style="width:60px">ID</th><th>Stub Configuration</th><th>Expected Outcome</th><th style="width:110px">Status</th></tr></thead><tbody><tr><td><span class="id">S01</span></td><td></td><td><span class="outcome">RefundResponse.success</span></td><td><span class="status-covered">✓ COVERED</span></td></tr></tbody></table></div>
-</div>
-<div id="m-PaymentService-publish" class="method-section">
-<div class="method-header">
-  <span class="method-name">publish()</span>
-  <div style="display:flex;align-items:center;gap:10px;">
-    <span class="method-pct" style="color:var(--green)">100% DSC</span>
-    <span class="badge covered">✓ 1</span>
-    <span class="badge missing">✗ 0</span>
+<div id="m-com.example.payment.PaymentService-publish" class="method-section">
+<details class="method-detail">
+  <summary>
+    <div class="summary-left">
+      <span class="chevron">▶</span>
+      <span class="method-name">publish()</span>
+    </div>
+    <div class="summary-right">
+      <span class="method-pct" style="color:var(--green)">100% DSC</span>
+      <span class="badge covered">✓ 1</span>
+      <span class="badge missing">✗ 0</span>
+    </div>
+  </summary>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th style="width:60px">ID</th><th>Stub Configuration</th><th>Expected Outcome</th><th style="width:110px">Status</th></tr></thead>
+      <tbody><tr><td><span class="id">S01</span></td><td></td><td><span class="outcome">RefundResponse.success</span></td><td><span class="status-covered">✓ COVERED</span></td></tr></tbody>
+    </table>
   </div>
+</details>
 </div>
-<div class="table-wrap"><table><thead><tr><th style="width:60px">ID</th><th>Stub Configuration</th><th>Expected Outcome</th><th style="width:110px">Status</th></tr></thead><tbody><tr><td><span class="id">S01</span></td><td></td><td><span class="outcome">RefundResponse.success</span></td><td><span class="status-covered">✓ COVERED</span></td></tr></tbody></table></div>
-</div>
-<div id="m-PaymentService-log" class="method-section">
-<div class="method-header">
-  <span class="method-name">log()</span>
-  <div style="display:flex;align-items:center;gap:10px;">
-    <span class="method-pct" style="color:var(--green)">100% DSC</span>
-    <span class="badge covered">✓ 1</span>
-    <span class="badge missing">✗ 0</span>
+<div id="m-com.example.payment.PaymentService-log" class="method-section">
+<details class="method-detail">
+  <summary>
+    <div class="summary-left">
+      <span class="chevron">▶</span>
+      <span class="method-name">log()</span>
+    </div>
+    <div class="summary-right">
+      <span class="method-pct" style="color:var(--green)">100% DSC</span>
+      <span class="badge covered">✓ 1</span>
+      <span class="badge missing">✗ 0</span>
+    </div>
+  </summary>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th style="width:60px">ID</th><th>Stub Configuration</th><th>Expected Outcome</th><th style="width:110px">Status</th></tr></thead>
+      <tbody><tr><td><span class="id">S01</span></td><td></td><td><span class="outcome">RefundResponse.success</span></td><td><span class="status-covered">✓ COVERED</span></td></tr></tbody>
+    </table>
   </div>
+</details>
 </div>
-<div class="table-wrap"><table><thead><tr><th style="width:60px">ID</th><th>Stub Configuration</th><th>Expected Outcome</th><th style="width:110px">Status</th></tr></thead><tbody><tr><td><span class="id">S01</span></td><td></td><td><span class="outcome">RefundResponse.success</span></td><td><span class="status-covered">✓ COVERED</span></td></tr></tbody></table></div>
-</div>
-<div id="m-PaymentService-getPremiumPolicy" class="method-section">
-<div class="method-header">
-  <span class="method-name">getPremiumPolicy()</span>
-  <div style="display:flex;align-items:center;gap:10px;">
-    <span class="method-pct" style="color:var(--green)">100% DSC</span>
-    <span class="badge covered">✓ 1</span>
-    <span class="badge missing">✗ 0</span>
+<div id="m-com.example.payment.PaymentService-getPremiumPolicy" class="method-section">
+<details class="method-detail">
+  <summary>
+    <div class="summary-left">
+      <span class="chevron">▶</span>
+      <span class="method-name">getPremiumPolicy()</span>
+    </div>
+    <div class="summary-right">
+      <span class="method-pct" style="color:var(--green)">100% DSC</span>
+      <span class="badge covered">✓ 1</span>
+      <span class="badge missing">✗ 0</span>
+    </div>
+  </summary>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th style="width:60px">ID</th><th>Stub Configuration</th><th>Expected Outcome</th><th style="width:110px">Status</th></tr></thead>
+      <tbody><tr><td><span class="id">S01</span></td><td></td><td><span class="outcome">RefundResponse.success</span></td><td><span class="status-covered">✓ COVERED</span></td></tr></tbody>
+    </table>
   </div>
+</details>
 </div>
-<div class="table-wrap"><table><thead><tr><th style="width:60px">ID</th><th>Stub Configuration</th><th>Expected Outcome</th><th style="width:110px">Status</th></tr></thead><tbody><tr><td><span class="id">S01</span></td><td></td><td><span class="outcome">RefundResponse.success</span></td><td><span class="status-covered">✓ COVERED</span></td></tr></tbody></table></div>
-</div>
-<div id="m-PaymentService-getStandardPolicy" class="method-section">
-<div class="method-header">
-  <span class="method-name">getStandardPolicy()</span>
-  <div style="display:flex;align-items:center;gap:10px;">
-    <span class="method-pct" style="color:var(--green)">100% DSC</span>
-    <span class="badge covered">✓ 1</span>
-    <span class="badge missing">✗ 0</span>
+<div id="m-com.example.payment.PaymentService-getStandardPolicy" class="method-section">
+<details class="method-detail">
+  <summary>
+    <div class="summary-left">
+      <span class="chevron">▶</span>
+      <span class="method-name">getStandardPolicy()</span>
+    </div>
+    <div class="summary-right">
+      <span class="method-pct" style="color:var(--green)">100% DSC</span>
+      <span class="badge covered">✓ 1</span>
+      <span class="badge missing">✗ 0</span>
+    </div>
+  </summary>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th style="width:60px">ID</th><th>Stub Configuration</th><th>Expected Outcome</th><th style="width:110px">Status</th></tr></thead>
+      <tbody><tr><td><span class="id">S01</span></td><td></td><td><span class="outcome">RefundResponse.success</span></td><td><span class="status-covered">✓ COVERED</span></td></tr></tbody>
+    </table>
   </div>
+</details>
 </div>
-<div class="table-wrap"><table><thead><tr><th style="width:60px">ID</th><th>Stub Configuration</th><th>Expected Outcome</th><th style="width:110px">Status</th></tr></thead><tbody><tr><td><span class="id">S01</span></td><td></td><td><span class="outcome">RefundResponse.success</span></td><td><span class="status-covered">✓ COVERED</span></td></tr></tbody></table></div>
-</div>
-<div id="m-PaymentService-processRefund" class="method-section">
-<div class="method-header">
-  <span class="method-name">processRefund()</span>
-  <div style="display:flex;align-items:center;gap:10px;">
-    <span class="method-pct" style="color:var(--yellow)">8% DSC</span>
-    <span class="badge covered">✓ 1</span>
-    <span class="badge missing">✗ 11</span>
+<div id="m-com.example.payment.PaymentService-processRefund" class="method-section">
+<details class="method-detail" open>
+  <summary>
+    <div class="summary-left">
+      <span class="chevron">▶</span>
+      <span class="method-name">processRefund()</span>
+    </div>
+    <div class="summary-right">
+      <span class="method-pct" style="color:var(--yellow)">8% DSC</span>
+      <span class="badge covered">✓ 1</span>
+      <span class="badge missing">✗ 11</span>
+    </div>
+  </summary>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th style="width:60px">ID</th><th>Stub Configuration</th><th>Expected Outcome</th><th style="width:110px">Status</th></tr></thead>
+      <tbody><tr><td><span class="id">S01</span></td><td><div class="stub-line">orderRepository.findById() <span>→ Order(valid)</span></div><div class="stub-line">paymentClient.refund() <span>→ PaymentResponse(valid)</span></div><div class="stub-line">eventPublisher.publish() <span>→ completes normally</span></div></td><td><span class="outcome">RefundResponse.success</span></td><td><span class="status-covered">✓ COVERED</span></td></tr><tr><td><span class="id">S02</span></td><td><div class="stub-line">orderRepository.findById() <span>→ Order(valid)</span></div><div class="stub-line">paymentClient.refund() <span>→ PaymentResponse(valid)</span></div><div class="stub-line">eventPublisher.publish() <span>→ RuntimeException</span></div></td><td><span class="outcome">Exception Propagated</span></td><td><span class="status-missing">✗ MISSING</span></td></tr><tr><td><span class="id">S03</span></td><td><div class="stub-line">orderRepository.findById() <span>→ Order(valid)</span></div><div class="stub-line">paymentClient.refund() <span>→ PaymentResponse(valid)</span></div><div class="stub-line">eventPublisher.publish() <span>→ MUST_BE_CALLED</span></div></td><td><span class="outcome">RefundResponse.success</span></td><td><span class="status-missing">✗ MISSING</span></td></tr><tr><td><span class="id">S04</span></td><td><div class="stub-line">orderRepository.findById() <span>→ Order(valid)</span></div><div class="stub-line">paymentClient.refund() <span>→ PaymentResponse(valid)</span></div><div class="stub-line">eventPublisher.publish() <span>→ NOT_CALLED</span></div></td><td><span class="outcome">RefundResponse.success</span></td><td><span class="status-missing">✗ MISSING</span></td></tr><tr><td><span class="id">S05</span></td><td><div class="stub-line">orderRepository.findById() <span>→ Order(valid)</span></div><div class="stub-line">paymentClient.refund() <span>→ null</span></div><div class="stub-line">eventPublisher.publish() <span>→ completes normally</span></div></td><td><span class="outcome">OrderNotFoundException / NPE risk</span></td><td><span class="status-missing">✗ MISSING</span></td></tr><tr><td><span class="id">S06</span></td><td><div class="stub-line">orderRepository.findById() <span>→ Order(valid)</span></div><div class="stub-line">paymentClient.refund() <span>→ null</span></div><div class="stub-line">eventPublisher.publish() <span>→ RuntimeException</span></div></td><td><span class="outcome">OrderNotFoundException / NPE risk</span></td><td><span class="status-missing">✗ MISSING</span></td></tr><tr><td><span class="id">S07</span></td><td><div class="stub-line">orderRepository.findById() <span>→ Order(valid)</span></div><div class="stub-line">paymentClient.refund() <span>→ null</span></div><div class="stub-line">eventPublisher.publish() <span>→ MUST_BE_CALLED</span></div></td><td><span class="outcome">OrderNotFoundException / NPE risk</span></td><td><span class="status-missing">✗ MISSING</span></td></tr><tr><td><span class="id">S08</span></td><td><div class="stub-line">orderRepository.findById() <span>→ Order(valid)</span></div><div class="stub-line">paymentClient.refund() <span>→ null</span></div><div class="stub-line">eventPublisher.publish() <span>→ NOT_CALLED</span></div></td><td><span class="outcome">OrderNotFoundException / NPE risk</span></td><td><span class="status-missing">✗ MISSING</span></td></tr><tr><td><span class="id">S09</span></td><td><div class="stub-line">orderRepository.findById() <span>→ Order(valid)</span></div><div class="stub-line">paymentClient.refund() <span>→ RuntimeException</span></div><div class="stub-line">eventPublisher.publish() <span>→ NOT_CALLED</span></div></td><td><span class="outcome">Exception Propagated</span></td><td><span class="status-missing">✗ MISSING</span></td></tr><tr><td><span class="id">S10</span></td><td><div class="stub-line">orderRepository.findById() <span>→ Order(valid)</span></div><div class="stub-line">paymentClient.refund() <span>→ NOT_CALLED</span></div><div class="stub-line">eventPublisher.publish() <span>→ NOT_CALLED</span></div></td><td><span class="outcome">RefundResponse.success</span></td><td><span class="status-missing">✗ MISSING</span></td></tr><tr><td><span class="id">S11</span></td><td><div class="stub-line">orderRepository.findById() <span>→ null</span></div><div class="stub-line">paymentClient.refund() <span>→ NOT_CALLED</span></div><div class="stub-line">eventPublisher.publish() <span>→ NOT_CALLED</span></div></td><td><span class="outcome">OrderNotFoundException / NPE risk</span></td><td><span class="status-missing">✗ MISSING</span></td></tr><tr><td><span class="id">S12</span></td><td><div class="stub-line">orderRepository.findById() <span>→ RuntimeException</span></div><div class="stub-line">paymentClient.refund() <span>→ NOT_CALLED</span></div><div class="stub-line">eventPublisher.publish() <span>→ NOT_CALLED</span></div></td><td><span class="outcome">Exception Propagated</span></td><td><span class="status-missing">✗ MISSING</span></td></tr></tbody>
+    </table>
   </div>
+</details>
 </div>
-<div class="table-wrap"><table><thead><tr><th style="width:60px">ID</th><th>Stub Configuration</th><th>Expected Outcome</th><th style="width:110px">Status</th></tr></thead><tbody><tr><td><span class="id">S01</span></td><td><div class="stub-line">orderRepository.findById() <span>→ Order(valid)</span></div><div class="stub-line">paymentClient.refund() <span>→ PaymentResponse(valid)</span></div><div class="stub-line">eventPublisher.publish() <span>→ completes normally</span></div></td><td><span class="outcome">RefundResponse.success</span></td><td><span class="status-covered">✓ COVERED</span></td></tr><tr><td><span class="id">S02</span></td><td><div class="stub-line">orderRepository.findById() <span>→ Order(valid)</span></div><div class="stub-line">paymentClient.refund() <span>→ PaymentResponse(valid)</span></div><div class="stub-line">eventPublisher.publish() <span>→ RuntimeException</span></div></td><td><span class="outcome">Exception Propagated</span></td><td><span class="status-missing">✗ MISSING</span></td></tr><tr><td><span class="id">S03</span></td><td><div class="stub-line">orderRepository.findById() <span>→ Order(valid)</span></div><div class="stub-line">paymentClient.refund() <span>→ PaymentResponse(valid)</span></div><div class="stub-line">eventPublisher.publish() <span>→ MUST_BE_CALLED</span></div></td><td><span class="outcome">RefundResponse.success</span></td><td><span class="status-missing">✗ MISSING</span></td></tr><tr><td><span class="id">S04</span></td><td><div class="stub-line">orderRepository.findById() <span>→ Order(valid)</span></div><div class="stub-line">paymentClient.refund() <span>→ PaymentResponse(valid)</span></div><div class="stub-line">eventPublisher.publish() <span>→ NOT_CALLED</span></div></td><td><span class="outcome">RefundResponse.success</span></td><td><span class="status-missing">✗ MISSING</span></td></tr><tr><td><span class="id">S05</span></td><td><div class="stub-line">orderRepository.findById() <span>→ Order(valid)</span></div><div class="stub-line">paymentClient.refund() <span>→ null</span></div><div class="stub-line">eventPublisher.publish() <span>→ completes normally</span></div></td><td><span class="outcome">OrderNotFoundException / NPE risk</span></td><td><span class="status-missing">✗ MISSING</span></td></tr><tr><td><span class="id">S06</span></td><td><div class="stub-line">orderRepository.findById() <span>→ Order(valid)</span></div><div class="stub-line">paymentClient.refund() <span>→ null</span></div><div class="stub-line">eventPublisher.publish() <span>→ RuntimeException</span></div></td><td><span class="outcome">OrderNotFoundException / NPE risk</span></td><td><span class="status-missing">✗ MISSING</span></td></tr><tr><td><span class="id">S07</span></td><td><div class="stub-line">orderRepository.findById() <span>→ Order(valid)</span></div><div class="stub-line">paymentClient.refund() <span>→ null</span></div><div class="stub-line">eventPublisher.publish() <span>→ MUST_BE_CALLED</span></div></td><td><span class="outcome">OrderNotFoundException / NPE risk</span></td><td><span class="status-missing">✗ MISSING</span></td></tr><tr><td><span class="id">S08</span></td><td><div class="stub-line">orderRepository.findById() <span>→ Order(valid)</span></div><div class="stub-line">paymentClient.refund() <span>→ null</span></div><div class="stub-line">eventPublisher.publish() <span>→ NOT_CALLED</span></div></td><td><span class="outcome">OrderNotFoundException / NPE risk</span></td><td><span class="status-missing">✗ MISSING</span></td></tr><tr><td><span class="id">S09</span></td><td><div class="stub-line">orderRepository.findById() <span>→ Order(valid)</span></div><div class="stub-line">paymentClient.refund() <span>→ RuntimeException</span></div><div class="stub-line">eventPublisher.publish() <span>→ NOT_CALLED</span></div></td><td><span class="outcome">Exception Propagated</span></td><td><span class="status-missing">✗ MISSING</span></td></tr><tr><td><span class="id">S10</span></td><td><div class="stub-line">orderRepository.findById() <span>→ Order(valid)</span></div><div class="stub-line">paymentClient.refund() <span>→ NOT_CALLED</span></div><div class="stub-line">eventPublisher.publish() <span>→ NOT_CALLED</span></div></td><td><span class="outcome">RefundResponse.success</span></td><td><span class="status-missing">✗ MISSING</span></td></tr><tr><td><span class="id">S11</span></td><td><div class="stub-line">orderRepository.findById() <span>→ null</span></div><div class="stub-line">paymentClient.refund() <span>→ NOT_CALLED</span></div><div class="stub-line">eventPublisher.publish() <span>→ NOT_CALLED</span></div></td><td><span class="outcome">OrderNotFoundException / NPE risk</span></td><td><span class="status-missing">✗ MISSING</span></td></tr><tr><td><span class="id">S12</span></td><td><div class="stub-line">orderRepository.findById() <span>→ RuntimeException</span></div><div class="stub-line">paymentClient.refund() <span>→ NOT_CALLED</span></div><div class="stub-line">eventPublisher.publish() <span>→ NOT_CALLED</span></div></td><td><span class="outcome">Exception Propagated</span></td><td><span class="status-missing">✗ MISSING</span></td></tr></tbody></table></div>
-</div>
-<div id="m-PaymentService-processRefundWithRetry" class="method-section">
-<div class="method-header">
-  <span class="method-name">processRefundWithRetry()</span>
-  <div style="display:flex;align-items:center;gap:10px;">
-    <span class="method-pct" style="color:var(--yellow)">7% DSC</span>
-    <span class="badge covered">✓ 1</span>
-    <span class="badge missing">✗ 13</span>
+<div id="m-com.example.payment.PaymentService-processRefundWithRetry" class="method-section">
+<details class="method-detail" open>
+  <summary>
+    <div class="summary-left">
+      <span class="chevron">▶</span>
+      <span class="method-name">processRefundWithRetry()</span>
+    </div>
+    <div class="summary-right">
+      <span class="method-pct" style="color:var(--yellow)">7% DSC</span>
+      <span class="badge covered">✓ 1</span>
+      <span class="badge missing">✗ 13</span>
+    </div>
+  </summary>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th style="width:60px">ID</th><th>Stub Configuration</th><th>Expected Outcome</th><th style="width:110px">Status</th></tr></thead>
+      <tbody><tr><td><span class="id">S01</span></td><td><div class="stub-line">orderRepository.findById() <span>→ Order(valid)</span></div><div class="stub-line">paymentClient.refund() <span>→ PaymentResponse(valid)</span></div><div class="stub-line">auditLogger.log() <span>→ completes normally</span></div></td><td><span class="outcome">RefundResponse.success</span></td><td><span class="status-covered">✓ COVERED</span></td></tr><tr><td><span class="id">S02</span></td><td><div class="stub-line">orderRepository.findById() <span>→ Order(valid)</span></div><div class="stub-line">paymentClient.refund() <span>→ PaymentResponse(valid)</span></div><div class="stub-line">auditLogger.log() <span>→ RuntimeException</span></div></td><td><span class="outcome">Exception Propagated</span></td><td><span class="status-missing">✗ MISSING</span></td></tr><tr><td><span class="id">S03</span></td><td><div class="stub-line">orderRepository.findById() <span>→ Order(valid)</span></div><div class="stub-line">paymentClient.refund() <span>→ PaymentResponse(valid)</span></div><div class="stub-line">auditLogger.log() <span>→ MUST_BE_CALLED</span></div></td><td><span class="outcome">RefundResponse.success</span></td><td><span class="status-missing">✗ MISSING</span></td></tr><tr><td><span class="id">S04</span></td><td><div class="stub-line">orderRepository.findById() <span>→ Order(valid)</span></div><div class="stub-line">paymentClient.refund() <span>→ PaymentResponse(valid)</span></div><div class="stub-line">auditLogger.log() <span>→ NOT_CALLED</span></div></td><td><span class="outcome">RefundResponse.success</span></td><td><span class="status-missing">✗ MISSING</span></td></tr><tr><td><span class="id">S05</span></td><td><div class="stub-line">orderRepository.findById() <span>→ Order(valid)</span></div><div class="stub-line">paymentClient.refund() <span>→ null</span></div><div class="stub-line">auditLogger.log() <span>→ completes normally</span></div></td><td><span class="outcome">OrderNotFoundException / NPE risk</span></td><td><span class="status-missing">✗ MISSING</span></td></tr><tr><td><span class="id">S06</span></td><td><div class="stub-line">orderRepository.findById() <span>→ Order(valid)</span></div><div class="stub-line">paymentClient.refund() <span>→ null</span></div><div class="stub-line">auditLogger.log() <span>→ RuntimeException</span></div></td><td><span class="outcome">OrderNotFoundException / NPE risk</span></td><td><span class="status-missing">✗ MISSING</span></td></tr><tr><td><span class="id">S07</span></td><td><div class="stub-line">orderRepository.findById() <span>→ Order(valid)</span></div><div class="stub-line">paymentClient.refund() <span>→ null</span></div><div class="stub-line">auditLogger.log() <span>→ MUST_BE_CALLED</span></div></td><td><span class="outcome">OrderNotFoundException / NPE risk</span></td><td><span class="status-missing">✗ MISSING</span></td></tr><tr><td><span class="id">S08</span></td><td><div class="stub-line">orderRepository.findById() <span>→ Order(valid)</span></div><div class="stub-line">paymentClient.refund() <span>→ null</span></div><div class="stub-line">auditLogger.log() <span>→ NOT_CALLED</span></div></td><td><span class="outcome">OrderNotFoundException / NPE risk</span></td><td><span class="status-missing">✗ MISSING</span></td></tr><tr><td><span class="id">S09</span></td><td><div class="stub-line">orderRepository.findById() <span>→ Order(valid)</span></div><div class="stub-line">paymentClient.refund() <span>→ RuntimeException</span></div><div class="stub-line">auditLogger.log() <span>→ completes normally</span></div></td><td><span class="outcome">Exception Propagated</span></td><td><span class="status-missing">✗ MISSING</span></td></tr><tr><td><span class="id">S10</span></td><td><div class="stub-line">orderRepository.findById() <span>→ Order(valid)</span></div><div class="stub-line">paymentClient.refund() <span>→ RuntimeException</span></div><div class="stub-line">auditLogger.log() <span>→ RuntimeException</span></div></td><td><span class="outcome">Exception Propagated</span></td><td><span class="status-missing">✗ MISSING</span></td></tr><tr><td><span class="id">S11</span></td><td><div class="stub-line">orderRepository.findById() <span>→ Order(valid)</span></div><div class="stub-line">paymentClient.refund() <span>→ RuntimeException</span></div><div class="stub-line">auditLogger.log() <span>→ MUST_BE_CALLED</span></div></td><td><span class="outcome">Exception Propagated</span></td><td><span class="status-missing">✗ MISSING</span></td></tr><tr><td><span class="id">S12</span></td><td><div class="stub-line">orderRepository.findById() <span>→ Order(valid)</span></div><div class="stub-line">paymentClient.refund() <span>→ NOT_CALLED</span></div><div class="stub-line">auditLogger.log() <span>→ NOT_CALLED</span></div></td><td><span class="outcome">RefundResponse.success</span></td><td><span class="status-missing">✗ MISSING</span></td></tr><tr><td><span class="id">S13</span></td><td><div class="stub-line">orderRepository.findById() <span>→ null</span></div><div class="stub-line">paymentClient.refund() <span>→ NOT_CALLED</span></div><div class="stub-line">auditLogger.log() <span>→ NOT_CALLED</span></div></td><td><span class="outcome">OrderNotFoundException / NPE risk</span></td><td><span class="status-missing">✗ MISSING</span></td></tr><tr><td><span class="id">S14</span></td><td><div class="stub-line">orderRepository.findById() <span>→ RuntimeException</span></div><div class="stub-line">paymentClient.refund() <span>→ NOT_CALLED</span></div><div class="stub-line">auditLogger.log() <span>→ NOT_CALLED</span></div></td><td><span class="outcome">Exception Propagated</span></td><td><span class="status-missing">✗ MISSING</span></td></tr></tbody>
+    </table>
   </div>
+</details>
 </div>
-<div class="table-wrap"><table><thead><tr><th style="width:60px">ID</th><th>Stub Configuration</th><th>Expected Outcome</th><th style="width:110px">Status</th></tr></thead><tbody><tr><td><span class="id">S01</span></td><td><div class="stub-line">orderRepository.findById() <span>→ Order(valid)</span></div><div class="stub-line">paymentClient.refund() <span>→ PaymentResponse(valid)</span></div><div class="stub-line">auditLogger.log() <span>→ completes normally</span></div></td><td><span class="outcome">RefundResponse.success</span></td><td><span class="status-covered">✓ COVERED</span></td></tr><tr><td><span class="id">S02</span></td><td><div class="stub-line">orderRepository.findById() <span>→ Order(valid)</span></div><div class="stub-line">paymentClient.refund() <span>→ PaymentResponse(valid)</span></div><div class="stub-line">auditLogger.log() <span>→ RuntimeException</span></div></td><td><span class="outcome">Exception Propagated</span></td><td><span class="status-missing">✗ MISSING</span></td></tr><tr><td><span class="id">S03</span></td><td><div class="stub-line">orderRepository.findById() <span>→ Order(valid)</span></div><div class="stub-line">paymentClient.refund() <span>→ PaymentResponse(valid)</span></div><div class="stub-line">auditLogger.log() <span>→ MUST_BE_CALLED</span></div></td><td><span class="outcome">RefundResponse.success</span></td><td><span class="status-missing">✗ MISSING</span></td></tr><tr><td><span class="id">S04</span></td><td><div class="stub-line">orderRepository.findById() <span>→ Order(valid)</span></div><div class="stub-line">paymentClient.refund() <span>→ PaymentResponse(valid)</span></div><div class="stub-line">auditLogger.log() <span>→ NOT_CALLED</span></div></td><td><span class="outcome">RefundResponse.success</span></td><td><span class="status-missing">✗ MISSING</span></td></tr><tr><td><span class="id">S05</span></td><td><div class="stub-line">orderRepository.findById() <span>→ Order(valid)</span></div><div class="stub-line">paymentClient.refund() <span>→ null</span></div><div class="stub-line">auditLogger.log() <span>→ completes normally</span></div></td><td><span class="outcome">OrderNotFoundException / NPE risk</span></td><td><span class="status-missing">✗ MISSING</span></td></tr><tr><td><span class="id">S06</span></td><td><div class="stub-line">orderRepository.findById() <span>→ Order(valid)</span></div><div class="stub-line">paymentClient.refund() <span>→ null</span></div><div class="stub-line">auditLogger.log() <span>→ RuntimeException</span></div></td><td><span class="outcome">OrderNotFoundException / NPE risk</span></td><td><span class="status-missing">✗ MISSING</span></td></tr><tr><td><span class="id">S07</span></td><td><div class="stub-line">orderRepository.findById() <span>→ Order(valid)</span></div><div class="stub-line">paymentClient.refund() <span>→ null</span></div><div class="stub-line">auditLogger.log() <span>→ MUST_BE_CALLED</span></div></td><td><span class="outcome">OrderNotFoundException / NPE risk</span></td><td><span class="status-missing">✗ MISSING</span></td></tr><tr><td><span class="id">S08</span></td><td><div class="stub-line">orderRepository.findById() <span>→ Order(valid)</span></div><div class="stub-line">paymentClient.refund() <span>→ null</span></div><div class="stub-line">auditLogger.log() <span>→ NOT_CALLED</span></div></td><td><span class="outcome">OrderNotFoundException / NPE risk</span></td><td><span class="status-missing">✗ MISSING</span></td></tr><tr><td><span class="id">S09</span></td><td><div class="stub-line">orderRepository.findById() <span>→ Order(valid)</span></div><div class="stub-line">paymentClient.refund() <span>→ RuntimeException</span></div><div class="stub-line">auditLogger.log() <span>→ completes normally</span></div></td><td><span class="outcome">Exception Propagated</span></td><td><span class="status-missing">✗ MISSING</span></td></tr><tr><td><span class="id">S10</span></td><td><div class="stub-line">orderRepository.findById() <span>→ Order(valid)</span></div><div class="stub-line">paymentClient.refund() <span>→ RuntimeException</span></div><div class="stub-line">auditLogger.log() <span>→ RuntimeException</span></div></td><td><span class="outcome">Exception Propagated</span></td><td><span class="status-missing">✗ MISSING</span></td></tr><tr><td><span class="id">S11</span></td><td><div class="stub-line">orderRepository.findById() <span>→ Order(valid)</span></div><div class="stub-line">paymentClient.refund() <span>→ RuntimeException</span></div><div class="stub-line">auditLogger.log() <span>→ MUST_BE_CALLED</span></div></td><td><span class="outcome">Exception Propagated</span></td><td><span class="status-missing">✗ MISSING</span></td></tr><tr><td><span class="id">S12</span></td><td><div class="stub-line">orderRepository.findById() <span>→ Order(valid)</span></div><div class="stub-line">paymentClient.refund() <span>→ NOT_CALLED</span></div><div class="stub-line">auditLogger.log() <span>→ NOT_CALLED</span></div></td><td><span class="outcome">RefundResponse.success</span></td><td><span class="status-missing">✗ MISSING</span></td></tr><tr><td><span class="id">S13</span></td><td><div class="stub-line">orderRepository.findById() <span>→ null</span></div><div class="stub-line">paymentClient.refund() <span>→ NOT_CALLED</span></div><div class="stub-line">auditLogger.log() <span>→ NOT_CALLED</span></div></td><td><span class="outcome">OrderNotFoundException / NPE risk</span></td><td><span class="status-missing">✗ MISSING</span></td></tr><tr><td><span class="id">S14</span></td><td><div class="stub-line">orderRepository.findById() <span>→ RuntimeException</span></div><div class="stub-line">paymentClient.refund() <span>→ NOT_CALLED</span></div><div class="stub-line">auditLogger.log() <span>→ NOT_CALLED</span></div></td><td><span class="outcome">Exception Propagated</span></td><td><span class="status-missing">✗ MISSING</span></td></tr></tbody></table></div>
-</div>
-<div id="m-PaymentService-getRefundPolicy" class="method-section">
-<div class="method-header">
-  <span class="method-name">getRefundPolicy()</span>
-  <div style="display:flex;align-items:center;gap:10px;">
-    <span class="method-pct" style="color:var(--yellow)">12% DSC</span>
-    <span class="badge covered">✓ 1</span>
-    <span class="badge missing">✗ 7</span>
+<div id="m-com.example.payment.PaymentService-getRefundPolicy" class="method-section">
+<details class="method-detail" open>
+  <summary>
+    <div class="summary-left">
+      <span class="chevron">▶</span>
+      <span class="method-name">getRefundPolicy()</span>
+    </div>
+    <div class="summary-right">
+      <span class="method-pct" style="color:var(--yellow)">12% DSC</span>
+      <span class="badge covered">✓ 1</span>
+      <span class="badge missing">✗ 7</span>
+    </div>
+  </summary>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th style="width:60px">ID</th><th>Stub Configuration</th><th>Expected Outcome</th><th style="width:110px">Status</th></tr></thead>
+      <tbody><tr><td><span class="id">S01</span></td><td><div class="stub-line">policyService.getPremiumPolicy() <span>→ Object(valid)</span></div><div class="stub-line">policyService.getStandardPolicy() <span>→ Object(valid)</span></div></td><td><span class="outcome">RefundResponse.success</span></td><td><span class="status-covered">✓ COVERED</span></td></tr><tr><td><span class="id">S02</span></td><td><div class="stub-line">policyService.getPremiumPolicy() <span>→ Object(valid)</span></div><div class="stub-line">policyService.getStandardPolicy() <span>→ null</span></div></td><td><span class="outcome">OrderNotFoundException / NPE risk</span></td><td><span class="status-missing">✗ MISSING</span></td></tr><tr><td><span class="id">S03</span></td><td><div class="stub-line">policyService.getPremiumPolicy() <span>→ Object(valid)</span></div><div class="stub-line">policyService.getStandardPolicy() <span>→ RuntimeException</span></div></td><td><span class="outcome">Exception Propagated</span></td><td><span class="status-missing">✗ MISSING</span></td></tr><tr><td><span class="id">S04</span></td><td><div class="stub-line">policyService.getPremiumPolicy() <span>→ null</span></div><div class="stub-line">policyService.getStandardPolicy() <span>→ Object(valid)</span></div></td><td><span class="outcome">OrderNotFoundException / NPE risk</span></td><td><span class="status-missing">✗ MISSING</span></td></tr><tr><td><span class="id">S05</span></td><td><div class="stub-line">policyService.getPremiumPolicy() <span>→ null</span></div><div class="stub-line">policyService.getStandardPolicy() <span>→ null</span></div></td><td><span class="outcome">OrderNotFoundException / NPE risk</span></td><td><span class="status-missing">✗ MISSING</span></td></tr><tr><td><span class="id">S06</span></td><td><div class="stub-line">policyService.getPremiumPolicy() <span>→ null</span></div><div class="stub-line">policyService.getStandardPolicy() <span>→ RuntimeException</span></div></td><td><span class="outcome">OrderNotFoundException / NPE risk</span></td><td><span class="status-missing">✗ MISSING</span></td></tr><tr><td><span class="id">S07</span></td><td><div class="stub-line">policyService.getPremiumPolicy() <span>→ RuntimeException</span></div><div class="stub-line">policyService.getStandardPolicy() <span>→ NOT_CALLED</span></div></td><td><span class="outcome">Exception Propagated</span></td><td><span class="status-missing">✗ MISSING</span></td></tr><tr><td><span class="id">S08</span></td><td><div class="stub-line">policyService.getPremiumPolicy() <span>→ NOT_CALLED</span></div><div class="stub-line">policyService.getStandardPolicy() <span>→ NOT_CALLED</span></div></td><td><span class="outcome">RefundResponse.success</span></td><td><span class="status-missing">✗ MISSING</span></td></tr></tbody>
+    </table>
   </div>
+</details>
 </div>
-<div class="table-wrap"><table><thead><tr><th style="width:60px">ID</th><th>Stub Configuration</th><th>Expected Outcome</th><th style="width:110px">Status</th></tr></thead><tbody><tr><td><span class="id">S01</span></td><td><div class="stub-line">policyService.getPremiumPolicy() <span>→ Object(valid)</span></div><div class="stub-line">policyService.getStandardPolicy() <span>→ Object(valid)</span></div></td><td><span class="outcome">RefundResponse.success</span></td><td><span class="status-covered">✓ COVERED</span></td></tr><tr><td><span class="id">S02</span></td><td><div class="stub-line">policyService.getPremiumPolicy() <span>→ Object(valid)</span></div><div class="stub-line">policyService.getStandardPolicy() <span>→ null</span></div></td><td><span class="outcome">OrderNotFoundException / NPE risk</span></td><td><span class="status-missing">✗ MISSING</span></td></tr><tr><td><span class="id">S03</span></td><td><div class="stub-line">policyService.getPremiumPolicy() <span>→ Object(valid)</span></div><div class="stub-line">policyService.getStandardPolicy() <span>→ RuntimeException</span></div></td><td><span class="outcome">Exception Propagated</span></td><td><span class="status-missing">✗ MISSING</span></td></tr><tr><td><span class="id">S04</span></td><td><div class="stub-line">policyService.getPremiumPolicy() <span>→ null</span></div><div class="stub-line">policyService.getStandardPolicy() <span>→ Object(valid)</span></div></td><td><span class="outcome">OrderNotFoundException / NPE risk</span></td><td><span class="status-missing">✗ MISSING</span></td></tr><tr><td><span class="id">S05</span></td><td><div class="stub-line">policyService.getPremiumPolicy() <span>→ null</span></div><div class="stub-line">policyService.getStandardPolicy() <span>→ null</span></div></td><td><span class="outcome">OrderNotFoundException / NPE risk</span></td><td><span class="status-missing">✗ MISSING</span></td></tr><tr><td><span class="id">S06</span></td><td><div class="stub-line">policyService.getPremiumPolicy() <span>→ null</span></div><div class="stub-line">policyService.getStandardPolicy() <span>→ RuntimeException</span></div></td><td><span class="outcome">OrderNotFoundException / NPE risk</span></td><td><span class="status-missing">✗ MISSING</span></td></tr><tr><td><span class="id">S07</span></td><td><div class="stub-line">policyService.getPremiumPolicy() <span>→ RuntimeException</span></div><div class="stub-line">policyService.getStandardPolicy() <span>→ NOT_CALLED</span></div></td><td><span class="outcome">Exception Propagated</span></td><td><span class="status-missing">✗ MISSING</span></td></tr><tr><td><span class="id">S08</span></td><td><div class="stub-line">policyService.getPremiumPolicy() <span>→ NOT_CALLED</span></div><div class="stub-line">policyService.getStandardPolicy() <span>→ NOT_CALLED</span></div></td><td><span class="outcome">RefundResponse.success</span></td><td><span class="status-missing">✗ MISSING</span></td></tr></tbody></table></div>
-</div>
-<div id="m-PaymentService-isValidAmount" class="method-section">
-<div class="method-header">
-  <span class="method-name">isValidAmount()</span>
-  <div style="display:flex;align-items:center;gap:10px;">
-    <span class="method-pct" style="color:var(--green)">100% DSC</span>
-    <span class="badge covered">✓ 1</span>
-    <span class="badge missing">✗ 0</span>
+<div id="m-com.example.payment.PaymentService-isValidAmount" class="method-section">
+<details class="method-detail">
+  <summary>
+    <div class="summary-left">
+      <span class="chevron">▶</span>
+      <span class="method-name">isValidAmount()</span>
+    </div>
+    <div class="summary-right">
+      <span class="method-pct" style="color:var(--green)">100% DSC</span>
+      <span class="badge covered">✓ 1</span>
+      <span class="badge missing">✗ 0</span>
+    </div>
+  </summary>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th style="width:60px">ID</th><th>Stub Configuration</th><th>Expected Outcome</th><th style="width:110px">Status</th></tr></thead>
+      <tbody><tr><td><span class="id">S01</span></td><td></td><td><span class="outcome">RefundResponse.success</span></td><td><span class="status-covered">✓ COVERED</span></td></tr></tbody>
+    </table>
   </div>
+</details>
 </div>
-<div class="table-wrap"><table><thead><tr><th style="width:60px">ID</th><th>Stub Configuration</th><th>Expected Outcome</th><th style="width:110px">Status</th></tr></thead><tbody><tr><td><span class="id">S01</span></td><td></td><td><span class="outcome">RefundResponse.success</span></td><td><span class="status-covered">✓ COVERED</span></td></tr></tbody></table></div>
-</div>
-<div id="m-PaymentService-transfer" class="method-section">
-<div class="method-header">
-  <span class="method-name">transfer()</span>
-  <div style="display:flex;align-items:center;gap:10px;">
-    <span class="method-pct" style="color:var(--yellow)">8% DSC</span>
-    <span class="badge covered">✓ 1</span>
-    <span class="badge missing">✗ 11</span>
+<div id="m-com.example.payment.PaymentService-transfer" class="method-section">
+<details class="method-detail" open>
+  <summary>
+    <div class="summary-left">
+      <span class="chevron">▶</span>
+      <span class="method-name">transfer()</span>
+    </div>
+    <div class="summary-right">
+      <span class="method-pct" style="color:var(--yellow)">8% DSC</span>
+      <span class="badge covered">✓ 1</span>
+      <span class="badge missing">✗ 11</span>
+    </div>
+  </summary>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th style="width:60px">ID</th><th>Stub Configuration</th><th>Expected Outcome</th><th style="width:110px">Status</th></tr></thead>
+      <tbody><tr><td><span class="id">S01</span></td><td><div class="stub-line">orderRepository.findById() <span>→ Order(valid)</span></div><div class="stub-line">orderRepository.findById() <span>→ Order(valid)</span></div><div class="stub-line">paymentClient.transfer() <span>→ PaymentResponse(valid)</span></div></td><td><span class="outcome">RefundResponse.success</span></td><td><span class="status-covered">✓ COVERED</span></td></tr><tr><td><span class="id">S02</span></td><td><div class="stub-line">orderRepository.findById() <span>→ Order(valid)</span></div><div class="stub-line">orderRepository.findById() <span>→ Order(valid)</span></div><div class="stub-line">paymentClient.transfer() <span>→ null</span></div></td><td><span class="outcome">OrderNotFoundException / NPE risk</span></td><td><span class="status-missing">✗ MISSING</span></td></tr><tr><td><span class="id">S03</span></td><td><div class="stub-line">orderRepository.findById() <span>→ Order(valid)</span></div><div class="stub-line">orderRepository.findById() <span>→ Order(valid)</span></div><div class="stub-line">paymentClient.transfer() <span>→ RuntimeException</span></div></td><td><span class="outcome">Exception Propagated</span></td><td><span class="status-missing">✗ MISSING</span></td></tr><tr><td><span class="id">S04</span></td><td><div class="stub-line">orderRepository.findById() <span>→ Order(valid)</span></div><div class="stub-line">orderRepository.findById() <span>→ Order(valid)</span></div><div class="stub-line">paymentClient.transfer() <span>→ NOT_CALLED</span></div></td><td><span class="outcome">RefundResponse.success</span></td><td><span class="status-missing">✗ MISSING</span></td></tr><tr><td><span class="id">S05</span></td><td><div class="stub-line">orderRepository.findById() <span>→ Order(valid)</span></div><div class="stub-line">orderRepository.findById() <span>→ null</span></div><div class="stub-line">paymentClient.transfer() <span>→ NOT_CALLED</span></div></td><td><span class="outcome">OrderNotFoundException / NPE risk</span></td><td><span class="status-missing">✗ MISSING</span></td></tr><tr><td><span class="id">S06</span></td><td><div class="stub-line">orderRepository.findById() <span>→ Order(valid)</span></div><div class="stub-line">orderRepository.findById() <span>→ RuntimeException</span></div><div class="stub-line">paymentClient.transfer() <span>→ NOT_CALLED</span></div></td><td><span class="outcome">Exception Propagated</span></td><td><span class="status-missing">✗ MISSING</span></td></tr><tr><td><span class="id">S07</span></td><td><div class="stub-line">orderRepository.findById() <span>→ Order(valid)</span></div><div class="stub-line">orderRepository.findById() <span>→ NOT_CALLED</span></div><div class="stub-line">paymentClient.transfer() <span>→ NOT_CALLED</span></div></td><td><span class="outcome">RefundResponse.success</span></td><td><span class="status-missing">✗ MISSING</span></td></tr><tr><td><span class="id">S08</span></td><td><div class="stub-line">orderRepository.findById() <span>→ null</span></div><div class="stub-line">orderRepository.findById() <span>→ Order(valid)</span></div><div class="stub-line">paymentClient.transfer() <span>→ NOT_CALLED</span></div></td><td><span class="outcome">OrderNotFoundException / NPE risk</span></td><td><span class="status-missing">✗ MISSING</span></td></tr><tr><td><span class="id">S09</span></td><td><div class="stub-line">orderRepository.findById() <span>→ null</span></div><div class="stub-line">orderRepository.findById() <span>→ null</span></div><div class="stub-line">paymentClient.transfer() <span>→ NOT_CALLED</span></div></td><td><span class="outcome">OrderNotFoundException / NPE risk</span></td><td><span class="status-missing">✗ MISSING</span></td></tr><tr><td><span class="id">S10</span></td><td><div class="stub-line">orderRepository.findById() <span>→ null</span></div><div class="stub-line">orderRepository.findById() <span>→ RuntimeException</span></div><div class="stub-line">paymentClient.transfer() <span>→ NOT_CALLED</span></div></td><td><span class="outcome">OrderNotFoundException / NPE risk</span></td><td><span class="status-missing">✗ MISSING</span></td></tr><tr><td><span class="id">S11</span></td><td><div class="stub-line">orderRepository.findById() <span>→ null</span></div><div class="stub-line">orderRepository.findById() <span>→ NOT_CALLED</span></div><div class="stub-line">paymentClient.transfer() <span>→ NOT_CALLED</span></div></td><td><span class="outcome">OrderNotFoundException / NPE risk</span></td><td><span class="status-missing">✗ MISSING</span></td></tr><tr><td><span class="id">S12</span></td><td><div class="stub-line">orderRepository.findById() <span>→ RuntimeException</span></div><div class="stub-line">orderRepository.findById() <span>→ NOT_CALLED</span></div><div class="stub-line">paymentClient.transfer() <span>→ NOT_CALLED</span></div></td><td><span class="outcome">Exception Propagated</span></td><td><span class="status-missing">✗ MISSING</span></td></tr></tbody>
+    </table>
   </div>
-</div>
-<div class="table-wrap"><table><thead><tr><th style="width:60px">ID</th><th>Stub Configuration</th><th>Expected Outcome</th><th style="width:110px">Status</th></tr></thead><tbody><tr><td><span class="id">S01</span></td><td><div class="stub-line">orderRepository.findById() <span>→ Order(valid)</span></div><div class="stub-line">orderRepository.findById() <span>→ Order(valid)</span></div><div class="stub-line">paymentClient.transfer() <span>→ PaymentResponse(valid)</span></div></td><td><span class="outcome">RefundResponse.success</span></td><td><span class="status-covered">✓ COVERED</span></td></tr><tr><td><span class="id">S02</span></td><td><div class="stub-line">orderRepository.findById() <span>→ Order(valid)</span></div><div class="stub-line">orderRepository.findById() <span>→ Order(valid)</span></div><div class="stub-line">paymentClient.transfer() <span>→ null</span></div></td><td><span class="outcome">OrderNotFoundException / NPE risk</span></td><td><span class="status-missing">✗ MISSING</span></td></tr><tr><td><span class="id">S03</span></td><td><div class="stub-line">orderRepository.findById() <span>→ Order(valid)</span></div><div class="stub-line">orderRepository.findById() <span>→ Order(valid)</span></div><div class="stub-line">paymentClient.transfer() <span>→ RuntimeException</span></div></td><td><span class="outcome">Exception Propagated</span></td><td><span class="status-missing">✗ MISSING</span></td></tr><tr><td><span class="id">S04</span></td><td><div class="stub-line">orderRepository.findById() <span>→ Order(valid)</span></div><div class="stub-line">orderRepository.findById() <span>→ Order(valid)</span></div><div class="stub-line">paymentClient.transfer() <span>→ NOT_CALLED</span></div></td><td><span class="outcome">RefundResponse.success</span></td><td><span class="status-missing">✗ MISSING</span></td></tr><tr><td><span class="id">S05</span></td><td><div class="stub-line">orderRepository.findById() <span>→ Order(valid)</span></div><div class="stub-line">orderRepository.findById() <span>→ null</span></div><div class="stub-line">paymentClient.transfer() <span>→ NOT_CALLED</span></div></td><td><span class="outcome">OrderNotFoundException / NPE risk</span></td><td><span class="status-missing">✗ MISSING</span></td></tr><tr><td><span class="id">S06</span></td><td><div class="stub-line">orderRepository.findById() <span>→ Order(valid)</span></div><div class="stub-line">orderRepository.findById() <span>→ RuntimeException</span></div><div class="stub-line">paymentClient.transfer() <span>→ NOT_CALLED</span></div></td><td><span class="outcome">Exception Propagated</span></td><td><span class="status-missing">✗ MISSING</span></td></tr><tr><td><span class="id">S07</span></td><td><div class="stub-line">orderRepository.findById() <span>→ Order(valid)</span></div><div class="stub-line">orderRepository.findById() <span>→ NOT_CALLED</span></div><div class="stub-line">paymentClient.transfer() <span>→ NOT_CALLED</span></div></td><td><span class="outcome">RefundResponse.success</span></td><td><span class="status-missing">✗ MISSING</span></td></tr><tr><td><span class="id">S08</span></td><td><div class="stub-line">orderRepository.findById() <span>→ null</span></div><div class="stub-line">orderRepository.findById() <span>→ Order(valid)</span></div><div class="stub-line">paymentClient.transfer() <span>→ NOT_CALLED</span></div></td><td><span class="outcome">OrderNotFoundException / NPE risk</span></td><td><span class="status-missing">✗ MISSING</span></td></tr><tr><td><span class="id">S09</span></td><td><div class="stub-line">orderRepository.findById() <span>→ null</span></div><div class="stub-line">orderRepository.findById() <span>→ null</span></div><div class="stub-line">paymentClient.transfer() <span>→ NOT_CALLED</span></div></td><td><span class="outcome">OrderNotFoundException / NPE risk</span></td><td><span class="status-missing">✗ MISSING</span></td></tr><tr><td><span class="id">S10</span></td><td><div class="stub-line">orderRepository.findById() <span>→ null</span></div><div class="stub-line">orderRepository.findById() <span>→ RuntimeException</span></div><div class="stub-line">paymentClient.transfer() <span>→ NOT_CALLED</span></div></td><td><span class="outcome">OrderNotFoundException / NPE risk</span></td><td><span class="status-missing">✗ MISSING</span></td></tr><tr><td><span class="id">S11</span></td><td><div class="stub-line">orderRepository.findById() <span>→ null</span></div><div class="stub-line">orderRepository.findById() <span>→ NOT_CALLED</span></div><div class="stub-line">paymentClient.transfer() <span>→ NOT_CALLED</span></div></td><td><span class="outcome">OrderNotFoundException / NPE risk</span></td><td><span class="status-missing">✗ MISSING</span></td></tr><tr><td><span class="id">S12</span></td><td><div class="stub-line">orderRepository.findById() <span>→ RuntimeException</span></div><div class="stub-line">orderRepository.findById() <span>→ NOT_CALLED</span></div><div class="stub-line">paymentClient.transfer() <span>→ NOT_CALLED</span></div></td><td><span class="outcome">Exception Propagated</span></td><td><span class="status-missing">✗ MISSING</span></td></tr></tbody></table></div>
+</details>
 </div>
 </div>
 </div>
@@ -359,13 +596,11 @@ tr:hover td{background:var(--hover-row);}
   const html = document.documentElement;
   const icon = document.getElementById('themeIcon');
   const label = document.getElementById('themeLabel');
-  // Apply saved preference on load
   const saved = localStorage.getItem('sl-theme') || 'dark';
   applyTheme(saved);
   function toggleTheme() {
     const next = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
-    applyTheme(next);
-    localStorage.setItem('sl-theme', next);
+    applyTheme(next); localStorage.setItem('sl-theme', next);
   }
   function applyTheme(t) {
     html.setAttribute('data-theme', t);

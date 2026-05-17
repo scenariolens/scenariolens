@@ -118,7 +118,7 @@ public class HtmlReportGenerator {
                     .append("  </div>\n")
                     .append("  <div class=\"table-wrap\">\n")
                     .append("    <table>\n")
-                    .append("      <thead><tr><th style=\"width:60px\">ID</th><th>Stub Configuration</th><th>Expected Outcome</th><th style=\"width:110px\">Status</th></tr></thead>\n")
+                    .append("      <thead><tr><th style=\"width:60px\">ID</th><th style=\"width:30%\">Stub Configuration</th><th style=\"width:20%\">Expected Outcome</th><th style=\"width:35%\">Gap Rationale</th><th style=\"width:15%\">Status</th></tr></thead>\n")
                     .append("      <tbody>").append(rows).append("</tbody>\n")
                     .append("    </table>\n")
                     .append("  </div>\n")
@@ -398,9 +398,10 @@ public class HtmlReportGenerator {
             "    <table>\n" +
             "      <thead><tr>\n" +
             "        <th style=\"width:60px\">ID</th>\n" +
-            "        <th>Stub Configuration</th>\n" +
-            "        <th>Expected Outcome</th>\n" +
-            "        <th style=\"width:110px\">Status</th>\n" +
+            "        <th style=\"width:30%\">Stub Configuration</th>\n" +
+            "        <th style=\"width:20%\">Expected Outcome</th>\n" +
+            "        <th style=\"width:35%\">Gap Rationale</th>\n" +
+            "        <th style=\"width:15%\">Status</th>\n" +
             "      </tr></thead>\n" +
             "      <tbody>" + rows + "</tbody>\n" +
             "    </table>\n" +
@@ -426,6 +427,22 @@ public class HtmlReportGenerator {
             stubs = "<span style=\"color:var(--muted);font-style:italic;font-size:12px\">No dependencies</span>";
         }
 
+        String reasoning;
+        if ("covered".equals(cssClass)) {
+            reasoning = "<span style=\"color:var(--muted);font-size:12px\">Verified by test suite</span>";
+        } else {
+            String out = scenarioRow.getExpectedOutcome().toLowerCase();
+            if (out.contains("throw") || out.contains("exception")) {
+                reasoning = "<span style=\"color:var(--text);font-size:12px\"><strong>Untested exception path.</strong> If a dependency triggers this error state, the system's fault tolerance is unverified.</span>";
+            } else if (out.contains("null") || out.contains("empty")) {
+                reasoning = "<span style=\"color:var(--text);font-size:12px\"><strong>Untested empty/null path.</strong> The system may throw NullPointerException or handle empty data incorrectly.</span>";
+            } else if (scenarioRow.getStubs().isEmpty()) {
+                reasoning = "<span style=\"color:var(--text);font-size:12px\"><strong>Untested baseline.</strong> Core execution path with no outgoing dependencies is unverified.</span>";
+            } else {
+                reasoning = "<span style=\"color:var(--text);font-size:12px\"><strong>Untested dependency state.</strong> The interaction between these specific dependency outcomes is unverified.</span>";
+            }
+        }
+
         String statusHtml = "covered".equals(cssClass)
             ? "<span class=\"status-covered\">✓ COVERED</span>"
             : "<span class=\"status-missing\">✗ MISSING</span>";
@@ -434,6 +451,7 @@ public class HtmlReportGenerator {
             "<td><span class=\"id\">" + scenarioRow.getId() + "</span></td>" +
             "<td>" + stubs + "</td>" +
             "<td><span class=\"outcome\">" + escape(scenarioRow.getExpectedOutcome()) + "</span></td>" +
+            "<td>" + reasoning + "</td>" +
             "<td>" + statusHtml + "</td>" +
             "</tr>";
     }

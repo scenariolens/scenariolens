@@ -429,17 +429,18 @@ public class HtmlReportGenerator {
 
         String reasoning;
         if ("covered".equals(cssClass)) {
-            reasoning = "<span style=\"color:var(--muted);font-size:12px\">Verified by test suite</span>";
+            reasoning = "<span style=\"color:var(--muted);font-size:12px\">No gap. Scenario is tested.</span>";
         } else {
             String out = scenarioRow.getExpectedOutcome().toLowerCase();
+            String exactOut = escape(scenarioRow.getExpectedOutcome());
             if (out.contains("throw") || out.contains("exception")) {
-                reasoning = "<span style=\"color:var(--text);font-size:12px\"><strong>Untested exception path.</strong> If a dependency triggers this error state, the system's fault tolerance is unverified.</span>";
+                reasoning = "<span style=\"color:var(--text);font-size:12px\"><strong>Missing exception test.</strong> The system is expected to result in <code>" + exactOut + "</code>, but there is no test verifying it handles this failure correctly.</span>";
             } else if (out.contains("null") || out.contains("empty")) {
-                reasoning = "<span style=\"color:var(--text);font-size:12px\"><strong>Untested empty/null path.</strong> The system may throw NullPointerException or handle empty data incorrectly.</span>";
+                reasoning = "<span style=\"color:var(--text);font-size:12px\"><strong>Missing edge case test.</strong> The system is expected to result in <code>" + exactOut + "</code> for this empty/null data, but this edge case is untested.</span>";
             } else if (scenarioRow.getStubs().isEmpty()) {
-                reasoning = "<span style=\"color:var(--text);font-size:12px\"><strong>Untested baseline.</strong> Core execution path with no outgoing dependencies is unverified.</span>";
+                reasoning = "<span style=\"color:var(--text);font-size:12px\"><strong>Missing core flow test.</strong> The basic execution path without any external dependency interactions is completely untested.</span>";
             } else {
-                reasoning = "<span style=\"color:var(--text);font-size:12px\"><strong>Untested dependency state.</strong> The interaction between these specific dependency outcomes is unverified.</span>";
+                reasoning = "<span style=\"color:var(--text);font-size:12px\"><strong>Missing combination test.</strong> A scenario where the dependencies return these exact values is missing. We cannot guarantee the system will result in <code>" + exactOut + "</code>.</span>";
             }
         }
 

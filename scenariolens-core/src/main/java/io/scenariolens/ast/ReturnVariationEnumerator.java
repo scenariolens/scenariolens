@@ -23,6 +23,7 @@ public class ReturnVariationEnumerator {
             variations.add(new StubVariation(callNode, StubVariation.VariationType.BOOLEAN_TRUE, "true", "True path"));
             variations.add(new StubVariation(callNode, StubVariation.VariationType.BOOLEAN_FALSE, "false", "False path"));
             variations.add(new StubVariation(callNode, StubVariation.VariationType.THROWS_EXCEPTION, "RuntimeException", "Exception path"));
+            variations.add(new StubVariation(callNode, StubVariation.VariationType.NOT_CALLED, "NOT_CALLED", "Not called on this path"));
         } else {
             // In a full implementation, we'd resolve if this is an enum and iterate constants
             // For now, generate basic VALID/NULL variations for reference types

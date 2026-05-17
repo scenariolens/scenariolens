@@ -73,16 +73,19 @@ public class HtmlReportGenerator {
             int clsPct = clsTotal == 0 ? 100 : (int)((clsCovered * 100.0) / clsTotal);
             String clsColor = clsPct == 100 ? "var(--green)" : clsPct == 0 ? "var(--red)" : "var(--yellow)";
 
-            // Class header
-            sections.append("<div id=\"cls-").append(fqn).append("\" class=\"class-section\">\n")
-                .append("<div class=\"class-header\">\n")
+            String classOpenAttr = clsMissing > 0 ? " open" : "";
+
+            // Class header (Collapsible)
+            sections.append("<details id=\"cls-").append(fqn).append("\" class=\"class-section\"").append(classOpenAttr).append(">\n")
+                .append("<summary class=\"class-header\">\n")
                 .append("  <div class=\"class-title-row\">\n")
                 .append("    <span class=\"class-icon\">☕</span>\n")
-                .append("    <div>\n")
+                .append("    <div style=\"flex:1\">\n")
                 .append("      <div class=\"class-simple\">").append(simpleName).append("</div>\n")
                 .append("      <div class=\"class-fqn\">").append(fqn).append("</div>\n")
                 .append("    </div>\n")
                 .append("    <span class=\"class-dsc\" style=\"color:").append(clsColor).append("\">DSC ").append(clsPct).append("%</span>\n")
+                .append("    <span class=\"chevron\" style=\"margin-left:12px;font-size:12px\">▶</span>\n")
                 .append("  </div>\n")
                 .append("  <div class=\"class-stats\">\n")
                 .append("    <span class=\"cs\"><span class=\"cs-val\">").append(methods.size()).append("</span> methods</span>\n")
@@ -90,7 +93,8 @@ public class HtmlReportGenerator {
                 .append("    <span class=\"badge covered\">✓ ").append(clsCovered).append(" covered</span>\n")
                 .append("    <span class=\"badge missing\">✗ ").append(clsMissing).append(" missing</span>\n")
                 .append("  </div>\n")
-                .append("</div>\n");
+                .append("</summary>\n")
+                .append("<div class=\"class-body\">\n");
 
             // Per-method subsections
             for (GapReport r : methods) {
@@ -98,35 +102,29 @@ public class HtmlReportGenerator {
                 int missing = r.getTotalScenarios() - r.getCoveredScenarios();
                 int pct = r.getScenarioCoveragePercent();
                 String pctColor = pct == 100 ? "var(--green)" : pct == 0 ? "var(--red)" : "var(--yellow)";
-                String openAttr = missing > 0 ? " open" : "";
                 
                 StringBuilder rows = new StringBuilder();
                 for (ScenarioRow sr : r.getCoveredRows()) rows.append(row(sr, "covered", "✓ COVERED"));
                 for (ScenarioRow sr : r.getMissingScenarios()) rows.append(row(sr, "missing", "✗ MISSING"));
 
                 sections.append("<div id=\"").append(id).append("\" class=\"method-section\">\n")
-                    .append("<details class=\"method-detail\"").append(openAttr).append(">\n")
-                    .append("  <summary>\n")
-                    .append("    <div class=\"summary-left\">\n")
-                    .append("      <span class=\"chevron\">▶</span>\n")
-                    .append("      <span class=\"method-name\">").append(r.getMethodName()).append("()</span>\n")
-                    .append("    </div>\n")
+                    .append("  <div class=\"method-header\">\n")
+                    .append("    <span class=\"method-name\">").append(r.getMethodName()).append("()</span>\n")
                     .append("    <div class=\"summary-right\">\n")
                     .append("      <span class=\"method-pct\" style=\"color:").append(pctColor).append("\">").append(pct).append("% DSC</span>\n")
                     .append("      <span class=\"badge covered\">✓ ").append(r.getCoveredScenarios()).append("</span>\n")
                     .append("      <span class=\"badge missing\">✗ ").append(missing).append("</span>\n")
                     .append("    </div>\n")
-                    .append("  </summary>\n")
+                    .append("  </div>\n")
                     .append("  <div class=\"table-wrap\">\n")
                     .append("    <table>\n")
                     .append("      <thead><tr><th style=\"width:60px\">ID</th><th>Stub Configuration</th><th>Expected Outcome</th><th style=\"width:110px\">Status</th></tr></thead>\n")
                     .append("      <tbody>").append(rows).append("</tbody>\n")
                     .append("    </table>\n")
                     .append("  </div>\n")
-                    .append("</details>\n")
                     .append("</div>\n");
             }
-            sections.append("</div>\n"); // end class-section
+            sections.append("</div>\n</details>\n"); // end class-section
         }
 
         // Compute derived stats for redesigned cards
@@ -174,15 +172,22 @@ public class HtmlReportGenerator {
             ".nav-pill{padding:4px 12px;border-radius:20px;border:1px solid var(--border);background:var(--surface);color:var(--text);font-size:12px;font-weight:500;transition:background .15s;}\n" +
             ".nav-pill:hover{background:var(--surface2);}\n" +
             ".class-section{margin-bottom:36px;}\n" +
+            "details.class-section summary{list-style:none;cursor:pointer;}\n" +
+            "details.class-section summary::-webkit-details-marker{display:none;}\n" +
             ".class-header{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:16px 20px;margin-bottom:10px;transition:background .2s;}\n" +
+            ".class-header:hover{border-color:var(--muted);}\n" +
             ".class-title-row{display:flex;align-items:center;gap:10px;margin-bottom:8px;}\n" +
             ".class-icon{font-size:16px;}\n" +
-            ".class-name{font-size:17px;font-weight:700;color:var(--text);font-family:'JetBrains Mono','Fira Code',monospace;}\n" +
+            ".class-simple{font-size:17px;font-weight:700;color:var(--text);font-family:'JetBrains Mono','Fira Code',monospace;}\n" +
+            ".class-fqn{font-size:11px;color:var(--muted);font-family:'JetBrains Mono','Fira Code',monospace;word-break:break-all;margin-top:2px;}\n" +
             ".class-dsc{margin-left:auto;font-size:13px;font-weight:700;white-space:nowrap;}\n" +
             ".class-stats{display:flex;flex-wrap:wrap;align-items:center;gap:10px;}\n" +
             ".cs{color:var(--muted);font-size:12px;}\n" +
             ".cs-val{font-weight:700;color:var(--text);}\n" +
-            ".method-section{margin-bottom:8px;margin-left:18px;border-left:2px solid var(--border);padding-left:14px;}\n" +
+            ".chevron{display:inline-block;transition:transform .2s;}\n" +
+            "details[open] .chevron{transform:rotate(90deg);}\n" +
+            ".class-body{padding-top:4px;}\n" +
+            ".method-section{margin-bottom:12px;margin-left:18px;border-left:2px solid var(--border);padding-left:14px;}\n" +
             ".method-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;padding:9px 14px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;}\n" +
             ".method-name{font-family:'JetBrains Mono','Fira Code',monospace;font-size:13px;font-weight:600;color:var(--blue);}\n" +
             ".method-pct{font-size:12px;font-weight:600;}\n" +

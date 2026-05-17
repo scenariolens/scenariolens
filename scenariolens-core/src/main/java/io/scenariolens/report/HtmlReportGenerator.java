@@ -32,38 +32,79 @@ public class HtmlReportGenerator {
         int covPct = totalScenarios == 0 ? 100 : (int)((totalCovered * 100.0) / totalScenarios);
         String generated   = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
 
-        // Build method nav pills
+        // Group reports by className (preserve insertion order)
+        java.util.LinkedHashMap<String, java.util.List<GapReport>> byClass = new java.util.LinkedHashMap<>();
+        for (GapReport r : reports) {
+            if (r.getTotalScenarios() <= 1 && r.getMissingScenarios().isEmpty() && r.getCoveredRows().isEmpty()) continue;
+            byClass.computeIfAbsent(r.getClassName(), k -> new java.util.ArrayList<>()).add(r);
+        }
+
+        // Build class-grouped nav
         StringBuilder nav = new StringBuilder();
-        for (GapReport r : reports) {
-            if (r.getTotalScenarios() <= 1 && r.getMissingScenarios().isEmpty() && r.getCoveredRows().isEmpty()) continue;
-            String id = "m-" + r.getMethodName();
-            int pct = r.getScenarioCoveragePercent();
-            String color = pct == 100 ? "var(--green)" : pct == 0 ? "var(--red)" : "var(--yellow)";
-            nav.append("<a href=\"#").append(id).append("\" class=\"nav-pill\" style=\"border-color:").append(color).append("\">")
-               .append(r.getMethodName()).append(" <span style=\"color:").append(color).append("\">").append(pct).append("%</span></a>");
+        for (java.util.Map.Entry<String, java.util.List<GapReport>> entry : byClass.entrySet()) {
+            String cls = entry.getKey();
+            java.util.List<GapReport> methods = entry.getValue();
+            int clsTotal   = methods.stream().mapToInt(GapReport::getTotalScenarios).sum();
+            int clsCovered = methods.stream().mapToInt(GapReport::getCoveredScenarios).sum();
+            int clsPct = clsTotal == 0 ? 100 : (int)((clsCovered * 100.0) / clsTotal);
+            String color = clsPct == 100 ? "var(--green)" : clsPct == 0 ? "var(--red)" : "var(--yellow)";
+            nav.append("<a href=\"#cls-").append(cls).append("\" class=\"nav-pill\" style=\"border-color:").append(color).append("\">")
+               .append(cls).append(" <span style=\"color:").append(color).append("\">").append(clsPct).append("%</span></a>");
         }
 
-        // Build per-method sections
+        // Build class-grouped sections
         StringBuilder sections = new StringBuilder();
-        for (GapReport r : reports) {
-            if (r.getTotalScenarios() <= 1 && r.getMissingScenarios().isEmpty() && r.getCoveredRows().isEmpty()) continue;
-            String id = "m-" + r.getMethodName();
-            int missing = r.getTotalScenarios() - r.getCoveredScenarios();
-            StringBuilder rows = new StringBuilder();
-            for (ScenarioRow sr : r.getCoveredRows()) rows.append(row(sr, "covered", "✓ COVERED"));
-            for (ScenarioRow sr : r.getMissingScenarios()) rows.append(row(sr, "missing", "✗ MISSING"));
+        for (java.util.Map.Entry<String, java.util.List<GapReport>> entry : byClass.entrySet()) {
+            String cls = entry.getKey();
+            java.util.List<GapReport> methods = entry.getValue();
+            int clsTotal   = methods.stream().mapToInt(GapReport::getTotalScenarios).sum();
+            int clsCovered = methods.stream().mapToInt(GapReport::getCoveredScenarios).sum();
+            int clsMissing = clsTotal - clsCovered;
+            int clsPct = clsTotal == 0 ? 100 : (int)((clsCovered * 100.0) / clsTotal);
+            String clsColor = clsPct == 100 ? "var(--green)" : clsPct == 0 ? "var(--red)" : "var(--yellow)";
 
-            sections.append("<section id=\"").append(id).append("\" class=\"method-section\">\n")
-                .append("<div class=\"method-header\">")
-                .append("<span class=\"method-name\">").append(r.getMethodName()).append("()</span>")
-                .append("<span style=\"display:flex;gap:8px;\">")
-                .append("<span class=\"badge covered\">✓ ").append(r.getCoveredScenarios()).append(" covered</span>")
-                .append("<span class=\"badge missing\">✗ ").append(missing).append(" missing</span>")
-                .append("</span></div>\n")
-                .append("<div class=\"table-wrap\"><table>")
-                .append("<thead><tr><th style=\"width:60px\">ID</th><th>Stub Configuration</th><th>Expected Outcome</th><th style=\"width:110px\">Status</th></tr></thead>")
-                .append("<tbody>").append(rows).append("</tbody></table></div>\n</section>\n");
+            // Class header
+            sections.append("<div id=\"cls-").append(cls).append("\" class=\"class-section\">\n")
+                .append("<div class=\"class-header\">\n")
+                .append("  <div class=\"class-title-row\">\n")
+                .append("    <span class=\"class-icon\">☕</span>\n")
+                .append("    <span class=\"class-name\">").append(cls).append("</span>\n")
+                .append("    <span class=\"class-dsc\" style=\"color:").append(clsColor).append("\">DSC ").append(clsPct).append("%</span>\n")
+                .append("  </div>\n")
+                .append("  <div class=\"class-stats\">\n")
+                .append("    <span class=\"cs\"><span class=\"cs-val\">").append(methods.size()).append("</span> methods</span>\n")
+                .append("    <span class=\"cs\"><span class=\"cs-val\">").append(clsTotal).append("</span> scenarios</span>\n")
+                .append("    <span class=\"badge covered\">✓ ").append(clsCovered).append(" covered</span>\n")
+                .append("    <span class=\"badge missing\">✗ ").append(clsMissing).append(" missing</span>\n")
+                .append("  </div>\n")
+                .append("</div>\n");
+
+            // Per-method subsections
+            for (GapReport r : methods) {
+                String id = "m-" + cls + "-" + r.getMethodName();
+                int missing = r.getTotalScenarios() - r.getCoveredScenarios();
+                int pct = r.getScenarioCoveragePercent();
+                String pctColor = pct == 100 ? "var(--green)" : pct == 0 ? "var(--red)" : "var(--yellow)";
+                StringBuilder rows = new StringBuilder();
+                for (ScenarioRow sr : r.getCoveredRows()) rows.append(row(sr, "covered", "✓ COVERED"));
+                for (ScenarioRow sr : r.getMissingScenarios()) rows.append(row(sr, "missing", "✗ MISSING"));
+
+                sections.append("<div id=\"").append(id).append("\" class=\"method-section\">\n")
+                    .append("<div class=\"method-header\">\n")
+                    .append("  <span class=\"method-name\">").append(r.getMethodName()).append("()</span>\n")
+                    .append("  <div style=\"display:flex;align-items:center;gap:10px;\">\n")
+                    .append("    <span class=\"method-pct\" style=\"color:").append(pctColor).append("\">").append(pct).append("% DSC</span>\n")
+                    .append("    <span class=\"badge covered\">✓ ").append(r.getCoveredScenarios()).append("</span>\n")
+                    .append("    <span class=\"badge missing\">✗ ").append(missing).append("</span>\n")
+                    .append("  </div>\n")
+                    .append("</div>\n")
+                    .append("<div class=\"table-wrap\"><table>")
+                    .append("<thead><tr><th style=\"width:60px\">ID</th><th>Stub Configuration</th><th>Expected Outcome</th><th style=\"width:110px\">Status</th></tr></thead>")
+                    .append("<tbody>").append(rows).append("</tbody></table></div>\n</div>\n");
+            }
+            sections.append("</div>\n"); // end class-section
         }
+
 
         return "<!DOCTYPE html>\n<html lang=\"en\" data-theme=\"dark\">\n<head>\n" +
             "<meta charset=\"UTF-8\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n" +
@@ -100,9 +141,21 @@ public class HtmlReportGenerator {
             ".nav{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:28px;}\n" +
             ".nav-pill{padding:5px 14px;border-radius:20px;border:1px solid var(--border);background:var(--surface);color:var(--text);font-size:12px;font-weight:500;transition:background .15s;}\n" +
             ".nav-pill:hover{background:var(--surface2);}\n" +
-            ".method-section{margin-bottom:40px;}\n" +
-            ".method-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;padding:14px 18px;background:var(--surface);border:1px solid var(--border);border-radius:10px;transition:background .2s;}\n" +
-            ".method-name{font-family:'JetBrains Mono','Fira Code',monospace;font-size:15px;font-weight:600;color:var(--blue);}\n" +
+            /* ── Class grouping ── */
+            ".class-section{margin-bottom:40px;}\n" +
+            ".class-header{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:18px 22px;margin-bottom:14px;transition:background .2s;}\n" +
+            ".class-title-row{display:flex;align-items:center;gap:10px;margin-bottom:10px;}\n" +
+            ".class-icon{font-size:18px;}\n" +
+            ".class-name{font-size:18px;font-weight:700;color:var(--text);font-family:'JetBrains Mono','Fira Code',monospace;}\n" +
+            ".class-dsc{margin-left:auto;font-size:14px;font-weight:700;}\n" +
+            ".class-stats{display:flex;flex-wrap:wrap;align-items:center;gap:10px;}\n" +
+            ".cs{color:var(--muted);font-size:12px;}\n" +
+            ".cs-val{font-weight:700;color:var(--text);}\n" +
+            /* ── Method subsection (indented under class) ── */
+            ".method-section{margin-bottom:16px;margin-left:20px;border-left:2px solid var(--border);padding-left:16px;}\n" +
+            ".method-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;padding:10px 14px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;transition:background .2s;}\n" +
+            ".method-name{font-family:'JetBrains Mono','Fira Code',monospace;font-size:13px;font-weight:600;color:var(--blue);}\n" +
+            ".method-pct{font-size:12px;font-weight:600;}\n" +
             ".badge{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:600;}\n" +
             ".badge.missing{background:rgba(239,68,68,.15);color:var(--red);border:1px solid rgba(239,68,68,.3);}\n" +
             ".badge.covered{background:rgba(34,197,94,.15);color:var(--green);border:1px solid rgba(34,197,94,.3);}\n" +

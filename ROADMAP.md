@@ -126,11 +126,13 @@ Sequenced by community impact per unit of build effort.
 ```
 Priority  Feature                         Effort   ROI      Why
 ────────────────────────────────────────────────────────────────────────────
-1         SonarQube generic XML output    1 day    HIGH     DSC score on
+1         SonarQube generic XML output    1 day    HIGH     [x] COMPLETED
+                                                            DSC score on
                                                             existing dashboard
                                                             engineers check daily
 
-2         LCOV output                     1 day    HIGH     GitHub Actions PR
+2         LCOV output                     1 day    HIGH     [x] COMPLETED
+                                                            GitHub Actions PR
                                                             comments, VS Code
                                                             gutter indicators,
                                                             Codecov integration
@@ -221,11 +223,11 @@ Both take one day each and put ScenarioLens where engineers already look.
 **Goal: Broader framework support, IDE integration, pipeline integration.**
 
 ### Output Formats
-- [ ] SonarQube generic coverage XML
+- [x] SonarQube generic coverage XML
       sonar.coverageReportPaths=target/scenariolens/sonar-coverage.xml
       Puts DSC score on SonarQube dashboard without full Sonar plugin
       HIGHEST PRIORITY in Phase 3 — fastest path to existing engineer dashboards
-- [ ] LCOV format output
+- [x] LCOV format output
       Enables GitHub Actions PR coverage comments
       Enables VS Code coverage gutters extension (inline scenario coverage)
       Enables Codecov.io and Coveralls.io integration

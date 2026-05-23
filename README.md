@@ -178,7 +178,7 @@ Phase 1 is battle-tested and stable. We are actively expanding the ecosystem.
 
 - [x] **Phase 1:** AST Extraction, CFG construction, Mockito stub extraction, HTML/JSON reports.
 - [ ] **Phase 2 (Hybrid Boundary Resolution):** Purity gate checks, literal boundary extraction without test execution, config `@Value` parsing.
-- [ ] **Phase 3 (Ecosystem Expansion):** Native Gradle plugin, WireMock stub extraction, SonarQube generic XML output, LCOV support.
+- [ ] **Phase 3 (Ecosystem Expansion):** Native Gradle plugin, WireMock stub extraction. *(Completed: SonarQube generic XML output, LCOV support).*
 - [ ] **Phase 4 (Advanced Analysis):** Multi-method flow tracing, intelligent numeric boundary inference.
 
 See the full [ROADMAP.md](ROADMAP.md) for details.

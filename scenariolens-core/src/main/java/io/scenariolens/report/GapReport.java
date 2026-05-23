@@ -6,6 +6,8 @@ import java.util.List;
 public class GapReport {
     private final String className;
     private final String methodName;
+    private final String filePath;
+    private final int lineNumber;
     private final int totalScenarios;
     private final int coveredScenarios;
     private final int scenarioCoveragePercent;
@@ -13,9 +15,11 @@ public class GapReport {
     private final List<ScenarioRow> missingScenarios;
     private final List<ScenarioRow> coveredRows;
 
-    public GapReport(String className, String methodName, int totalScenarios, int coveredScenarios, int scenarioCoveragePercent, int assertionStrengthPercent, List<ScenarioRow> missingScenarios, List<ScenarioRow> coveredRows) {
+    public GapReport(String className, String methodName, String filePath, int lineNumber, int totalScenarios, int coveredScenarios, int scenarioCoveragePercent, int assertionStrengthPercent, List<ScenarioRow> missingScenarios, List<ScenarioRow> coveredRows) {
         this.className = className;
         this.methodName = methodName;
+        this.filePath = filePath;
+        this.lineNumber = lineNumber;
         this.totalScenarios = totalScenarios;
         this.coveredScenarios = coveredScenarios;
         this.scenarioCoveragePercent = scenarioCoveragePercent;
@@ -26,6 +30,8 @@ public class GapReport {
 
     public String getClassName() { return className; }
     public String getMethodName() { return methodName; }
+    public String getFilePath() { return filePath; }
+    public int getLineNumber() { return lineNumber; }
     public int getTotalScenarios() { return totalScenarios; }
     public int getCoveredScenarios() { return coveredScenarios; }
     public int getScenarioCoveragePercent() { return scenarioCoveragePercent; }

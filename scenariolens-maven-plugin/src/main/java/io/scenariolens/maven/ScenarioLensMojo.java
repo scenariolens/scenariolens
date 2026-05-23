@@ -10,6 +10,7 @@ import io.scenariolens.matrix.ScenarioRow;
 import io.scenariolens.report.GapReport;
 import io.scenariolens.report.HtmlReportGenerator;
 import io.scenariolens.report.JsonReportGenerator;
+import io.scenariolens.report.SonarQubeReportGenerator;
 
 import com.github.javaparser.JavaParser;
 import com.github.javaparser.ast.body.MethodDeclaration;
@@ -55,6 +56,9 @@ public class ScenarioLensMojo extends AbstractMojo {
 
     @Parameter(defaultValue = "${project.build.testSourceDirectory}", required = true, readonly = true)
     private File testSourceDirectory;
+
+    @Parameter(defaultValue = "${project.basedir}", required = true, readonly = true)
+    private File baseDirectory;
 
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
@@ -109,6 +113,9 @@ public class ScenarioLensMojo extends AbstractMojo {
                     getLog().info("========================================");
                     getLog().info("Analyzing method: " + method.getNameAsString());
                     
+                    String relativeFilePath = baseDirectory.toPath().relativize(file.toPath()).toString();
+                    int lineNumber = method.getBegin().isPresent() ? method.getBegin().get().line : 1;
+                    
                     OutgoingCallDetector detector = new OutgoingCallDetector();
                     List<CallNode> calls = detector.detect(method);
                     getLog().info("Outgoing calls detected: " + calls.size());
@@ -128,7 +135,7 @@ public class ScenarioLensMojo extends AbstractMojo {
                     String subPkg = packageDir.toPath().relativize(file.toPath().getParent()).toString()
                         .replace(java.io.File.separatorChar, '.');
                     String fqn = (subPkg.isEmpty() ? pkg : pkg + "." + subPkg) + "." + simpleClassName;
-                    GapReport report = analyzer.analyze(fqn, method.getNameAsString(), matrix, tests);
+                    GapReport report = analyzer.analyze(fqn, method.getNameAsString(), relativeFilePath, lineNumber, matrix, tests);
                     // Add some hacky fields to Json string or just use the generator
                     allReports.add(report);
                     
@@ -149,6 +156,9 @@ public class ScenarioLensMojo extends AbstractMojo {
 
                 JsonReportGenerator jsonGen = new JsonReportGenerator();
                 jsonGen.generate(allReports, outputDirectory);
+                
+                SonarQubeReportGenerator sonarGen = new SonarQubeReportGenerator();
+                sonarGen.generate(allReports, outputDirectory);
             }
             
         } catch (Exception e) {

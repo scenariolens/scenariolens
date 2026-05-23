@@ -13,7 +13,7 @@ public class GapAnalyzer {
     private final MockitoStubExtractor extractor = new MockitoStubExtractor();
     private final AssertionClassifier classifier = new AssertionClassifier();
 
-    public GapReport analyze(String className, String methodName, List<ScenarioRow> matrix, List<MethodDeclaration> testMethods) {
+    public GapReport analyze(String className, String methodName, String filePath, int lineNumber, List<ScenarioRow> matrix, List<MethodDeclaration> testMethods) {
         List<ScenarioRow> covered = new ArrayList<>();
         List<ScenarioRow> missing = new ArrayList<>(matrix);
         int strongCount = 0;
@@ -37,7 +37,7 @@ public class GapAnalyzer {
         int coveragePercent = matrix.isEmpty() ? 100 : (int) ((covered.size() * 100.0) / matrix.size());
         int strengthPercent = covered.isEmpty() ? 0 : (int) ((strongCount * 100.0) / covered.size());
 
-        return new GapReport(className, methodName, matrix.size(), covered.size(), coveragePercent, strengthPercent, missing, covered);
+        return new GapReport(className, methodName, filePath, lineNumber, matrix.size(), covered.size(), coveragePercent, strengthPercent, missing, covered);
     }
 
     private ScenarioRow matchRow(List<ScenarioRow> matrix, Map<String, String> stubs) {

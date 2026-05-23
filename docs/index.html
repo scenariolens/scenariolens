@@ -1,0 +1,675 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ScenarioLens — Dependency Scenario Coverage for Java</title>
+  <meta name="description" content="ScenarioLens is a static analysis Maven plugin that measures Dependency Scenario Coverage (DSC) — the missing fourth dimension in Java test quality alongside JaCoCo, SonarQube, and PIT." />
+  <meta property="og:title" content="ScenarioLens — Dependency Scenario Coverage for Java" />
+  <meta property="og:description" content="The missing dimension in Java test quality. Finds the scenario combinations your tests don't cover." />
+  <meta property="og:url" content="https://scenariolens.io" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:         #080c18;
+      --bg2:        #0d1120;
+      --bg3:        #111827;
+      --border:     rgba(255,255,255,0.07);
+      --border2:    rgba(99,179,255,0.2);
+      --blue:       #3b82f6;
+      --blue-light: #60a5fa;
+      --cyan:       #06b6d4;
+      --green:      #10b981;
+      --purple:     #8b5cf6;
+      --amber:      #f59e0b;
+      --red:        #ef4444;
+      --text:       #f1f5f9;
+      --text2:      #94a3b8;
+      --text3:      #64748b;
+      --glow:       rgba(59,130,246,0.15);
+      --glow2:      rgba(6,182,212,0.1);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 2rem;
+      height: 60px;
+      background: rgba(8,12,24,0.85);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-logo {
+      display: flex; align-items: center; gap: 0.6rem;
+      font-weight: 700; font-size: 1.05rem; color: var(--text);
+      text-decoration: none;
+    }
+    .nav-logo-dot {
+      width: 8px; height: 8px; border-radius: 50%;
+      background: var(--blue);
+      box-shadow: 0 0 8px var(--blue);
+    }
+    .nav-links { display: flex; align-items: center; gap: 1.6rem; }
+    .nav-links a {
+      color: var(--text2); text-decoration: none; font-size: 0.88rem;
+      transition: color .2s;
+    }
+    .nav-links a:hover { color: var(--text); }
+    .nav-cta {
+      display: flex; align-items: center; gap: 0.5rem;
+      background: var(--blue); color: #fff !important;
+      padding: 0.4rem 1rem; border-radius: 6px; font-weight: 600;
+      font-size: 0.85rem !important; transition: background .2s, transform .15s !important;
+    }
+    .nav-cta:hover { background: var(--blue-light) !important; transform: translateY(-1px); }
+
+    /* ── HERO ── */
+    .hero {
+      min-height: 100vh;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      text-align: center;
+      padding: 120px 2rem 80px;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero-bg {
+      position: absolute; inset: 0; pointer-events: none;
+      background:
+        radial-gradient(ellipse 80% 60% at 50% -10%, rgba(59,130,246,0.12), transparent),
+        radial-gradient(ellipse 60% 40% at 80% 80%, rgba(6,182,212,0.07), transparent),
+        radial-gradient(ellipse 50% 50% at 10% 90%, rgba(139,92,246,0.06), transparent);
+    }
+    .hero-grid {
+      position: absolute; inset: 0; pointer-events: none;
+      background-image:
+        linear-gradient(rgba(59,130,246,0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(59,130,246,0.04) 1px, transparent 1px);
+      background-size: 60px 60px;
+      mask-image: radial-gradient(ellipse 80% 70% at 50% 50%, black, transparent);
+    }
+    .badge {
+      display: inline-flex; align-items: center; gap: 0.4rem;
+      background: rgba(59,130,246,0.1); border: 1px solid rgba(59,130,246,0.25);
+      border-radius: 100px; padding: 0.3rem 0.85rem;
+      font-size: 0.78rem; color: var(--blue-light); font-weight: 500;
+      margin-bottom: 1.5rem;
+    }
+    .badge-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--blue); animation: pulse 2s infinite; }
+    @keyframes pulse { 0%,100% { opacity:1; } 50% { opacity:.3; } }
+
+    h1 {
+      font-size: clamp(2.4rem, 6vw, 4.2rem);
+      font-weight: 900; line-height: 1.1;
+      letter-spacing: -0.03em;
+      margin-bottom: 1.2rem;
+      max-width: 800px;
+    }
+    h1 span {
+      background: linear-gradient(135deg, var(--blue) 0%, var(--cyan) 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .hero-sub {
+      font-size: clamp(1rem, 2vw, 1.2rem);
+      color: var(--text2); max-width: 600px;
+      margin-bottom: 2.5rem; line-height: 1.7;
+    }
+    .hero-actions { display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center; margin-bottom: 3.5rem; }
+    .btn {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      padding: 0.7rem 1.5rem; border-radius: 8px;
+      font-weight: 600; font-size: 0.95rem; text-decoration: none;
+      transition: all .2s; cursor: pointer;
+    }
+    .btn-primary {
+      background: var(--blue); color: #fff;
+      box-shadow: 0 0 24px rgba(59,130,246,0.35);
+    }
+    .btn-primary:hover { background: var(--blue-light); transform: translateY(-2px); box-shadow: 0 0 32px rgba(59,130,246,0.5); }
+    .btn-secondary {
+      background: rgba(255,255,255,0.05); color: var(--text);
+      border: 1px solid var(--border);
+    }
+    .btn-secondary:hover { background: rgba(255,255,255,0.09); transform: translateY(-2px); }
+
+    /* four pillars */
+    .pillars {
+      display: flex; gap: 0.6rem; flex-wrap: wrap; justify-content: center;
+    }
+    .pillar {
+      background: rgba(255,255,255,0.04); border: 1px solid var(--border);
+      border-radius: 8px; padding: 0.5rem 1rem;
+      font-size: 0.82rem; color: var(--text2);
+      display: flex; align-items: center; gap: 0.5rem;
+    }
+    .pillar strong { color: var(--text); }
+    .pillar-sep { color: var(--text3); }
+    .pillar-new { background: rgba(59,130,246,0.1); border-color: rgba(59,130,246,0.3); color: var(--blue-light); }
+    .pillar-new strong { color: var(--blue-light); }
+
+    /* ── SECTIONS COMMON ── */
+    section { padding: 80px 2rem; }
+    .container { max-width: 1080px; margin: 0 auto; }
+    .section-label {
+      font-size: 0.75rem; font-weight: 600; letter-spacing: 0.12em;
+      text-transform: uppercase; color: var(--blue); margin-bottom: 0.75rem;
+    }
+    h2 {
+      font-size: clamp(1.7rem, 3.5vw, 2.4rem);
+      font-weight: 800; letter-spacing: -0.02em; margin-bottom: 1rem;
+    }
+    .section-sub { color: var(--text2); font-size: 1.05rem; max-width: 600px; line-height: 1.7; }
+
+    /* ── PROBLEM SECTION ── */
+    .problem { background: var(--bg2); }
+    .problem-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1.5rem; margin-top: 3rem;
+    }
+    .problem-card {
+      background: var(--bg3); border: 1px solid var(--border);
+      border-radius: 12px; padding: 1.5rem;
+      transition: border-color .2s, transform .2s;
+    }
+    .problem-card:hover { border-color: var(--border2); transform: translateY(-3px); }
+    .problem-card.highlight { border-color: rgba(59,130,246,0.4); background: rgba(59,130,246,0.05); }
+    .tool-name { font-weight: 700; font-size: 1rem; margin-bottom: 0.35rem; }
+    .tool-desc { font-size: 0.85rem; color: var(--text2); margin-bottom: 0.75rem; }
+    .tool-gap { font-size: 0.82rem; padding: 0.3rem 0.6rem; border-radius: 5px; display: inline-block; }
+    .gap-no { background: rgba(239,68,68,0.1); color: #fca5a5; }
+    .gap-yes { background: rgba(16,185,129,0.1); color: #6ee7b7; font-weight: 600; }
+
+    /* ── HOW IT WORKS ── */
+    .pipeline {
+      display: flex; flex-direction: column; gap: 1rem; margin-top: 3rem;
+      position: relative;
+    }
+    .pipeline::before {
+      content: ''; position: absolute; left: 19px; top: 0; bottom: 0; width: 2px;
+      background: linear-gradient(to bottom, var(--blue), var(--cyan));
+      opacity: 0.3; border-radius: 2px;
+    }
+    .step {
+      display: flex; gap: 1.2rem; align-items: flex-start;
+      background: var(--bg3); border: 1px solid var(--border);
+      border-radius: 10px; padding: 1.1rem 1.3rem;
+      transition: border-color .2s, transform .2s;
+    }
+    .step:hover { border-color: var(--border2); transform: translateX(4px); }
+    .step-num {
+      width: 38px; height: 38px; min-width: 38px; border-radius: 8px;
+      background: linear-gradient(135deg, var(--blue), var(--cyan));
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 700; font-size: 0.85rem; color: #fff;
+    }
+    .step-content h3 { font-size: 0.95rem; font-weight: 700; margin-bottom: 0.2rem; }
+    .step-content p { font-size: 0.85rem; color: var(--text2); }
+    .step-tag {
+      margin-left: auto; min-width: max-content;
+      font-size: 0.72rem; padding: 0.2rem 0.55rem; border-radius: 4px;
+      background: rgba(59,130,246,0.1); color: var(--blue-light); font-weight: 500;
+    }
+
+    /* ── QUICK START ── */
+    .quickstart { background: var(--bg2); }
+    .code-block {
+      background: #0d1117; border: 1px solid var(--border);
+      border-radius: 12px; overflow: hidden; margin-top: 2rem;
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .code-header {
+      display: flex; align-items: center; gap: 0.5rem;
+      padding: 0.75rem 1rem; border-bottom: 1px solid var(--border);
+      background: rgba(255,255,255,0.03);
+    }
+    .code-dot { width: 10px; height: 10px; border-radius: 50%; }
+    .code-dot:nth-child(1) { background: #ef4444; }
+    .code-dot:nth-child(2) { background: #f59e0b; }
+    .code-dot:nth-child(3) { background: #22c55e; }
+    .code-filename { color: var(--text3); font-size: 0.78rem; margin-left: auto; }
+    .code-body { padding: 1.5rem; overflow-x: auto; }
+    .code-body pre { font-size: 0.85rem; line-height: 1.7; white-space: pre; }
+    .c-comment { color: #6e7681; }
+    .c-cmd { color: #79c0ff; }
+    .c-str { color: #a5d6ff; }
+    .c-xml-tag { color: #7ee787; }
+    .c-xml-val { color: #e3b341; }
+    .c-out { color: #6ee7b7; }
+    .c-warn { color: #f59e0b; }
+    .c-dim { color: #484f58; }
+
+    /* ── REPORT TIERS ── */
+    .tiers-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.5rem; margin-top: 2.5rem;
+    }
+    .tier-card {
+      border-radius: 12px; padding: 1.5rem;
+      border: 1px solid var(--border);
+      transition: transform .2s, border-color .2s;
+    }
+    .tier-card:hover { transform: translateY(-3px); }
+    .tier-card.tier-auto { background: rgba(16,185,129,0.05); border-color: rgba(16,185,129,0.25); }
+    .tier-card.tier-boundary { background: rgba(245,158,11,0.05); border-color: rgba(245,158,11,0.25); }
+    .tier-card.tier-info { background: rgba(99,102,241,0.05); border-color: rgba(99,102,241,0.25); }
+    .tier-badge {
+      display: inline-block; font-size: 0.72rem; font-weight: 700;
+      letter-spacing: 0.06em; padding: 0.2rem 0.6rem; border-radius: 4px;
+      margin-bottom: 0.75rem;
+    }
+    .tier-auto .tier-badge { background: rgba(16,185,129,0.15); color: #6ee7b7; }
+    .tier-boundary .tier-badge { background: rgba(245,158,11,0.15); color: #fcd34d; }
+    .tier-info .tier-badge { background: rgba(99,102,241,0.15); color: #a5b4fc; }
+    .tier-card h3 { font-size: 1rem; font-weight: 700; margin-bottom: 0.4rem; }
+    .tier-card p { font-size: 0.85rem; color: var(--text2); }
+
+    /* ── AI AGENT ── */
+    .ai-agent { background: var(--bg2); }
+    .agent-box {
+      background: var(--bg3); border: 1px solid var(--border2);
+      border-radius: 12px; padding: 2rem; margin-top: 2.5rem;
+      position: relative; overflow: hidden;
+    }
+    .agent-box::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0; height: 2px;
+      background: linear-gradient(90deg, var(--blue), var(--cyan), var(--purple));
+    }
+    .agent-prompt {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.88rem; line-height: 1.8;
+      color: var(--text2);
+      background: rgba(0,0,0,0.3); border: 1px solid var(--border);
+      border-radius: 8px; padding: 1rem 1.2rem;
+      margin: 1.2rem 0;
+    }
+    .agent-prompt em { color: var(--cyan); font-style: normal; font-weight: 500; }
+    .agent-tags { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 1rem; }
+    .agent-tag {
+      font-size: 0.78rem; padding: 0.25rem 0.65rem; border-radius: 5px;
+      background: rgba(255,255,255,0.05); color: var(--text2);
+    }
+
+    /* ── COMPARISON TABLE ── */
+    .compare-table {
+      width: 100%; border-collapse: collapse; margin-top: 2.5rem;
+      font-size: 0.88rem;
+    }
+    .compare-table th {
+      text-align: left; padding: 0.6rem 1rem;
+      color: var(--text3); font-weight: 600; font-size: 0.78rem;
+      letter-spacing: 0.06em; text-transform: uppercase;
+      border-bottom: 1px solid var(--border);
+    }
+    .compare-table td {
+      padding: 0.65rem 1rem;
+      border-bottom: 1px solid var(--border);
+      vertical-align: middle;
+    }
+    .compare-table tr:last-child td { border-bottom: none; }
+    .compare-table tr:hover td { background: rgba(255,255,255,0.02); }
+    .compare-table td:first-child { font-weight: 600; color: var(--text); }
+    .tick { color: var(--green); font-size: 1rem; }
+    .cross { color: var(--text3); font-size: 0.9rem; }
+    .compare-table .highlight-col { color: var(--blue-light); font-weight: 600; }
+
+    /* ── STATS ── */
+    .stats {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 1.5rem; margin-top: 3rem;
+    }
+    .stat-card {
+      background: var(--bg3); border: 1px solid var(--border);
+      border-radius: 12px; padding: 1.5rem; text-align: center;
+    }
+    .stat-num {
+      font-size: 2.2rem; font-weight: 900; letter-spacing: -0.03em;
+      background: linear-gradient(135deg, var(--blue), var(--cyan));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .stat-label { font-size: 0.82rem; color: var(--text2); margin-top: 0.3rem; }
+
+    /* ── FOOTER ── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 3rem 2rem;
+      text-align: center; color: var(--text3); font-size: 0.85rem;
+    }
+    footer a { color: var(--text2); text-decoration: none; }
+    footer a:hover { color: var(--text); }
+    .footer-links { display: flex; justify-content: center; gap: 2rem; flex-wrap: wrap; margin-bottom: 1.5rem; }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 640px) {
+      .nav-links a:not(.nav-cta) { display: none; }
+      .step { flex-wrap: wrap; }
+      .step-tag { margin-left: 0; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ── NAV ── -->
+<nav>
+  <a href="/" class="nav-logo">
+    <div class="nav-logo-dot"></div>
+    ScenarioLens
+  </a>
+  <div class="nav-links">
+    <a href="#how-it-works">How It Works</a>
+    <a href="#quickstart">Quick Start</a>
+    <a href="#roadmap">Roadmap</a>
+    <a href="https://github.com/scenariolens/scenariolens" class="nav-cta" target="_blank" rel="noopener">
+      <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+      GitHub
+    </a>
+  </div>
+</nav>
+
+<!-- ── HERO ── -->
+<section class="hero" id="home">
+  <div class="hero-bg"></div>
+  <div class="hero-grid"></div>
+  <div class="badge"><div class="badge-dot"></div> Phase 1 Complete · Open Source · Apache 2.0</div>
+  <h1>The <span>Missing Dimension</span><br>in Java Test Quality</h1>
+  <p class="hero-sub">
+    JaCoCo tells you what code ran. SonarQube tells you which branches executed.
+    PIT tells you if your assertions are strong. <strong>ScenarioLens tells you if you tested the right scenarios.</strong>
+  </p>
+  <div class="hero-actions">
+    <a href="#quickstart" class="btn btn-primary">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+      Get Started
+    </a>
+    <a href="https://github.com/scenariolens/scenariolens" class="btn btn-secondary" target="_blank" rel="noopener">
+      View on GitHub
+    </a>
+    <a href="sample-report/report.html" class="btn btn-secondary">
+      Sample Report →
+    </a>
+  </div>
+  <div class="pillars">
+    <div class="pillar"><strong>JaCoCo</strong><span class="pillar-sep">/</span> Did this code run?</div>
+    <div class="pillar"><strong>SonarQube</strong><span class="pillar-sep">/</span> Did branches execute?</div>
+    <div class="pillar"><strong>PIT</strong><span class="pillar-sep">/</span> Are assertions strong?</div>
+    <div class="pillar pillar-new"><strong>ScenarioLens</strong><span class="pillar-sep">/</span> Are the right scenarios tested?</div>
+  </div>
+</section>
+
+<!-- ── PROBLEM ── -->
+<section class="problem" id="problem">
+  <div class="container">
+    <p class="section-label">The Problem</p>
+    <h2>100% Branch Coverage.<br>Still Missing Critical Bugs.</h2>
+    <p class="section-sub">A test suite can achieve 100% branch coverage while missing entire combinations of dependency behaviors — and none of your existing tools will tell you.</p>
+
+    <div class="stats">
+      <div class="stat-card"><div class="stat-num">5,229</div><div class="stat-label">Methods analyzed across 5 corpora</div></div>
+      <div class="stat-card"><div class="stat-num">99.97%</div><div class="stat-label">Max pruning ratio (Spring PetClinic)</div></div>
+      <div class="stat-card"><div class="stat-num">0</div><div class="stat-label">Crashes across Kafka, Spring, Baeldung</div></div>
+      <div class="stat-card"><div class="stat-num">&lt;750ms</div><div class="stat-label">Per-package analysis time</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ── HOW IT WORKS ── -->
+<section id="how-it-works">
+  <div class="container">
+    <p class="section-label">How It Works</p>
+    <h2>Pure Static Analysis.<br>No Test Re-execution.</h2>
+    <p class="section-sub">ScenarioLens analyzes your source and test files at rest — no runtime, no instrumentation, no classpath execution.</p>
+
+    <div class="pipeline">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-content">
+          <h3>Parse Method AST</h3>
+          <p>JavaParser + JavaSymbolSolver builds a full typed AST of the method under test.</p>
+        </div>
+        <span class="step-tag">MethodParser</span>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-content">
+          <h3>Detect Outgoing Calls</h3>
+          <p>Identifies all injected dependencies — Spring Data repos, Feign clients, KafkaTemplate, event publishers.</p>
+        </div>
+        <span class="step-tag">OutgoingCallDetector</span>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-content">
+          <h3>Build Control Flow Graph</h3>
+          <p>AST-driven CFG with if/else, try/catch, switch, and nested condition edges — no bytecode required.</p>
+        </div>
+        <span class="step-tag">CfgBuilder</span>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-content">
+          <h3>Enumerate Return Variations</h3>
+          <p>Generates stub variations per call: enum constants, null returns, boolean outcomes, exception paths, void presence/absence.</p>
+        </div>
+        <span class="step-tag">ReturnVariationEnumerator</span>
+      </div>
+      <div class="step">
+        <div class="step-num">5</div>
+        <div class="step-content">
+          <h3>Prune Impossible Combinations</h3>
+          <p>Three-rule CFG pruning eliminates scenarios that cannot coexist on any execution path. Up to 99.97% pruning on real codebases.</p>
+        </div>
+        <span class="step-tag">PathPruner</span>
+      </div>
+      <div class="step">
+        <div class="step-num">6</div>
+        <div class="step-content">
+          <h3>Extract Existing Mockito Stubs</h3>
+          <p>Parses when/thenReturn, when/thenThrow, doReturn from test classes including @BeforeEach setup merging.</p>
+        </div>
+        <span class="step-tag">MockitoStubExtractor</span>
+      </div>
+      <div class="step">
+        <div class="step-num">7</div>
+        <div class="step-content">
+          <h3>Report Gaps with Risk Weighting</h3>
+          <p>Matches pruned scenario matrix against existing tests. Gaps are classified AUTO-VALIDATED, BOUNDARY, or INFO with actionable recommendations.</p>
+        </div>
+        <span class="step-tag">GapAnalyzer</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── COMPARISON ── -->
+<section style="background: var(--bg2);" id="comparison">
+  <div class="container">
+    <p class="section-label">Coverage Gaps</p>
+    <h2>What ScenarioLens Catches<br>That Other Tools Miss</h2>
+
+    <table class="compare-table">
+      <thead>
+        <tr>
+          <th>Gap Type</th>
+          <th>JaCoCo</th>
+          <th>SonarQube</th>
+          <th>PIT</th>
+          <th class="highlight-col">ScenarioLens</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>Missing scenario combinations</td><td><span class="cross">—</span></td><td><span class="cross">—</span></td><td><span class="cross">—</span></td><td class="highlight-col"><span class="tick">✓</span></td></tr>
+        <tr><td>Enum value coverage gaps</td><td><span class="cross">—</span></td><td><span class="cross">—</span></td><td><span class="cross">—</span></td><td class="highlight-col"><span class="tick">✓</span></td></tr>
+        <tr><td>Null return from dependency untested</td><td><span class="cross">—</span></td><td><span class="cross">—</span></td><td><span class="cross">—</span></td><td class="highlight-col"><span class="tick">✓</span></td></tr>
+        <tr><td>Specific stub combinations missing</td><td><span class="cross">—</span></td><td><span class="cross">—</span></td><td><span class="cross">—</span></td><td class="highlight-col"><span class="tick">✓</span></td></tr>
+        <tr><td>Weak assertions (assertNotNull)</td><td><span class="cross">—</span></td><td><span class="cross">—</span></td><td><span class="tick">✓</span></td><td class="highlight-col"><span class="tick">✓</span></td></tr>
+        <tr><td>Untested branches</td><td><span class="cross">—</span></td><td><span class="tick">✓</span></td><td><span class="tick">✓</span></td><td class="highlight-col"><span class="tick">✓</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ── REPORT TIERS ── -->
+<section id="report">
+  <div class="container">
+    <p class="section-label">Report</p>
+    <h2>Three-Tier Gap Report</h2>
+    <p class="section-sub">Every gap is classified by how much the tool can verify automatically.</p>
+
+    <div class="tiers-grid">
+      <div class="tier-card tier-auto">
+        <span class="tier-badge">AUTO-VALIDATED</span>
+        <h3>Tool-verified gaps</h3>
+        <p>ScenarioLens fully verifies presence and correctness. Missing scenarios fail the build at your configured threshold.</p>
+      </div>
+      <div class="tier-card tier-boundary">
+        <span class="tier-badge">BOUNDARY</span>
+        <h3>Boundary scenarios</h3>
+        <p>Tool generates the scenario, developer confirms the stub values. Useful for config-driven thresholds and numeric boundaries.</p>
+      </div>
+      <div class="tier-card tier-info">
+        <span class="tier-badge">INFO</span>
+        <h3>Advisory items</h3>
+        <p>Tool cannot validate statically. Surfaced for manual or LLM review. Never fails the build.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── QUICK START ── -->
+<section class="quickstart" id="quickstart">
+  <div class="container">
+    <p class="section-label">Quick Start</p>
+    <h2>Up and Running in Minutes</h2>
+    <p class="section-sub">Add the plugin, run one command, get a scenario coverage report.</p>
+
+    <div class="code-block">
+      <div class="code-header">
+        <div class="code-dot"></div><div class="code-dot"></div><div class="code-dot"></div>
+        <span class="code-filename">pom.xml</span>
+      </div>
+      <div class="code-body">
+        <pre><span class="c-xml-tag">&lt;plugin&gt;</span>
+  <span class="c-xml-tag">&lt;groupId&gt;</span><span class="c-xml-val">io.scenariolens</span><span class="c-xml-tag">&lt;/groupId&gt;</span>
+  <span class="c-xml-tag">&lt;artifactId&gt;</span><span class="c-xml-val">scenariolens-maven-plugin</span><span class="c-xml-tag">&lt;/artifactId&gt;</span>
+  <span class="c-xml-tag">&lt;version&gt;</span><span class="c-xml-val">0.1.0-SNAPSHOT</span><span class="c-xml-tag">&lt;/version&gt;</span>
+  <span class="c-xml-tag">&lt;configuration&gt;</span>
+    <span class="c-xml-tag">&lt;targetPackage&gt;</span><span class="c-xml-val">com.example.payment</span><span class="c-xml-tag">&lt;/targetPackage&gt;</span>
+    <span class="c-xml-tag">&lt;minScenarioCoverage&gt;</span><span class="c-xml-val">70</span><span class="c-xml-tag">&lt;/minScenarioCoverage&gt;</span>
+    <span class="c-xml-tag">&lt;maxScenariosPerMethod&gt;</span><span class="c-xml-val">500</span><span class="c-xml-tag">&lt;/maxScenariosPerMethod&gt;</span>
+  <span class="c-xml-tag">&lt;/configuration&gt;</span>
+<span class="c-xml-tag">&lt;/plugin&gt;</span></pre>
+      </div>
+    </div>
+
+    <div class="code-block" style="margin-top:1rem;">
+      <div class="code-header">
+        <div class="code-dot"></div><div class="code-dot"></div><div class="code-dot"></div>
+        <span class="code-filename">terminal</span>
+      </div>
+      <div class="code-body">
+        <pre><span class="c-comment"># Clone and install</span>
+<span class="c-cmd">git clone</span> <span class="c-str">https://github.com/scenariolens/scenariolens.git</span>
+<span class="c-cmd">cd</span> scenariolens <span class="c-dim">&amp;&amp;</span> <span class="c-cmd">mvn install</span> <span class="c-str">-DskipTests -q</span>
+
+<span class="c-comment"># Run against the example payment service</span>
+<span class="c-cmd">cd</span> examples/payment-service
+<span class="c-cmd">mvn scenariolens:analyze</span> <span class="c-str">-DtargetPackage=com.example.payment</span>
+
+<span class="c-comment"># Output</span>
+<span class="c-out">[INFO] Methods analyzed: 22</span>
+<span class="c-out">[INFO] Total scenarios:  84</span>
+<span class="c-warn">[WARN] AUTO-VALIDATED MISSING — order status CANCELLED</span>
+<span class="c-out">[INFO] Report: target/scenariolens/report.html</span></pre>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── AI AGENT ── -->
+<section class="ai-agent" id="ai-agent">
+  <div class="container">
+    <p class="section-label">AI Agent Workflow</p>
+    <h2>LLM-Ready.<br>Zero Integration Work.</h2>
+    <p class="section-sub">The JSON report is already structured for LLM consumption. Any agent that can run shell commands and read files can close gaps automatically.</p>
+
+    <div class="agent-box">
+      <p style="font-size:0.85rem; color: var(--text3); margin-bottom:0.5rem;">AGENT INSTRUCTION</p>
+      <div class="agent-prompt">
+        Run the ScenarioLens Maven plugin which generates a coverage gap analysis report at
+        <em>target/scenariolens/report.json</em>.
+        Review the report and generate missing tests.
+        Repeat until DSC score is above <em>80%</em>.
+      </div>
+      <p style="font-size:0.85rem; color:var(--text2);">Works today with any agent that can run shell commands and read files. No API keys, no provider lock-in, no maintenance burden.</p>
+      <div class="agent-tags">
+        <span class="agent-tag">Claude</span>
+        <span class="agent-tag">Gemini</span>
+        <span class="agent-tag">GitHub Copilot</span>
+        <span class="agent-tag">GPT-4</span>
+        <span class="agent-tag">Any shell-capable agent</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── ROADMAP PREVIEW ── -->
+<section id="roadmap">
+  <div class="container">
+    <p class="section-label">Roadmap</p>
+    <h2>What's Next</h2>
+    <p class="section-sub">Phase 1 is complete and hardened. These are the highest-ROI items coming next.</p>
+
+    <div class="problem-grid" style="margin-top:2rem;">
+      <div class="problem-card">
+        <div class="tool-name" style="color:var(--green);">Phase 2</div>
+        <div class="tool-desc">Hybrid Boundary Resolution — resolve dynamic boundary values without test execution via purity gate + @Value properties parsing.</div>
+        <span class="tool-gap gap-no">Planned</span>
+      </div>
+      <div class="problem-card">
+        <div class="tool-name" style="color:var(--blue-light);">Phase 3</div>
+        <div class="tool-desc">Ecosystem Expansion — SonarQube generic XML, LCOV output, Gradle plugin, WireMock stub extraction, @MockBean support.</div>
+        <span class="tool-gap gap-no">Planned</span>
+      </div>
+      <div class="problem-card">
+        <div class="tool-name" style="color:var(--purple);">Phase 4</div>
+        <div class="tool-desc">Advanced Analysis — multi-method flow tracing, numeric boundary inference, assertion causal correctness hints.</div>
+        <span class="tool-gap gap-no">Planned</span>
+      </div>
+    </div>
+    <p style="margin-top:1.5rem; font-size:0.9rem;">
+      <a href="https://github.com/scenariolens/scenariolens/blob/main/ROADMAP.md" style="color:var(--blue-light); text-decoration:none;" target="_blank" rel="noopener">View full ROADMAP.md →</a>
+    </p>
+  </div>
+</section>
+
+<!-- ── FOOTER ── -->
+<footer>
+  <div class="footer-links">
+    <a href="https://github.com/scenariolens/scenariolens" target="_blank" rel="noopener">GitHub</a>
+    <a href="https://github.com/scenariolens/scenariolens/blob/main/README.md" target="_blank" rel="noopener">Documentation</a>
+    <a href="https://github.com/scenariolens/scenariolens/blob/main/ROADMAP.md" target="_blank" rel="noopener">Roadmap</a>
+    <a href="https://github.com/scenariolens/scenariolens/blob/main/CONTRIBUTING.md" target="_blank" rel="noopener">Contributing</a>
+    <a href="sample-report/report.html">Sample Report</a>
+  </div>
+  <p>ScenarioLens is open source under the <a href="https://github.com/scenariolens/scenariolens/blob/main/LICENSE" target="_blank" rel="noopener">Apache 2.0 License</a>.</p>
+  <p style="margin-top:0.4rem; font-size:0.78rem;">© 2026 ScenarioLens · <a href="https://scenariolens.io">scenariolens.io</a></p>
+</footer>
+
+</body>
+</html>

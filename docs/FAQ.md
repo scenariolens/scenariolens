@@ -26,3 +26,12 @@ Yes, if the exceptions are of distinctly different types, you should catch them 
 Because ScenarioLens relies entirely on static analysis (reading the code's structure rather than running it in a JVM), it has specific blind spots:
 * **Heavy AOP and Reflection:** It cannot easily trace routing changes dictated by complex Aspect-Oriented Programming, dynamic proxies, or runtime reflection.
 * **Business Logic Impossibilities:** It prunes mathematically impossible paths, but it does not know your business rules. If a user status is `NEW`, business logic might dictate their balance is always `0`. The tool might flag `NEW` + `HIGH_BALANCE` as an untested scenario, requiring the developer to manually acknowledge and dismiss the warning.
+
+### 7. Why is my DSC score 0%? I don't use Mockito!
+If your repository heavily relies on concrete dummy implementations, state-based fakes (e.g., `Spring Retry`, `Spring Cloud OpenFeign`), or in-memory databases instead of Mockito, ScenarioLens will currently report 0% DSC. Phase 1 exclusively analyzes Mockito (`when/thenReturn`) stubs. Support for state-based fakes and test doubles is actively planned for [Phase 5](ROADMAP.md#phase-5--concrete-fake--dummy-resolution) to ensure teams using these testing best practices are accurately scored.
+
+### 8. Does ScenarioLens force me to write 50 separate test methods for 50 scenarios?
+Not at all. ScenarioLens analyzes your test classes holistically. You can satisfy 50 scenarios using a single `@ParameterizedTest` with 50 inputs, or by stubbing multiple behaviors within a few well-structured tests. The tool intelligently merges stubs from `@BeforeEach` and individual `@Test` methods, caring only that the *combinations* of dependency outputs are exercised somewhere in the test suite.
+
+### 9. What if I handle exceptions globally using `@ControllerAdvice` instead of `try/catch` inside the method?
+ScenarioLens builds a Control Flow Graph (CFG) of the *method under test*. If a dependency throws an exception and your method propagates it upwards (without catching it), that constitutes a distinct exit path in the CFG. To satisfy this scenario, you simply need a unit test that mocks the dependency to throw the exception, and asserts that your method also throws it (e.g., using `assertThrows(...)`).

@@ -100,81 +100,102 @@ public class PathPruner {
                 String cond = edge.getSource().getAstNode().toString();
                 boolean isTrueEdge = (edge.getType() == CfgEdge.EdgeType.CONDITION_TRUE);
                 
-                boolean matchesNull = false;
-                for (StubVariation stub : combination) {
-                    // Phase 1: match condition variable to either the dependency name (variableName)
-                    // or the local variable the return value was assigned to (assignedTo)
-                    String varName = stub.getCallNode().getVariableName();
-                    String assignedTo = stub.getCallNode().getAssignedTo();
-                    boolean condMatchesVar = (!varName.isEmpty() && cond.contains(varName))
-                                         || (!assignedTo.isEmpty() && cond.contains(assignedTo));
-                    if (condMatchesVar) {
-                        if (stub.getType() == StubVariation.VariationType.NULL_RETURN) {
-                            // Check against the assigned local variable (e.g. "order")
-                            String checkName = assignedTo.isEmpty() ? varName : assignedTo;
-                            if (cond.contains(checkName + " == null") || cond.contains("null == " + checkName) || cond.contains(checkName + "==null")) {
-                                matchesNull = true;
+                if (edge.getConditionValue() != null) {
+                    String caseLabel = edge.getConditionValue();
+                    for (StubVariation stub : combination) {
+                        String varName = stub.getCallNode().getVariableName();
+                        String assignedTo = stub.getCallNode().getAssignedTo();
+                        boolean condMatches = (!varName.isEmpty() && cond.contains(varName))
+                                           || (!assignedTo.isEmpty() && cond.contains(assignedTo));
+                        if (condMatches) {
+                            String val = stub.getExactValue();
+                            if (val != null) {
+                                boolean isExplicitEnum = stub.getType() == StubVariation.VariationType.ENUM_CONSTANT;
+                                if (isExplicitEnum || val.contains("status=")) {
+                                    if (!caseLabel.equals("default") && !val.contains(caseLabel)) {
+                                        return false;
+                                    }
+                                }
                             }
                         }
                     }
-                }
-                
-                if (cond.contains("||")) {
-                    if (matchesNull && !isTrueEdge) return false;
-                    boolean isOrNullCheck = cond.contains("== null");
-                    if (isOrNullCheck && isTrueEdge && !matchesNull) return false;
                 } else {
+                    boolean matchesNull = false;
                     for (StubVariation stub : combination) {
+                        // Phase 1: match condition variable to either the dependency name (variableName)
+                        // or the local variable the return value was assigned to (assignedTo)
                         String varName = stub.getCallNode().getVariableName();
-                        String assignedTo2 = stub.getCallNode().getAssignedTo();
-                        // Match condition on the dependency var or the local variable holding the return value
-                        boolean condMatches = (!varName.isEmpty() && cond.contains(varName))
-                                          || (!assignedTo2.isEmpty() && cond.contains(assignedTo2));
-                        String checkName = assignedTo2.isEmpty() ? varName : assignedTo2;
-                        if (condMatches) {
+                        String assignedTo = stub.getCallNode().getAssignedTo();
+                        boolean condMatchesVar = (!varName.isEmpty() && cond.contains(varName))
+                                             || (!assignedTo.isEmpty() && cond.contains(assignedTo));
+                        if (condMatchesVar) {
                             if (stub.getType() == StubVariation.VariationType.NULL_RETURN) {
-                                // null return → must take true branch of "x == null", false branch of "x != null"
-                                boolean isNullCheck = cond.contains(checkName + " == null") || cond.contains("null == " + checkName);
-                                boolean isNotNullCheck = cond.contains(checkName + " != null") || cond.contains("null != " + checkName);
-                                if (isNullCheck && !isTrueEdge) return false;   // order==null, must take true branch
-                                if (isNotNullCheck && isTrueEdge) return false; // order!=null, must take false branch
-                            } else {
-                                // non-null return → must take false branch of "x == null", true branch of "x != null"
-                                boolean isNullCheck = cond.contains(checkName + " == null") || cond.contains("null == " + checkName);
-                                boolean isNotNullCheck = cond.contains(checkName + " != null") || cond.contains("null != " + checkName);
-                                if (isNullCheck && isTrueEdge) return false;    // order!=null, must take false branch
-                                if (isNotNullCheck && !isTrueEdge) return false; // order!=null, must take true branch
+                                // Check against the assigned local variable (e.g. "order")
+                                String checkName = assignedTo.isEmpty() ? varName : assignedTo;
+                                if (cond.contains(checkName + " == null") || cond.contains("null == " + checkName) || cond.contains(checkName + "==null")) {
+                                    matchesNull = true;
+                                }
                             }
-                            
-                            String val = stub.getExactValue();
-                            if (val != null) {
-                                if (cond.contains("\"DELIVERED\"") || cond.contains("DELIVERED")) {
-                                    // Only filter if stub explicitly names an enum constant like DELIVERED, CANCELLED, PENDING
-                                    // Generic VALID_OBJECT stubs (e.g. "Order(valid)") are ambiguous — allow both branches
-                                    boolean isExplicitEnum = stub.getType() == StubVariation.VariationType.ENUM_CONSTANT;
-                                    if (isExplicitEnum) {
-                                        boolean isDelivered = val.contains("DELIVERED");
-                                        if (cond.contains("!")) {
-                                            if (isDelivered && isTrueEdge) return false;
-                                            if (!isDelivered && !isTrueEdge) return false;
-                                        } else {
-                                            if (isDelivered && !isTrueEdge) return false;
-                                            if (!isDelivered && isTrueEdge) return false;
-                                        }
-                                    }
+                        }
+                    }
+                    
+                    if (cond.contains("||")) {
+                        if (matchesNull && !isTrueEdge) return false;
+                        boolean isOrNullCheck = cond.contains("== null");
+                        if (isOrNullCheck && isTrueEdge && !matchesNull) return false;
+                    } else {
+                        for (StubVariation stub : combination) {
+                            String varName = stub.getCallNode().getVariableName();
+                            String assignedTo2 = stub.getCallNode().getAssignedTo();
+                            // Match condition on the dependency var or the local variable holding the return value
+                            boolean condMatches = (!varName.isEmpty() && cond.contains(varName))
+                                              || (!assignedTo2.isEmpty() && cond.contains(assignedTo2));
+                            String checkName = assignedTo2.isEmpty() ? varName : assignedTo2;
+                            if (condMatches) {
+                                if (stub.getType() == StubVariation.VariationType.NULL_RETURN) {
+                                    // null return → must take true branch of "x == null", false branch of "x != null"
+                                    boolean isNullCheck = cond.contains(checkName + " == null") || cond.contains("null == " + checkName);
+                                    boolean isNotNullCheck = cond.contains(checkName + " != null") || cond.contains("null != " + checkName);
+                                    if (isNullCheck && !isTrueEdge) return false;   // order==null, must take true branch
+                                    if (isNotNullCheck && isTrueEdge) return false; // order!=null, must take false branch
+                                } else {
+                                    // non-null return → must take false branch of "x == null", true branch of "x != null"
+                                    boolean isNullCheck = cond.contains(checkName + " == null") || cond.contains("null == " + checkName);
+                                    boolean isNotNullCheck = cond.contains(checkName + " != null") || cond.contains("null != " + checkName);
+                                    if (isNullCheck && isTrueEdge) return false;    // order!=null, must take false branch
+                                    if (isNotNullCheck && !isTrueEdge) return false; // order!=null, must take true branch
                                 }
                                 
-                                if (cond.contains("isSuccess")) {
-                                    // Only filter when the stub explicitly declares boolean outcome
-                                    // VALID_OBJECT stubs can take either branch (success or failure)
-                                    if (stub.getType() == StubVariation.VariationType.BOOLEAN_TRUE) {
-                                        if (cond.contains("!") && isTrueEdge) return false;
-                                        if (!cond.contains("!") && !isTrueEdge) return false;
-                                    } else if (stub.getType() == StubVariation.VariationType.BOOLEAN_FALSE) {
-                                        if (cond.contains("!") && !isTrueEdge) return false;
-                                        if (!cond.contains("!") && isTrueEdge) return false;
+                                String val = stub.getExactValue();
+                                if (val != null) {
+                                    if (cond.contains("\"DELIVERED\"") || cond.contains("DELIVERED")) {
+                                        // Only filter if stub explicitly names an enum constant like DELIVERED, CANCELLED, PENDING
+                                        // Generic VALID_OBJECT stubs (e.g. "Order(valid)") are ambiguous — allow both branches
+                                        boolean isExplicitEnum = stub.getType() == StubVariation.VariationType.ENUM_CONSTANT;
+                                        if (isExplicitEnum) {
+                                            boolean isDelivered = val.contains("DELIVERED");
+                                            if (cond.contains("!")) {
+                                                if (isDelivered && isTrueEdge) return false;
+                                                if (!isDelivered && !isTrueEdge) return false;
+                                            } else {
+                                                if (isDelivered && !isTrueEdge) return false;
+                                                if (!isDelivered && isTrueEdge) return false;
+                                            }
+                                        }
                                     }
-                                    // For VALID_OBJECT / COMPLETES_NORMALLY: allow both branches
+                                    
+                                    if (cond.contains("isSuccess")) {
+                                        // Only filter when the stub explicitly declares boolean outcome
+                                        // VALID_OBJECT stubs can take either branch (success or failure)
+                                        if (stub.getType() == StubVariation.VariationType.BOOLEAN_TRUE) {
+                                            if (cond.contains("!") && isTrueEdge) return false;
+                                            if (!cond.contains("!") && !isTrueEdge) return false;
+                                        } else if (stub.getType() == StubVariation.VariationType.BOOLEAN_FALSE) {
+                                            if (cond.contains("!") && !isTrueEdge) return false;
+                                            if (!cond.contains("!") && isTrueEdge) return false;
+                                        }
+                                        // For VALID_OBJECT / COMPLETES_NORMALLY: allow both branches
+                                    }
                                 }
                             }
                         }

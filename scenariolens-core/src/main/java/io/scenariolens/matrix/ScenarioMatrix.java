@@ -3,6 +3,9 @@ package io.scenariolens.matrix;
 import io.scenariolens.ast.CallNode;
 import io.scenariolens.ast.ReturnVariationEnumerator;
 import io.scenariolens.cfg.PathPruner;
+import com.github.javaparser.ast.body.MethodDeclaration;
+import com.github.javaparser.ast.stmt.ReturnStmt;
+import com.github.javaparser.ast.expr.Expression;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,7 +20,7 @@ public class ScenarioMatrix {
         return rawCount;
     }
 
-    public List<ScenarioRow> generate(com.github.javaparser.ast.body.MethodDeclaration method, List<CallNode> calls) {
+    public List<ScenarioRow> generate(MethodDeclaration method, List<CallNode> calls) {
         List<List<StubVariation>> allVariations = new ArrayList<>();
         
         for (CallNode call : calls) {
@@ -31,8 +34,7 @@ public class ScenarioMatrix {
         List<ScenarioRow> rows = new ArrayList<>();
         int count = 1;
         for (List<StubVariation> combination : pruned) {
-            // POC heuristic to determine expected outcome based on stubs
-            String expected = determineExpectedOutcome(combination);
+            String expected = determineExpectedOutcome(method, calls, combination);
             rows.add(new ScenarioRow(String.format("S%02d", count++), combination, expected));
         }
         return rows;
@@ -59,19 +61,71 @@ public class ScenarioMatrix {
         return result;
     }
 
-    private String determineExpectedOutcome(List<StubVariation> combination) {
-        if (combination.stream().anyMatch(v -> v.getType() == StubVariation.VariationType.NULL_RETURN)) {
-            return "OrderNotFoundException / NPE risk";
+    private String getDeterministicReturn(MethodDeclaration method) {
+        if (!method.getBody().isPresent()) {
+            return "returns " + method.getType().asString();
         }
-        if (combination.stream().anyMatch(v -> v.getExactValue().contains("CANCELLED") || v.getExactValue().contains("PENDING"))) {
-            return "InvalidStateException";
+        List<ReturnStmt> returnStmts = method.findAll(ReturnStmt.class);
+        if (returnStmts.size() == 1) {
+            ReturnStmt stmt = returnStmts.get(0);
+            if (stmt.getExpression().isPresent()) {
+                Expression expr = stmt.getExpression().get();
+                if (expr.isBooleanLiteralExpr()) {
+                    return "returns " + expr.asBooleanLiteralExpr().getValue();
+                } else if (expr.isIntegerLiteralExpr()) {
+                    return "returns " + expr.asIntegerLiteralExpr().getValue();
+                } else if (expr.isDoubleLiteralExpr()) {
+                    return "returns " + expr.asDoubleLiteralExpr().getValue();
+                } else if (expr.isLongLiteralExpr()) {
+                    return "returns " + expr.asLongLiteralExpr().getValue();
+                } else if (expr.isCharLiteralExpr()) {
+                    return "returns '" + expr.asCharLiteralExpr().getValue() + "'";
+                } else if (expr.isStringLiteralExpr()) {
+                    return "returns \"" + expr.asStringLiteralExpr().getValue() + "\"";
+                } else if (expr.isNullLiteralExpr()) {
+                    return "returns null";
+                }
+            }
         }
-        if (combination.stream().anyMatch(v -> v.getExactValue().contains("failed") || v.getExactValue().contains("false"))) {
-            return "RefundResponse.failed";
+        return "returns " + method.getType().asString();
+    }
+
+    private String determineExpectedOutcome(MethodDeclaration method, List<CallNode> calls, List<StubVariation> combination) {
+        if (calls.isEmpty()) {
+            if (method.getType().isVoidType()) {
+                return "completes normally";
+            }
+            return getDeterministicReturn(method);
         }
-        if (combination.stream().anyMatch(v -> v.getType() == StubVariation.VariationType.THROWS_EXCEPTION)) {
-            return "Exception Propagated";
+
+        if (!combination.isEmpty()) {
+            if (combination.stream().anyMatch(v -> v.getType() == StubVariation.VariationType.NULL_RETURN)) {
+                return "OrderNotFoundException / NPE risk";
+            }
+            if (combination.stream().anyMatch(v -> v.getExactValue().contains("CANCELLED") || v.getExactValue().contains("PENDING"))) {
+                return "InvalidStateException";
+            }
+            if (combination.stream().anyMatch(v -> v.getExactValue().contains("failed") || v.getExactValue().contains("false"))) {
+                return "RefundResponse.failed";
+            }
+            if (combination.stream().anyMatch(v -> v.getType() == StubVariation.VariationType.THROWS_EXCEPTION)) {
+                return "Exception Propagated";
+            }
         }
-        return "RefundResponse.success";
+
+        if (method.getType().isVoidType()) {
+            return "completes normally";
+        }
+
+        if (method.getBody().isPresent()) {
+            List<ReturnStmt> returnStmts = method.findAll(ReturnStmt.class);
+            boolean hasSuccessReturn = returnStmts.stream()
+                .anyMatch(r -> r.getExpression().isPresent() && r.getExpression().get().toString().contains("RefundResponse.success()"));
+            if (hasSuccessReturn) {
+                return "RefundResponse.success";
+            }
+        }
+
+        return "returns " + method.getType().asString();
     }
 }

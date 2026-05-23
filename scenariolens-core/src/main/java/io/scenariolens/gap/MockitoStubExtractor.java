@@ -11,6 +11,7 @@ public class MockitoStubExtractor {
 
     public Map<String, String> extractStubs(MethodDeclaration testMethod) {
         Map<String, String> stubs = new HashMap<>();
+        Map<String, Integer> stubCounts = new HashMap<>();
 
         List<MethodCallExpr> calls = testMethod.findAll(MethodCallExpr.class);
         for (MethodCallExpr call : calls) {
@@ -24,7 +25,10 @@ public class MockitoStubExtractor {
                             String stubbedName = stubbedMethod.getNameAsString();
                             String returnValue = call.getArgument(0).toString();
                             
-                            stubs.put(stubbedName, methodName.equals("thenThrow") ? "throws RuntimeException" : returnValue);
+                            int count = stubCounts.getOrDefault(stubbedName, 0) + 1;
+                            stubCounts.put(stubbedName, count);
+                            
+                            stubs.put(stubbedName + "[" + count + "]", methodName.equals("thenThrow") ? "throws RuntimeException" : returnValue);
                         }
                     }
                 }

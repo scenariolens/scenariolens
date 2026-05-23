@@ -108,13 +108,80 @@ public class CfgBuilder {
             
             return merged ? mergeNode : null;
             
+        } else if (stmt instanceof com.github.javaparser.ast.stmt.SwitchStmt) {
+            com.github.javaparser.ast.stmt.SwitchStmt switchStmt = (com.github.javaparser.ast.stmt.SwitchStmt) stmt;
+            CfgNode decisionNode = new CfgNode(CfgNode.NodeType.DECISION, switchStmt.getSelector());
+            previousNode.addEdge(decisionNode, CfgEdge.EdgeType.NORMAL, null);
+            
+            CfgNode mergeNode = new CfgNode(CfgNode.NodeType.MERGE, null);
+            boolean merged = false;
+            
+            for (com.github.javaparser.ast.stmt.SwitchEntry entry : switchStmt.getEntries()) {
+                CfgNode branchStart = new CfgNode(CfgNode.NodeType.MERGE, null);
+                
+                String labelStr = "default";
+                if (!entry.getLabels().isEmpty()) {
+                    labelStr = entry.getLabels().get(0).toString().replace("\"", "");
+                }
+                
+                decisionNode.addEdge(branchStart, CfgEdge.EdgeType.CONDITION_TRUE, labelStr);
+                
+                CfgNode branchEnd = branchStart;
+                for (Statement entryStmt : entry.getStatements()) {
+                    if (branchEnd == null) break;
+                    if (entryStmt instanceof com.github.javaparser.ast.stmt.BreakStmt) {
+                        branchEnd.addEdge(mergeNode, CfgEdge.EdgeType.NORMAL, null);
+                        merged = true;
+                        branchEnd = null;
+                        break;
+                    }
+                    branchEnd = processStatement(entryStmt, branchEnd, catchNode);
+                    if (branchEnd != null && (branchEnd.getType() == CfgNode.NodeType.RETURN || branchEnd.getType() == CfgNode.NodeType.THROW)) {
+                        break;
+                    }
+                }
+                
+                if (branchEnd != null && branchEnd != branchStart) {
+                    branchEnd.addEdge(mergeNode, CfgEdge.EdgeType.NORMAL, null);
+                    merged = true;
+                }
+            }
+            
+            return merged ? mergeNode : null;
+            
         } else if (stmt instanceof ThrowStmt) {
+            List<MethodCallExpr> calls = stmt.findAll(MethodCallExpr.class);
+            CfgNode current = previousNode;
+            for (MethodCallExpr call : calls) {
+                CfgNode callNode = new CfgNode(CfgNode.NodeType.CALL, call);
+                current.addEdge(callNode, CfgEdge.EdgeType.NORMAL, null);
+                if (catchNode != null) {
+                    callNode.addEdge(catchNode, CfgEdge.EdgeType.EXCEPTION, null);
+                } else {
+                    CfgNode methodExit = new CfgNode(CfgNode.NodeType.THROW, null);
+                    callNode.addEdge(methodExit, CfgEdge.EdgeType.EXCEPTION, null);
+                }
+                current = callNode;
+            }
             CfgNode throwNode = new CfgNode(CfgNode.NodeType.THROW, stmt);
-            previousNode.addEdge(throwNode, CfgEdge.EdgeType.NORMAL, null);
+            current.addEdge(throwNode, CfgEdge.EdgeType.NORMAL, null);
             return throwNode;
         } else if (stmt instanceof ReturnStmt) {
+            List<MethodCallExpr> calls = stmt.findAll(MethodCallExpr.class);
+            CfgNode current = previousNode;
+            for (MethodCallExpr call : calls) {
+                CfgNode callNode = new CfgNode(CfgNode.NodeType.CALL, call);
+                current.addEdge(callNode, CfgEdge.EdgeType.NORMAL, null);
+                if (catchNode != null) {
+                    callNode.addEdge(catchNode, CfgEdge.EdgeType.EXCEPTION, null);
+                } else {
+                    CfgNode methodExit = new CfgNode(CfgNode.NodeType.THROW, null);
+                    callNode.addEdge(methodExit, CfgEdge.EdgeType.EXCEPTION, null);
+                }
+                current = callNode;
+            }
             CfgNode returnNode = new CfgNode(CfgNode.NodeType.RETURN, stmt);
-            previousNode.addEdge(returnNode, CfgEdge.EdgeType.NORMAL, null);
+            current.addEdge(returnNode, CfgEdge.EdgeType.NORMAL, null);
             return returnNode;
         } else {
             List<MethodCallExpr> calls = stmt.findAll(MethodCallExpr.class);

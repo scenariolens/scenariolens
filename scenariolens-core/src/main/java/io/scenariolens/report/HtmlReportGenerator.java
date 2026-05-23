@@ -405,9 +405,13 @@ public class HtmlReportGenerator {
 
     private String row(ScenarioRow scenarioRow, String cssClass, String statusText) {
         String stubs = scenarioRow.getStubs().stream()
-            .map(s -> "<div class=\"stub-line\">" +
-                s.getCallNode().getVariableName() + "." + s.getCallNode().getMethodName() +
-                "() <span>→ " + escape(s.getExactValue()) + "</span></div>")
+            .map(s -> {
+                String name = s.getCallNode().getVariableName() + "." + s.getCallNode().getMethodName() + "()";
+                if (s.getCallNode().getOccurrenceIndex() > 0) {
+                    name += "[" + s.getCallNode().getOccurrenceIndex() + "]";
+                }
+                return "<div class=\"stub-line\">" + name + " <span>→ " + escape(s.getExactValue()) + "</span></div>";
+            })
             .collect(Collectors.joining());
             
         if (stubs.isEmpty()) {

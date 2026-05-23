@@ -13,6 +13,7 @@ public class OutgoingCallDetector {
 
     public List<CallNode> detect(MethodDeclaration method) {
         List<CallNode> callNodes = new ArrayList<>();
+        java.util.Map<String, Integer> callCounts = new java.util.HashMap<>();
         
         // Phase 1: extract field names of the enclosing class to filter out non-dependency calls
         // Only calls on injected class fields (e.g. private OrderRepository orderRepository) are relevant
@@ -29,19 +30,29 @@ public class OutgoingCallDetector {
                 String returnType = returnTypeResolved.describe();
                 
                 // Skip static calls (e.g. RefundResponse.success()) — not mockable dependencies
-                if (resolved.isStatic()) return;
+                if (resolved.isStatic()) {
+                    return;
+                }
                 
                 String variableName = extractVariableName(call);
 
                 // Only track calls on class fields (injected dependencies)
                 // Calls on method params (messageDTO.getText()) or local objects are excluded
-                if (!classFieldNames.contains(variableName)) return;
+                if (!classFieldNames.contains(variableName)) {
+                    return;
+                }
 
                 CallNode.CallCategory category = classifyCall(declaringType, methodName);
                 
                 if (category != CallNode.CallCategory.UNKNOWN) {
                     CallNode node = new CallNode(call, variableName, methodName, declaringType, returnType, category);
                     node.setAssignedTo(inferAssignedTo(call));
+                    
+                    String key = variableName + "." + methodName;
+                    int count = callCounts.getOrDefault(key, 0) + 1;
+                    callCounts.put(key, count);
+                    node.setOccurrenceIndex(count);
+                    
                     callNodes.add(node);
                 }
 
@@ -57,6 +68,12 @@ public class OutgoingCallDetector {
                     if (category != CallNode.CallCategory.UNKNOWN) {
                         CallNode node = new CallNode(call, variableName, methodName, variableName + "Type", returnType, category);
                         node.setAssignedTo(inferAssignedTo(call));
+                        
+                        String key = variableName + "." + methodName;
+                        int count = callCounts.getOrDefault(key, 0) + 1;
+                        callCounts.put(key, count);
+                        node.setOccurrenceIndex(count);
+                        
                         callNodes.add(node);
                     }
                 }

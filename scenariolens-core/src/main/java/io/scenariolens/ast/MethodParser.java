@@ -48,7 +48,7 @@ public class MethodParser {
         
         CompilationUnit cu = cuResult.get();
         Optional<MethodDeclaration> method = cu.findFirst(MethodDeclaration.class, 
-                m -> m.getNameAsString().equals(methodName));
+                m -> m.getNameAsString().equals(methodName) && m.getBody().isPresent());
                 
         if (!method.isPresent()) {
             throw new IllegalArgumentException("Method " + methodName + " not found in file: " + sourceFile.getAbsolutePath());

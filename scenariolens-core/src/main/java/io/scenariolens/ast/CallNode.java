@@ -10,6 +10,7 @@ public class CallNode {
     private final String returnType;
     private final CallCategory category;
     private String assignedTo = "";    // local variable the return value is assigned to (e.g. "order")
+    private int occurrenceIndex = 0;
 
     public CallNode(MethodCallExpr methodCallExpr, String variableName, String methodName, String declaringType, String returnType, CallCategory category) {
         this.methodCallExpr = methodCallExpr;
@@ -18,6 +19,12 @@ public class CallNode {
         this.declaringType = declaringType;
         this.returnType = returnType;
         this.category = category;
+    }
+
+    public void setOccurrenceIndex(int occurrenceIndex) { this.occurrenceIndex = occurrenceIndex; }
+    public int getOccurrenceIndex() { return occurrenceIndex; }
+    public String getUniqueKey() {
+        return methodName + (occurrenceIndex > 0 ? "[" + occurrenceIndex + "]" : "");
     }
 
     public void setAssignedTo(String assignedTo) { this.assignedTo = assignedTo; }

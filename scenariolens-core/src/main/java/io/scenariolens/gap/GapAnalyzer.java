@@ -46,7 +46,7 @@ public class GapAnalyzer {
             for (Map.Entry<String, String> entry : stubs.entrySet()) {
                 String stubVal = entry.getValue().replace("Order.builder().status(", "").replace(").build()", "");
                 boolean foundMatch = row.getStubs().stream().anyMatch(
-                        v -> v.getCallNode().getMethodName().equals(entry.getKey()) &&
+                        v -> v.getCallNode().getUniqueKey().equals(entry.getKey()) &&
                              v.getExactValue().contains(stubVal)
                 );
                 if (!foundMatch && !entry.getValue().equals("null")) {

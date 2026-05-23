@@ -12,12 +12,24 @@ import java.util.List;
 
 public class ScenarioMatrix {
 
+    private static final int DEFAULT_MAX_SCENARIOS_PER_METHOD = 500;
+
     private final ReturnVariationEnumerator enumerator = new ReturnVariationEnumerator();
     private final PathPruner pruner = new PathPruner();
     private int rawCount = 0;
+    private int maxScenariosPerMethod = DEFAULT_MAX_SCENARIOS_PER_METHOD;
+    private boolean truncated = false;
 
     public int getRawCount() {
         return rawCount;
+    }
+
+    public boolean isTruncated() {
+        return truncated;
+    }
+
+    public void setMaxScenariosPerMethod(int max) {
+        this.maxScenariosPerMethod = max;
     }
 
     public List<ScenarioRow> generate(MethodDeclaration method, List<CallNode> calls) {
@@ -43,7 +55,16 @@ public class ScenarioMatrix {
 
         List<ScenarioRow> rows = new ArrayList<>();
         int count = 1;
-        for (List<StubVariation> combination : pruned) {
+        this.truncated = false;
+        List<List<StubVariation>> toRender = pruned;
+        if (pruned.size() > maxScenariosPerMethod) {
+            System.err.println("[WARNING] " + method.getNameAsString() + " pruned to " + pruned.size()
+                    + " scenarios — truncating to " + maxScenariosPerMethod
+                    + ". Configure <maxScenariosPerMethod> to adjust.");
+            toRender = pruned.subList(0, maxScenariosPerMethod);
+            this.truncated = true;
+        }
+        for (List<StubVariation> combination : toRender) {
             String expected = determineExpectedOutcome(method, calls, combination);
             rows.add(new ScenarioRow(String.format("S%02d", count++), combination, expected));
         }

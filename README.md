@@ -89,7 +89,7 @@ flowchart TD
 | `CfgBuilder` | AST-driven, not bytecode | Works on source directly; no compilation required |
 | `PathPruner` | 3-rule engine (reachability, exception edges, data flow) | Precisely models which stubs can coexist on the same execution path |
 | `ReturnVariationEnumerator` | `NOT_CALLED` for all non-void types | Boolean and reference returns can both be unreachable depending on path |
-| `ScenarioMatrix` | Cartesian product then prune (hard cap: 50 000 combinations) | Simpler than constraint solving; fast for real service methods; cap prevents heap exhaustion on pathological inputs |
+| `ScenarioMatrix` | Cartesian product then prune (hard cap: 50 000 combinations; output cap: 500 scenarios per method) | Simpler than constraint solving; fast for real service methods; caps prevent heap exhaustion and report bloat on pathological inputs |
 
 ---
 
@@ -258,6 +258,40 @@ Processing time: under 750 ms per package for all corpora tested.
 Phase 2 and Ecosystem Expansion planning is in progress.
 
 Website: https://scenariolens.io
+
+---
+
+## Performance & Known Limitations
+
+Methods with extremely high cyclomatic complexity — 10+ outgoing calls each with independent return variations — can produce a large number of feasible scenarios even after path pruning. ScenarioLens applies two guards:
+
+| Guard | Threshold | Behaviour |
+|---|---|---|
+| Combinatorial expansion cap | 50 000 raw combinations | Method is skipped entirely (`SKIPPED_COMBINATORIAL_LIMIT`) |
+| Per-method scenario output cap | 500 pruned scenarios | Rows beyond the cap are silently dropped; a `[WARNING]` is logged |
+
+The 514-scenario outlier observed during Kafka clients stress-testing is a real example of the second guard triggering. Without the cap, such a method would produce a 514-row HTML table that is effectively unreadable.
+
+**To raise or lower the output cap** add `<maxScenariosPerMethod>` to your plugin configuration:
+
+```xml
+<plugin>
+  <groupId>io.scenariolens</groupId>
+  <artifactId>scenariolens-maven-plugin</artifactId>
+  <configuration>
+    <targetPackage>com.example.payment</targetPackage>
+    <maxScenariosPerMethod>200</maxScenariosPerMethod>
+  </configuration>
+</plugin>
+```
+
+Or pass it on the command line:
+
+```bash
+mvn scenariolens:analyze -DtargetPackage=com.example.payment -DmaxScenariosPerMethod=200
+```
+
+The default of **500** is intentionally generous. For day-to-day reporting 50–100 is usually more practical.
 
 ---
 

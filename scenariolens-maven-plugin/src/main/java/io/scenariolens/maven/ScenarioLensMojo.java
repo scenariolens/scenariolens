@@ -47,6 +47,9 @@ public class ScenarioLensMojo extends AbstractMojo {
     @Parameter(property = "formats")
     private List<String> formats;
 
+    @Parameter(property = "maxScenariosPerMethod", defaultValue = "500")
+    private int maxScenariosPerMethod;
+
     @Parameter(defaultValue = "${project.build.sourceDirectory}", required = true, readonly = true)
     private File sourceDirectory;
 
@@ -111,6 +114,7 @@ public class ScenarioLensMojo extends AbstractMojo {
                     getLog().info("Outgoing calls detected: " + calls.size());
 
                     ScenarioMatrix matrixGen = new ScenarioMatrix();
+                    matrixGen.setMaxScenariosPerMethod(maxScenariosPerMethod);
                     List<ScenarioRow> matrix = matrixGen.generate(method, calls);
                     int rawCount = matrixGen.getRawCount();
                     int prunedCount = matrix.size();

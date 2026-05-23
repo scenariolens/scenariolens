@@ -11,6 +11,7 @@ import io.scenariolens.report.GapReport;
 import io.scenariolens.report.HtmlReportGenerator;
 import io.scenariolens.report.JsonReportGenerator;
 import io.scenariolens.report.SonarQubeReportGenerator;
+import io.scenariolens.report.LcovReportGenerator;
 
 import com.github.javaparser.JavaParser;
 import com.github.javaparser.ast.body.MethodDeclaration;
@@ -159,6 +160,9 @@ public class ScenarioLensMojo extends AbstractMojo {
                 
                 SonarQubeReportGenerator sonarGen = new SonarQubeReportGenerator();
                 sonarGen.generate(allReports, outputDirectory);
+
+                LcovReportGenerator lcovGen = new LcovReportGenerator();
+                lcovGen.generate(allReports, outputDirectory);
             }
             
         } catch (Exception e) {

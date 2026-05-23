@@ -6,11 +6,14 @@
     <parent>
         <groupId>io.scenariolens</groupId>
         <artifactId>scenariolens-parent</artifactId>
-        <version>0.1.0-SNAPSHOT</version>
+        <version>0.1.0</version>
     </parent>
 
     <artifactId>scenariolens-maven-plugin</artifactId>
     <packaging>maven-plugin</packaging>
+
+    <name>ScenarioLens Maven Plugin</name>
+    <description>Maven plugin to execute ScenarioLens dependency gap analysis during builds.</description>
 
     <dependencies>
         <dependency>

@@ -155,10 +155,18 @@ flowchart TD
 
 ---
 
-## FAQ / Known Limitations
+## ❓ Frequently Asked Questions
+
+Skeptical about how this compares to JaCoCo, SonarQube, or PITest? Wondering about combinatorial explosion or heavy mocking? 
+
+Check out our comprehensive **[Frequently Asked Questions](docs/FAQ.md)** covering:
+- Why standard coverage tools miss these bugs
+- How we solve the combinatorial explosion problem
+- Why static analysis beats mutation testing for this specific problem
+- Known limitations and blind spots
 
 **Why is my DSC score 0%?**
-If your repository heavily relies on concrete dummy implementations or state-based fakes (e.g., `Spring Retry`, `Spring Cloud OpenFeign`) instead of Mockito, ScenarioLens will report 0% DSC. Phase 1 exclusively analyzes Mockito (`when/thenReturn`) stubs. Support for state-based fakes is actively planned for [Phase 5](ROADMAP.md#phase-5--concrete-fake--dummy-resolution) to ensure teams using this best practice are accurately scored.
+If your repository heavily relies on concrete dummy implementations or state-based fakes (e.g., `Spring Retry`, `Spring Cloud OpenFeign`) instead of Mockito, ScenarioLens will report 0% DSC. Phase 1 exclusively analyzes Mockito (`when/thenReturn`) stubs. Support for state-based fakes is actively planned for [Phase 5](ROADMAP.md#phase-5--concrete-fake--dummy-resolution).
 
 ## 🎯 Who is this for?
 

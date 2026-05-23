@@ -37,8 +37,7 @@
     <modules>
         <module>scenariolens-core</module>
         <module>scenariolens-maven-plugin</module>
-        <module>examples/payment-service</module>
-        <module>examples/phantom-exception</module>
+        <!-- Examples excluded from root reactor to prevent Maven Central staging -->
     </modules>
 
     <properties>

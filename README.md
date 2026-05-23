@@ -89,7 +89,7 @@ flowchart TD
 | `CfgBuilder` | AST-driven, not bytecode | Works on source directly; no compilation required |
 | `PathPruner` | 3-rule engine (reachability, exception edges, data flow) | Precisely models which stubs can coexist on the same execution path |
 | `ReturnVariationEnumerator` | `NOT_CALLED` for all non-void types | Boolean and reference returns can both be unreachable depending on path |
-| `ScenarioMatrix` | Cartesian product then prune | Simpler than constraint solving; fast enough for real service methods |
+| `ScenarioMatrix` | Cartesian product then prune (hard cap: 50 000 combinations) | Simpler than constraint solving; fast for real service methods; cap prevents heap exhaustion on pathological inputs |
 
 ---
 
@@ -238,15 +238,22 @@ Adjacent academic work (MockMill 2026, TestGeneralizer 2026, SPARC 2025) validat
 
 ## Status
 
-**Phase 1 complete.** Stress-tested across three corpora with zero crashes:
+**Phase 1 complete — hardened and stress-tested.** Zero crashes across five corpora covering thousands of real-world methods:
 
-| Corpus | Methods | Final Scenarios | Pruning |
-|--------|---------|-----------------|---------|
-| test-project (PaymentService) | 22 | 84 | 82–86% per method |
-| Spring PetClinic | 79 | 93 | up to 99.97% |
-| Baeldung Mockito module | 63 | 68 | 75–82% per method |
+| Corpus | Classes | Methods | Final Scenarios | Pruning | Notes |
+|--------|---------|---------|-----------------|---------|-------|
+| PaymentService (examples/) | 1 | 22 | 84 | 82–86% per method | Includes pathological edge-case methods |
+| Spring PetClinic | — | 79 | 93 | up to 99.97% | Thin service layer; high prune rate expected |
+| Baeldung Mockito module | — | 63 | 68 | 75–82% per method | Tutorial-grade code; solid baseline |
+| Apache Kafka clients | 471 | 3 870 | — | 94–100% per method | No crashes; combinatorial guard activated on complex producers |
+| Spring Framework transactions | 129 | 680 | — | 80–98% per method | No crashes; handles deep Spring proxy chains |
 
-Processing time: under 750ms per package.
+Processing time: under 750 ms per package for all corpora tested.
+
+**Hardening highlights:**
+- Combinatorial explosion guard: `ScenarioMatrix` aborts Cartesian expansion beyond 50 000 raw combinations and marks the method as `SKIPPED_COMBINATORIAL_LIMIT` in the report — prevents heap exhaustion on methods with 10+ injected dependencies.
+- Bug-hunt pass (May 2026): fixed expected-outcome labels, gap-rationale phrasing, and occurrence indices for duplicate dependency calls.
+- 8 unit tests pass (`mvn clean test`) including 5 dedicated edge-case tests.
 
 Phase 2 and Ecosystem Expansion planning is in progress.
 

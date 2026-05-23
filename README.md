@@ -111,6 +111,44 @@ mvn scenariolens:analyze -DtargetPackage=com.example.payment
 
 ---
 
+## Development
+
+### Build
+
+```bash
+git clone https://github.com/scenariolens/scenariolens.git
+cd scenariolens
+mvn install -DskipTests -q
+```
+
+Java 11+ and Maven 3.8+ are required.
+
+### Running the Test Suite
+
+Always run the full suite before committing. A pre-commit hook (`.git/hooks/pre-commit`) runs this automatically on every `git commit`, but you can invoke it manually at any time:
+
+```bash
+mvn clean test -pl scenariolens-core,scenariolens-maven-plugin
+```
+
+Expected output on a green run:
+
+```
+[INFO] Tests run: 18, Failures: 0, Errors: 0, Skipped: 0
+[INFO] BUILD SUCCESS
+```
+
+| Suite | Class | Tests | Covers |
+|---|---|---|---|
+| Unit | `PathPrunerTest` | 3 | CFG pruning correctness |
+| Unit | `EdgeCaseTest` | 5 | Edge cases: no-call, switch, duplicate indices, try/catch |
+| Regression | `ScenarioMatrixRegressionTest` | 5 | `maxScenariosPerMethod` cap, `isTruncated()` semantics |
+| Load | `ScenarioMatrixLoadTest` | 5 | 50k combinatorial guard, output cap, throughput < 5 s |
+
+See [`CONTRIBUTING.md`](CONTRIBUTING.md) for full details on adding tests and making changes.
+
+---
+
 ## AI Agent Workflow
 
 LLM integration is intentionally not built into ScenarioLens. The JSON report is already LLM-ready. Any agent (Claude, Gemini, Copilot, etc.) can drive the iteration loop with this single instruction:
@@ -297,9 +335,14 @@ The default of **500** is intentionally generous. For day-to-day reporting 50–
 
 ## Contributing
 
-Phase 1 is complete and the core architecture is stable! We are now focused on ecosystem expansion (SonarQube XML, LCOV, Gradle) and hybrid boundary resolution. 
+Phase 1 is complete and the core architecture is stable. We are focused on ecosystem expansion (SonarQube XML, LCOV, Gradle) and hybrid boundary resolution.
 
-If you are interested in contributing, check out [`ROADMAP.md`](ROADMAP.md) for prioritized features and open an issue to discuss.
+See [`CONTRIBUTING.md`](CONTRIBUTING.md) for:
+- How to build and run the test suite
+- The pre-commit hook that enforces green tests before every commit
+- Commit conventions and PR process
+
+Check [`ROADMAP.md`](ROADMAP.md) for prioritized features and open an issue to discuss before starting large work.
 
 ---
 

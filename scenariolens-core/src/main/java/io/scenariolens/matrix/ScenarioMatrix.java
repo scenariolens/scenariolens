@@ -22,9 +22,19 @@ public class ScenarioMatrix {
 
     public List<ScenarioRow> generate(MethodDeclaration method, List<CallNode> calls) {
         List<List<StubVariation>> allVariations = new ArrayList<>();
-        
+        long cartesianSize = 1;
         for (CallNode call : calls) {
-            allVariations.add(enumerator.enumerate(call));
+            List<StubVariation> vars = enumerator.enumerate(call);
+            allVariations.add(vars);
+            if (cartesianSize <= 50000) {
+                cartesianSize *= vars.size();
+            }
+        }
+
+        if (cartesianSize > 50000) {
+            System.err.println("[WARNING] Skipping " + method.getNameAsString() + " - Too many combinations (" + cartesianSize + " > 50000)");
+            this.rawCount = (int) Math.min(cartesianSize, Integer.MAX_VALUE);
+            return new ArrayList<>();
         }
 
         List<List<StubVariation>> cartesianProduct = generateCartesianProduct(allVariations);

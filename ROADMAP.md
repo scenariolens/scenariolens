@@ -339,9 +339,9 @@ Both take one day each and put ScenarioLens where engineers already look.
 - [ ] Link arXiv paper in README
 
 ### Maven Central Release
-- [ ] Set version to 0.1.0 in pom.xml
-- [ ] Configure GPG signing (required by Maven Central)
-- [ ] Configure maven-publish plugin with Sonatype credentials
+- [x] Set version to 0.1.0 in pom.xml
+- [x] Configure GPG signing (required by Maven Central)
+- [x] Configure maven-publish plugin with Sonatype credentials
 - [ ] mvn deploy → release via central.sonatype.com UI
 - [ ] Verify artifact available at search.maven.org
 

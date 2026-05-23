@@ -311,14 +311,15 @@ Both take one day each and put ScenarioLens where engineers already look.
 ---
 
 ## Phase 5 — Concrete Fake & Dummy Resolution
-**Goal: Resolve dependency scenarios from state-based fakes and dummy implementations.**
+
+**Goal:** Resolve dependency scenarios from state-based fakes and dummy implementations.
 
 ### Features
-- [ ] **Fake Discovery Mechanism**
-      Scan `src/test/java` for Spring `@TestConfiguration` and `@Bean` definitions that return interface implementations.
-- [ ] **State-Mapping Engine**
-      Analyze the return values of overridden methods in these fakes.
-- [ ] **Scenario Matrix Integration**
+- [x] **Fake Discovery Mechanism**
+      Scan `src/test/java` for Spring `@TestConfiguration` and `@Bean` definitions that return interface implementations (MVP shipped!).
+- [ ] **State-Mapping Engine (GA)**
+      Analyze the conditional return values of overridden methods in these fakes using symbolic execution.
+- [x] **Scenario Matrix Integration**
       Treat a fake's deterministic return values exactly like Mockito stubs to fulfill CFG paths.
 - [ ] **Annotation-based Discovery**
       Explore introducing a `@ScenarioFake` annotation for teams not using Spring DI for tests.

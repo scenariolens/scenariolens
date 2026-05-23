@@ -13,22 +13,51 @@ public class GapAnalyzer {
     private final MockitoStubExtractor extractor = new MockitoStubExtractor();
     private final AssertionClassifier classifier = new AssertionClassifier();
 
-    public GapReport analyze(String className, String methodName, String filePath, int lineNumber, List<ScenarioRow> matrix, List<MethodDeclaration> testMethods) {
+    public GapReport analyze(String className, String methodName, String filePath, int lineNumber, List<ScenarioRow> matrix, List<MethodDeclaration> testMethods, Map<String, Map<String, String>> globalFakes) {
         List<ScenarioRow> covered = new ArrayList<>();
         List<ScenarioRow> missing = new ArrayList<>(matrix);
         int strongCount = 0;
 
-        for (MethodDeclaration test : testMethods) {
-            Map<String, String> stubs = extractor.extractStubs(test);
-            String assertionStrength = classifier.classify(test);
+        // Build the baseline fake stubs that apply to this method
+        java.util.Map<String, String> baseFakeStubs = new java.util.HashMap<>();
+        for (ScenarioRow row : matrix) {
+            for (io.scenariolens.matrix.StubVariation v : row.getStubs()) {
+                io.scenariolens.ast.CallNode call = v.getCallNode();
+                String interfaceName = call.getDeclaringType();
+                if (interfaceName.contains(".")) {
+                    interfaceName = interfaceName.substring(interfaceName.lastIndexOf('.') + 1);
+                }
+                if (globalFakes.containsKey(interfaceName)) {
+                    String fakeReturn = globalFakes.get(interfaceName).get(call.getMethodName());
+                    if (fakeReturn != null) {
+                        baseFakeStubs.put(call.getUniqueKey(), fakeReturn);
+                    }
+                }
+            }
+        }
 
-            ScenarioRow matchedRow = matchRow(matrix, stubs);
-            if (matchedRow != null) {
-                if (!covered.contains(matchedRow)) {
+        if (testMethods.isEmpty()) {
+            if (!baseFakeStubs.isEmpty()) {
+                ScenarioRow matchedRow = matchRow(matrix, baseFakeStubs);
+                if (matchedRow != null && !covered.contains(matchedRow)) {
                     covered.add(matchedRow);
                     missing.remove(matchedRow);
-                    if ("STRONG".equals(assertionStrength)) {
-                        strongCount++;
+                }
+            }
+        } else {
+            for (MethodDeclaration test : testMethods) {
+                Map<String, String> stubs = new java.util.HashMap<>(baseFakeStubs);
+                stubs.putAll(extractor.extractStubs(test)); // Mockito overrides fakes
+                String assertionStrength = classifier.classify(test);
+
+                ScenarioRow matchedRow = matchRow(matrix, stubs);
+                if (matchedRow != null) {
+                    if (!covered.contains(matchedRow)) {
+                        covered.add(matchedRow);
+                        missing.remove(matchedRow);
+                        if ("STRONG".equals(assertionStrength)) {
+                            strongCount++;
+                        }
                     }
                 }
             }

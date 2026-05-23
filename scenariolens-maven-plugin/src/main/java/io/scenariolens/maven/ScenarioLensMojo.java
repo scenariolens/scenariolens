@@ -78,6 +78,12 @@ public class ScenarioLensMojo extends AbstractMojo {
 
             List<GapReport> allReports = new ArrayList<>();
             TestClassParser testParser = new TestClassParser(new JavaParser());
+            
+            io.scenariolens.gap.FakeExtractor fakeExtractor = new io.scenariolens.gap.FakeExtractor(new JavaParser());
+            java.util.Map<String, java.util.Map<String, String>> globalFakes = fakeExtractor.extractFakes(testSourceDirectory);
+            if (!globalFakes.isEmpty()) {
+                getLog().info("Extracted state-based fakes for " + globalFakes.size() + " interfaces");
+            }
 
             long totalProcessingTime = 0;
             int classesAnalyzed = 0;
@@ -136,7 +142,7 @@ public class ScenarioLensMojo extends AbstractMojo {
                     String subPkg = packageDir.toPath().relativize(file.toPath().getParent()).toString()
                         .replace(java.io.File.separatorChar, '.');
                     String fqn = (subPkg.isEmpty() ? pkg : pkg + "." + subPkg) + "." + simpleClassName;
-                    GapReport report = analyzer.analyze(fqn, method.getNameAsString(), relativeFilePath, lineNumber, matrix, tests);
+                    GapReport report = analyzer.analyze(fqn, method.getNameAsString(), relativeFilePath, lineNumber, matrix, tests, globalFakes);
                     // Add some hacky fields to Json string or just use the generator
                     allReports.add(report);
                     

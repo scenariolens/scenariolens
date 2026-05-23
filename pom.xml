@@ -13,6 +13,7 @@
         <module>scenariolens-core</module>
         <module>scenariolens-maven-plugin</module>
         <module>examples/payment-service</module>
+        <module>examples/phantom-exception</module>
     </modules>
 
     <properties>

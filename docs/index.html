@@ -11,11 +11,46 @@
   <meta name="twitter:card" content="summary_large_image" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <script>
+    (function() {
+      const savedTheme = localStorage.getItem('theme');
+      if (savedTheme === 'light') {
+        document.documentElement.setAttribute('data-theme', 'light');
+      }
+    })();
+  </script>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      /* Default Light Mode */
+      /* Default Dark Mode */
+      --bg:         #080c18;
+      --bg2:        #0d1120;
+      --bg3:        #111827;
+      --border:     rgba(255,255,255,0.07);
+      --border2:    rgba(99,179,255,0.2);
+      --blue:       #3b82f6;
+      --blue-light: #60a5fa;
+      --cyan:       #06b6d4;
+      --green:      #10b981;
+      --purple:     #8b5cf6;
+      --amber:      #f59e0b;
+      --red:        #ef4444;
+      --text:       #f1f5f9;
+      --text2:      #94a3b8;
+      --text3:      #64748b;
+      --glow:       rgba(59,130,246,0.15);
+      --glow2:      rgba(6,182,212,0.1);
+      --nav-bg:     rgba(8,12,24,0.85);
+      --btn-sec-bg: rgba(255,255,255,0.05);
+      --btn-sec-hover: rgba(255,255,255,0.09);
+      --hero-grid:  linear-gradient(rgba(59,130,246,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(59,130,246,0.04) 1px, transparent 1px);
+      --pillar-bg:  rgba(255,255,255,0.04);
+      --table-hover: rgba(255,255,255,0.02);
+      --prompt-bg:  rgba(0,0,0,0.3);
+    }
+
+    html[data-theme='light'] {
       --bg:         #ffffff;
       --bg2:        #f8fafc;
       --bg3:        #f1f5f9;
@@ -40,35 +75,6 @@
       --pillar-bg:  rgba(0,0,0,0.03);
       --table-hover: rgba(0,0,0,0.02);
       --prompt-bg:  rgba(0,0,0,0.03);
-    }
-
-    @media (prefers-color-scheme: dark) {
-      :root {
-        --bg:         #080c18;
-        --bg2:        #0d1120;
-        --bg3:        #111827;
-        --border:     rgba(255,255,255,0.07);
-        --border2:    rgba(99,179,255,0.2);
-        --blue:       #3b82f6;
-        --blue-light: #60a5fa;
-        --cyan:       #06b6d4;
-        --green:      #10b981;
-        --purple:     #8b5cf6;
-        --amber:      #f59e0b;
-        --red:        #ef4444;
-        --text:       #f1f5f9;
-        --text2:      #94a3b8;
-        --text3:      #64748b;
-        --glow:       rgba(59,130,246,0.15);
-        --glow2:      rgba(6,182,212,0.1);
-        --nav-bg:     rgba(8,12,24,0.85);
-        --btn-sec-bg: rgba(255,255,255,0.05);
-        --btn-sec-hover: rgba(255,255,255,0.09);
-        --hero-grid:  linear-gradient(rgba(59,130,246,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(59,130,246,0.04) 1px, transparent 1px);
-        --pillar-bg:  rgba(255,255,255,0.04);
-        --table-hover: rgba(255,255,255,0.02);
-        --prompt-bg:  rgba(0,0,0,0.3);
-      }
     }
 
     html { scroll-behavior: smooth; }
@@ -114,6 +120,13 @@
       font-size: 0.85rem !important; transition: background .2s, transform .15s !important;
     }
     .nav-cta:hover { background: var(--blue-light) !important; transform: translateY(-1px); }
+    .theme-toggle {
+      background: none; border: none; cursor: pointer; color: var(--text2);
+      display: flex; align-items: center; justify-content: center;
+      padding: 0.4rem; border-radius: 6px; transition: color .2s, background .2s;
+    }
+    .theme-toggle:hover { color: var(--text); background: var(--btn-sec-bg); }
+    .theme-toggle svg { width: 18px; height: 18px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
 
     /* ── HERO ── */
     .hero {
@@ -416,6 +429,10 @@
     <a href="#how-it-works">How It Works</a>
     <a href="#quickstart">Quick Start</a>
     <a href="#roadmap">Roadmap</a>
+    <button id="theme-toggle" class="theme-toggle" aria-label="Toggle theme">
+      <svg id="moon-icon" viewBox="0 0 24 24" style="display:none;"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+      <svg id="sun-icon" viewBox="0 0 24 24" style="display:block;"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+    </button>
     <a href="https://github.com/scenariolens/scenariolens" class="nav-cta" target="_blank" rel="noopener">
       <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
       GitHub
@@ -436,13 +453,14 @@
   <div class="hero-actions">
     <a href="#quickstart" class="btn btn-primary">
       <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-      Get Started
+      Get Started Fast
     </a>
     <a href="https://github.com/scenariolens/scenariolens" class="btn btn-secondary" target="_blank" rel="noopener">
-      View on GitHub
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+      Star on GitHub
     </a>
     <a href="sample-report/report.html" class="btn btn-secondary">
-      Sample Report →
+      View Sample Report →
     </a>
   </div>
   <div class="pillars">
@@ -578,6 +596,11 @@
     <h2>A Three-Tier Gap Report</h2>
     <p class="section-sub">We hate noisy tools as much as you do. Every coverage gap ScenarioLens finds is strictly categorized by how confidently the tool can verify it, so you know exactly what to fix first.</p>
 
+    <div style="margin: 3rem 0; text-align: center;">
+      <img src="images/report-screenshot.png" alt="ScenarioLens HTML Report from PaymentService Example" style="max-width: 100%; height: auto; border-radius: 12px; border: 1px solid var(--border); box-shadow: 0 20px 40px rgba(0,0,0,0.4);" />
+      <p style="font-size: 0.85rem; color: var(--text3); margin-top: 1rem;">Authentic gap analysis report generated from the <strong>PaymentService</strong> example repository.</p>
+    </div>
+
     <div class="tiers-grid">
       <div class="tier-card tier-auto">
         <span class="tier-badge">AUTO-VALIDATED</span>
@@ -675,6 +698,7 @@
   </div>
 </section>
 
+
 <!-- ── ROADMAP PREVIEW ── -->
 <section id="roadmap">
   <div class="container">
@@ -705,6 +729,24 @@
   </div>
 </section>
 
+<!-- ── BOTTOM CTA ── -->
+<section style="background: var(--bg2); text-align: center; padding: 100px 2rem;">
+  <div class="container">
+    <h2>Stop Guessing. Start Knowing.</h2>
+    <p class="section-sub" style="margin: 0 auto 2.5rem;">Join the engineers shipping resilient code with Dependency Scenario Coverage.</p>
+    <div class="hero-actions" style="margin-bottom: 0;">
+      <a href="#quickstart" class="btn btn-primary">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+        Install ScenarioLens
+      </a>
+      <a href="https://github.com/scenariolens/scenariolens" class="btn btn-secondary" target="_blank" rel="noopener">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+        Star on GitHub
+      </a>
+    </div>
+  </div>
+</section>
+
 <!-- ── FOOTER ── -->
 <footer>
   <div class="footer-links">
@@ -718,5 +760,38 @@
   <p style="margin-top:0.4rem; font-size:0.78rem;">© 2026 ScenarioLens · <a href="https://scenariolens.io">scenariolens.io</a></p>
 </footer>
 
+<script>
+  const themeToggle = document.getElementById('theme-toggle');
+  const htmlEl = document.documentElement;
+  const sunIcon = document.getElementById('sun-icon');
+  const moonIcon = document.getElementById('moon-icon');
+
+  function updateIcons(theme) {
+    if (theme === 'light') {
+      sunIcon.style.display = 'none';
+      moonIcon.style.display = 'block';
+    } else {
+      sunIcon.style.display = 'block';
+      moonIcon.style.display = 'none';
+    }
+  }
+
+  // Initial load
+  updateIcons(htmlEl.getAttribute('data-theme') || 'dark');
+
+  themeToggle.addEventListener('click', () => {
+    let current = htmlEl.getAttribute('data-theme') || 'dark';
+    let next = current === 'dark' ? 'light' : 'dark';
+    
+    if (next === 'light') {
+      htmlEl.setAttribute('data-theme', 'light');
+      localStorage.setItem('theme', 'light');
+    } else {
+      htmlEl.removeAttribute('data-theme');
+      localStorage.setItem('theme', 'dark');
+    }
+    updateIcons(next);
+  });
+</script>
 </body>
 </html>

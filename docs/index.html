@@ -15,23 +15,60 @@
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --bg:         #080c18;
-      --bg2:        #0d1120;
-      --bg3:        #111827;
-      --border:     rgba(255,255,255,0.07);
-      --border2:    rgba(99,179,255,0.2);
-      --blue:       #3b82f6;
-      --blue-light: #60a5fa;
-      --cyan:       #06b6d4;
-      --green:      #10b981;
-      --purple:     #8b5cf6;
-      --amber:      #f59e0b;
-      --red:        #ef4444;
-      --text:       #f1f5f9;
-      --text2:      #94a3b8;
+      /* Default Light Mode */
+      --bg:         #ffffff;
+      --bg2:        #f8fafc;
+      --bg3:        #f1f5f9;
+      --border:     rgba(0,0,0,0.1);
+      --border2:    rgba(59,130,246,0.25);
+      --blue:       #2563eb;
+      --blue-light: #3b82f6;
+      --cyan:       #0891b2;
+      --green:      #059669;
+      --purple:     #7c3aed;
+      --amber:      #d97706;
+      --red:        #dc2626;
+      --text:       #0f172a;
+      --text2:      #475569;
       --text3:      #64748b;
       --glow:       rgba(59,130,246,0.15);
       --glow2:      rgba(6,182,212,0.1);
+      --nav-bg:     rgba(255,255,255,0.85);
+      --btn-sec-bg: rgba(0,0,0,0.05);
+      --btn-sec-hover: rgba(0,0,0,0.09);
+      --hero-grid:  linear-gradient(rgba(59,130,246,0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(59,130,246,0.1) 1px, transparent 1px);
+      --pillar-bg:  rgba(0,0,0,0.03);
+      --table-hover: rgba(0,0,0,0.02);
+      --prompt-bg:  rgba(0,0,0,0.03);
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg:         #080c18;
+        --bg2:        #0d1120;
+        --bg3:        #111827;
+        --border:     rgba(255,255,255,0.07);
+        --border2:    rgba(99,179,255,0.2);
+        --blue:       #3b82f6;
+        --blue-light: #60a5fa;
+        --cyan:       #06b6d4;
+        --green:      #10b981;
+        --purple:     #8b5cf6;
+        --amber:      #f59e0b;
+        --red:        #ef4444;
+        --text:       #f1f5f9;
+        --text2:      #94a3b8;
+        --text3:      #64748b;
+        --glow:       rgba(59,130,246,0.15);
+        --glow2:      rgba(6,182,212,0.1);
+        --nav-bg:     rgba(8,12,24,0.85);
+        --btn-sec-bg: rgba(255,255,255,0.05);
+        --btn-sec-hover: rgba(255,255,255,0.09);
+        --hero-grid:  linear-gradient(rgba(59,130,246,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(59,130,246,0.04) 1px, transparent 1px);
+        --pillar-bg:  rgba(255,255,255,0.04);
+        --table-hover: rgba(255,255,255,0.02);
+        --prompt-bg:  rgba(0,0,0,0.3);
+      }
     }
 
     html { scroll-behavior: smooth; }
@@ -50,7 +87,7 @@
       display: flex; align-items: center; justify-content: space-between;
       padding: 0 2rem;
       height: 60px;
-      background: rgba(8,12,24,0.85);
+      background: var(--nav-bg);
       backdrop-filter: blur(16px);
       border-bottom: 1px solid var(--border);
     }
@@ -96,9 +133,7 @@
     }
     .hero-grid {
       position: absolute; inset: 0; pointer-events: none;
-      background-image:
-        linear-gradient(rgba(59,130,246,0.04) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(59,130,246,0.04) 1px, transparent 1px);
+      background-image: var(--hero-grid);
       background-size: 60px 60px;
       mask-image: radial-gradient(ellipse 80% 70% at 50% 50%, black, transparent);
     }
@@ -113,7 +148,7 @@
     @keyframes pulse { 0%,100% { opacity:1; } 50% { opacity:.3; } }
 
     h1 {
-      font-size: clamp(2.4rem, 6vw, 4.2rem);
+      font-size: clamp(2rem, 8vw, 4.2rem);
       font-weight: 900; line-height: 1.1;
       letter-spacing: -0.03em;
       margin-bottom: 1.2rem;
@@ -142,17 +177,17 @@
     }
     .btn-primary:hover { background: var(--blue-light); transform: translateY(-2px); box-shadow: 0 0 32px rgba(59,130,246,0.5); }
     .btn-secondary {
-      background: rgba(255,255,255,0.05); color: var(--text);
+      background: var(--btn-sec-bg); color: var(--text);
       border: 1px solid var(--border);
     }
-    .btn-secondary:hover { background: rgba(255,255,255,0.09); transform: translateY(-2px); }
+    .btn-secondary:hover { background: var(--btn-sec-hover); transform: translateY(-2px); }
 
     /* four pillars */
     .pillars {
       display: flex; gap: 0.6rem; flex-wrap: wrap; justify-content: center;
     }
     .pillar {
-      background: rgba(255,255,255,0.04); border: 1px solid var(--border);
+      background: var(--pillar-bg); border: 1px solid var(--border);
       border-radius: 8px; padding: 0.5rem 1rem;
       font-size: 0.82rem; color: var(--text2);
       display: flex; align-items: center; gap: 0.5rem;
@@ -228,13 +263,13 @@
     /* ── QUICK START ── */
     .quickstart { background: var(--bg2); }
     .code-block {
-      background: #0d1117; border: 1px solid var(--border);
+      background: #0d1117; border: 1px solid #30363d;
       border-radius: 12px; overflow: hidden; margin-top: 2rem;
       font-family: 'JetBrains Mono', monospace;
     }
     .code-header {
       display: flex; align-items: center; gap: 0.5rem;
-      padding: 0.75rem 1rem; border-bottom: 1px solid var(--border);
+      padding: 0.75rem 1rem; border-bottom: 1px solid #30363d;
       background: rgba(255,255,255,0.03);
     }
     .code-dot { width: 10px; height: 10px; border-radius: 50%; }
@@ -243,7 +278,7 @@
     .code-dot:nth-child(3) { background: #22c55e; }
     .code-filename { color: var(--text3); font-size: 0.78rem; margin-left: auto; }
     .code-body { padding: 1.5rem; overflow-x: auto; }
-    .code-body pre { font-size: 0.85rem; line-height: 1.7; white-space: pre; }
+    .code-body pre { font-size: 0.85rem; line-height: 1.7; white-space: pre; color: #f1f5f9; }
     .c-comment { color: #6e7681; }
     .c-cmd { color: #79c0ff; }
     .c-str { color: #a5d6ff; }
@@ -294,7 +329,7 @@
       font-family: 'JetBrains Mono', monospace;
       font-size: 0.88rem; line-height: 1.8;
       color: var(--text2);
-      background: rgba(0,0,0,0.3); border: 1px solid var(--border);
+      background: var(--prompt-bg); border: 1px solid var(--border);
       border-radius: 8px; padding: 1rem 1.2rem;
       margin: 1.2rem 0;
     }
@@ -302,7 +337,7 @@
     .agent-tags { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 1rem; }
     .agent-tag {
       font-size: 0.78rem; padding: 0.25rem 0.65rem; border-radius: 5px;
-      background: rgba(255,255,255,0.05); color: var(--text2);
+      background: var(--btn-sec-bg); color: var(--text2);
     }
 
     /* ── COMPARISON TABLE ── */
@@ -322,7 +357,7 @@
       vertical-align: middle;
     }
     .compare-table tr:last-child td { border-bottom: none; }
-    .compare-table tr:hover td { background: rgba(255,255,255,0.02); }
+    .compare-table tr:hover td { background: var(--table-hover); }
     .compare-table td:first-child { font-weight: 600; color: var(--text); }
     .tick { color: var(--green); font-size: 1rem; }
     .cross { color: var(--text3); font-size: 0.9rem; }
@@ -356,10 +391,16 @@
     .footer-links { display: flex; justify-content: center; gap: 2rem; flex-wrap: wrap; margin-bottom: 1.5rem; }
 
     /* ── RESPONSIVE ── */
+    .table-wrapper { width: 100%; overflow-x: auto; }
     @media (max-width: 640px) {
+      nav { padding: 0 1rem; }
       .nav-links a:not(.nav-cta) { display: none; }
-      .step { flex-wrap: wrap; }
+      .hero { padding: 100px 1.5rem 60px; }
+      section { padding: 50px 1.5rem; }
+      .step { flex-direction: column; align-items: flex-start; gap: 0.8rem; }
       .step-tag { margin-left: 0; }
+      .hero-actions { flex-direction: column; width: 100%; }
+      .hero-actions .btn { width: 100%; justify-content: center; }
     }
   </style>
 </head>
@@ -502,25 +543,27 @@
     <p class="section-label">Coverage Gaps</p>
     <h2>What ScenarioLens Catches<br>That Other Tools Miss</h2>
 
-    <table class="compare-table">
-      <thead>
-        <tr>
-          <th>Gap Type</th>
-          <th>JaCoCo</th>
-          <th>SonarQube</th>
-          <th>PIT</th>
-          <th class="highlight-col">ScenarioLens</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr><td>Missing scenario combinations</td><td><span class="cross">—</span></td><td><span class="cross">—</span></td><td><span class="cross">—</span></td><td class="highlight-col"><span class="tick">✓</span></td></tr>
-        <tr><td>Enum value coverage gaps</td><td><span class="cross">—</span></td><td><span class="cross">—</span></td><td><span class="cross">—</span></td><td class="highlight-col"><span class="tick">✓</span></td></tr>
-        <tr><td>Null return from dependency untested</td><td><span class="cross">—</span></td><td><span class="cross">—</span></td><td><span class="cross">—</span></td><td class="highlight-col"><span class="tick">✓</span></td></tr>
-        <tr><td>Specific stub combinations missing</td><td><span class="cross">—</span></td><td><span class="cross">—</span></td><td><span class="cross">—</span></td><td class="highlight-col"><span class="tick">✓</span></td></tr>
-        <tr><td>Weak assertions (assertNotNull)</td><td><span class="cross">—</span></td><td><span class="cross">—</span></td><td><span class="tick">✓</span></td><td class="highlight-col"><span class="tick">✓</span></td></tr>
-        <tr><td>Untested branches</td><td><span class="cross">—</span></td><td><span class="tick">✓</span></td><td><span class="tick">✓</span></td><td class="highlight-col"><span class="tick">✓</span></td></tr>
-      </tbody>
-    </table>
+    <div class="table-wrapper">
+      <table class="compare-table">
+        <thead>
+          <tr>
+            <th>Gap Type</th>
+            <th>JaCoCo</th>
+            <th>SonarQube</th>
+            <th>PIT</th>
+            <th class="highlight-col">ScenarioLens</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>Missing scenario combinations</td><td><span class="cross">—</span></td><td><span class="cross">—</span></td><td><span class="cross">—</span></td><td class="highlight-col"><span class="tick">✓</span></td></tr>
+          <tr><td>Enum value coverage gaps</td><td><span class="cross">—</span></td><td><span class="cross">—</span></td><td><span class="cross">—</span></td><td class="highlight-col"><span class="tick">✓</span></td></tr>
+          <tr><td>Null return from dependency untested</td><td><span class="cross">—</span></td><td><span class="cross">—</span></td><td><span class="cross">—</span></td><td class="highlight-col"><span class="tick">✓</span></td></tr>
+          <tr><td>Specific stub combinations missing</td><td><span class="cross">—</span></td><td><span class="cross">—</span></td><td><span class="cross">—</span></td><td class="highlight-col"><span class="tick">✓</span></td></tr>
+          <tr><td>Weak assertions (assertNotNull)</td><td><span class="cross">—</span></td><td><span class="cross">—</span></td><td><span class="tick">✓</span></td><td class="highlight-col"><span class="tick">✓</span></td></tr>
+          <tr><td>Untested branches</td><td><span class="cross">—</span></td><td><span class="tick">✓</span></td><td><span class="tick">✓</span></td><td class="highlight-col"><span class="tick">✓</span></td></tr>
+        </tbody>
+      </table>
+    </div>
   </div>
 </section>
 

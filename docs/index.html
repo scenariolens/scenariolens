@@ -430,8 +430,8 @@
   <div class="badge"><div class="badge-dot"></div> Phase 1 Complete · Open Source · Apache 2.0</div>
   <h1>The <span>Missing Dimension</span><br>in Java Test Quality</h1>
   <p class="hero-sub">
-    JaCoCo tells you what code ran. SonarQube tells you which branches executed.
-    PIT tells you if your assertions are strong. <strong>ScenarioLens tells you if you tested the right scenarios.</strong>
+    JaCoCo tells you which lines ran. SonarQube checks your branches.
+    PIT tests your assertions. But what tells you if you actually tested the right combinations of real-world scenarios? <strong>ScenarioLens does.</strong> Stop guessing if your mocks cover what really happens in production.
   </p>
   <div class="hero-actions">
     <a href="#quickstart" class="btn btn-primary">
@@ -456,15 +456,18 @@
 <!-- ── PROBLEM ── -->
 <section class="problem" id="problem">
   <div class="container">
-    <p class="section-label">The Problem</p>
-    <h2>100% Branch Coverage.<br>Still Missing Critical Bugs.</h2>
-    <p class="section-sub">A test suite can achieve 100% branch coverage while missing entire combinations of dependency behaviors — and none of your existing tools will tell you.</p>
+    <p class="section-label">The Illusion of Safety</p>
+    <h2>100% Branch Coverage.<br>Still Shipping Critical Bugs.</h2>
+    <p class="section-sub">
+      As senior engineers, we've all been there. Your PR has perfect coverage. The CI pipeline is glowing green. Then production falls over because a downstream payment service returned an unexpected <code>null</code> while your database transaction was quietly rolling back.<br><br>
+      A test suite can easily achieve 100% branch coverage while missing entire combinations of dependency behaviors. Until now, none of your existing tools could warn you about the scenarios you forgot to mock.
+    </p>
 
     <div class="stats">
-      <div class="stat-card"><div class="stat-num">5,229</div><div class="stat-label">Methods analyzed across 5 corpora</div></div>
-      <div class="stat-card"><div class="stat-num">99.97%</div><div class="stat-label">Max pruning ratio (Spring PetClinic)</div></div>
-      <div class="stat-card"><div class="stat-num">0</div><div class="stat-label">Crashes across Kafka, Spring, Baeldung</div></div>
-      <div class="stat-card"><div class="stat-num">&lt;750ms</div><div class="stat-label">Per-package analysis time</div></div>
+      <div class="stat-card"><div class="stat-num">5,229</div><div class="stat-label">Methods analyzed across 5 massive codebases</div></div>
+      <div class="stat-card"><div class="stat-num">99.97%</div><div class="stat-label">Noise reduction (max pruning ratio on Spring PetClinic)</div></div>
+      <div class="stat-card"><div class="stat-num">0</div><div class="stat-label">Crashes across Kafka, Spring, and Baeldung audits</div></div>
+      <div class="stat-card"><div class="stat-num">&lt;750ms</div><div class="stat-label">Analysis time per package</div></div>
     </div>
   </div>
 </section>
@@ -472,9 +475,9 @@
 <!-- ── HOW IT WORKS ── -->
 <section id="how-it-works">
   <div class="container">
-    <p class="section-label">How It Works</p>
-    <h2>Pure Static Analysis.<br>No Test Re-execution.</h2>
-    <p class="section-sub">ScenarioLens analyzes your source and test files at rest — no runtime, no instrumentation, no classpath execution.</p>
+    <p class="section-label">Under the Hood</p>
+    <h2>Pure Static Analysis.<br>Zero Runtime Overhead.</h2>
+    <p class="section-sub">We know how painful slow test suites are. That's why ScenarioLens doesn't spin up your Spring context, instrument your bytecode, or run a single test. It analyzes your source code at rest.</p>
 
     <div class="pipeline">
       <div class="step">
@@ -541,7 +544,8 @@
 <section style="background: var(--bg2);" id="comparison">
   <div class="container">
     <p class="section-label">Coverage Gaps</p>
-    <h2>What ScenarioLens Catches<br>That Other Tools Miss</h2>
+    <h2>Your Tools Have a Blind Spot.</h2>
+    <p class="section-sub" style="margin-bottom: 2rem;">Your existing tools are fantastic at what they do, but they have a blind spot when it comes to complex dependency interactions. ScenarioLens is designed to sit right alongside them to complete the picture.</p>
 
     <div class="table-wrapper">
       <table class="compare-table">
@@ -570,9 +574,9 @@
 <!-- ── REPORT TIERS ── -->
 <section id="report">
   <div class="container">
-    <p class="section-label">Report</p>
-    <h2>Three-Tier Gap Report</h2>
-    <p class="section-sub">Every gap is classified by how much the tool can verify automatically.</p>
+    <p class="section-label">Actionable Insights</p>
+    <h2>A Three-Tier Gap Report</h2>
+    <p class="section-sub">We hate noisy tools as much as you do. Every coverage gap ScenarioLens finds is strictly categorized by how confidently the tool can verify it, so you know exactly what to fix first.</p>
 
     <div class="tiers-grid">
       <div class="tier-card tier-auto">
@@ -597,9 +601,9 @@
 <!-- ── QUICK START ── -->
 <section class="quickstart" id="quickstart">
   <div class="container">
-    <p class="section-label">Quick Start</p>
+    <p class="section-label">Get Running Fast</p>
     <h2>Up and Running in Minutes</h2>
-    <p class="section-sub">Add the plugin, run one command, get a scenario coverage report.</p>
+    <p class="section-sub">Drop the Maven plugin into your project, point it at your target package, and get a comprehensive gap report instantly.</p>
 
     <div class="code-block">
       <div class="code-header">
@@ -647,9 +651,9 @@
 <!-- ── AI AGENT ── -->
 <section class="ai-agent" id="ai-agent">
   <div class="container">
-    <p class="section-label">AI Agent Workflow</p>
-    <h2>LLM-Ready.<br>Zero Integration Work.</h2>
-    <p class="section-sub">The JSON report is already structured for LLM consumption. Any agent that can run shell commands and read files can close gaps automatically.</p>
+    <p class="section-label">Future-Proof</p>
+    <h2>Give Your AI Agents a Map.</h2>
+    <p class="section-sub">General-purpose AI coding agents are great, but they struggle to know <em>what</em> tests to write. ScenarioLens generates a structured JSON report designed specifically for LLM consumption.</p>
 
     <div class="agent-box">
       <p style="font-size:0.85rem; color: var(--text3); margin-bottom:0.5rem;">AGENT INSTRUCTION</p>
@@ -659,7 +663,7 @@
         Review the report and generate missing tests.
         Repeat until DSC score is above <em>80%</em>.
       </div>
-      <p style="font-size:0.85rem; color:var(--text2);">Works today with any agent that can run shell commands and read files. No API keys, no provider lock-in, no maintenance burden.</p>
+      <p style="font-size:0.85rem; color:var(--text2);">It works today. No API keys, no proprietary provider lock-in, and zero integration work required.</p>
       <div class="agent-tags">
         <span class="agent-tag">Claude</span>
         <span class="agent-tag">Gemini</span>
@@ -674,24 +678,24 @@
 <!-- ── ROADMAP PREVIEW ── -->
 <section id="roadmap">
   <div class="container">
-    <p class="section-label">Roadmap</p>
-    <h2>What's Next</h2>
-    <p class="section-sub">Phase 1 is complete and hardened. These are the highest-ROI items coming next.</p>
+    <p class="section-label">The Roadmap</p>
+    <h2>Where We're Heading</h2>
+    <p class="section-sub">Phase 1 is battle-tested and ready. Here is what we're building next to make ScenarioLens even more powerful:</p>
 
     <div class="problem-grid" style="margin-top:2rem;">
       <div class="problem-card">
         <div class="tool-name" style="color:var(--green);">Phase 2</div>
-        <div class="tool-desc">Hybrid Boundary Resolution — resolve dynamic boundary values without test execution via purity gate + @Value properties parsing.</div>
+        <div class="tool-desc">Hybrid Boundary Resolution — Resolving dynamic boundary values via <code>@Value</code> properties parsing without needing test execution.</div>
         <span class="tool-gap gap-no">Planned</span>
       </div>
       <div class="problem-card">
         <div class="tool-name" style="color:var(--blue-light);">Phase 3</div>
-        <div class="tool-desc">Ecosystem Expansion — SonarQube generic XML, LCOV output, Gradle plugin, WireMock stub extraction, @MockBean support.</div>
+        <div class="tool-desc">Ecosystem Expansion — Native Gradle plugin, WireMock stub extraction, <code>@MockBean</code> support, and SonarQube generic XML output.</div>
         <span class="tool-gap gap-no">Planned</span>
       </div>
       <div class="problem-card">
         <div class="tool-name" style="color:var(--purple);">Phase 4</div>
-        <div class="tool-desc">Advanced Analysis — multi-method flow tracing, numeric boundary inference, assertion causal correctness hints.</div>
+        <div class="tool-desc">Advanced Analysis — Multi-method flow tracing, intelligent numeric boundary inference, and assertion causal correctness hints.</div>
         <span class="tool-gap gap-no">Planned</span>
       </div>
     </div>

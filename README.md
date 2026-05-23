@@ -36,7 +36,7 @@ Drop the Maven plugin into your project and get a comprehensive gap report insta
 <plugin>
   <groupId>io.scenariolens</groupId>
   <artifactId>scenariolens-maven-plugin</artifactId>
-  <version>0.1.0-SNAPSHOT</version>
+  <version>0.1.0</version>
   <configuration>
     <!-- Target the package you want to analyze -->
     <targetPackage>com.example.payment</targetPackage>

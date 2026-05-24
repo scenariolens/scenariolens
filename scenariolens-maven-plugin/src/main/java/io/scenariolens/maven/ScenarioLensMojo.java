@@ -80,7 +80,7 @@ public class ScenarioLensMojo extends AbstractMojo {
             TestClassParser testParser = new TestClassParser(new JavaParser());
             
             io.scenariolens.gap.FakeExtractor fakeExtractor = new io.scenariolens.gap.FakeExtractor(new JavaParser());
-            java.util.Map<String, java.util.Map<String, String>> globalFakes = fakeExtractor.extractFakes(testSourceDirectory);
+            java.util.Map<String, java.util.Map<String, java.util.List<String>>> globalFakes = fakeExtractor.extractFakes(testSourceDirectory);
             if (!globalFakes.isEmpty()) {
                 getLog().info("Extracted state-based fakes for " + globalFakes.size() + " interfaces");
             }
@@ -157,7 +157,18 @@ public class ScenarioLensMojo extends AbstractMojo {
             getLog().info("Processing time: " + totalProcessingTime + "ms");
             getLog().info("Crash: N");
 
+            boolean hasMissing = false;
             if (!allReports.isEmpty()) {
+                for (GapReport report : allReports) {
+                    if (report.getMissingScenarios().size() > 0) {
+                        if (report.isUsedHeuristicMapping()) {
+                            getLog().warn(String.format("Method %s.%s has %d missing scenarios, but uses heuristic multi-branch fakes. Skipping build failure to prevent false negatives.", report.getClassName(), report.getMethodName(), report.getMissingScenarios().size()));
+                        } else {
+                            hasMissing = true;
+                        }
+                    }
+                }
+
                 HtmlReportGenerator htmlGen = new HtmlReportGenerator();
                 htmlGen.generateAll(allReports, outputDirectory);
 
@@ -169,6 +180,10 @@ public class ScenarioLensMojo extends AbstractMojo {
 
                 LcovReportGenerator lcovGen = new LcovReportGenerator();
                 lcovGen.generate(allReports, outputDirectory);
+            }
+            
+            if (failOnMissing && hasMissing) {
+                throw new MojoFailureException("ScenarioLens detected missing scenario coverage. See reports in target/scenariolens for details.");
             }
             
         } catch (Exception e) {

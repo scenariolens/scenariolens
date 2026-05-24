@@ -22,8 +22,8 @@ public class FakeExtractor {
         this.javaParser = javaParser;
     }
 
-    public Map<String, Map<String, String>> extractFakes(File testSourceDirectory) {
-        Map<String, Map<String, String>> globalFakes = new HashMap<>();
+    public Map<String, Map<String, List<String>>> extractFakes(File testSourceDirectory) {
+        Map<String, Map<String, List<String>>> globalFakes = new HashMap<>();
         
         if (testSourceDirectory == null || !testSourceDirectory.exists()) return globalFakes;
 
@@ -38,7 +38,7 @@ public class FakeExtractor {
         return globalFakes;
     }
 
-    private void processFile(File file, Map<String, Map<String, String>> globalFakes) {
+    private void processFile(File file, Map<String, Map<String, List<String>>> globalFakes) {
         try {
             CompilationUnit cu = javaParser.parse(file).getResult().orElse(null);
             if (cu == null) return;
@@ -47,12 +47,12 @@ public class FakeExtractor {
                 if (!clazz.isInterface() && clazz.getImplementedTypes().isNonEmpty()) {
                     clazz.getImplementedTypes().forEach(implementedType -> {
                         String interfaceName = implementedType.getNameAsString();
-                        Map<String, String> fakeMethods = new HashMap<>();
+                        Map<String, List<String>> fakeMethods = new HashMap<>();
                         
                         clazz.getMethods().forEach(method -> {
-                            String stubValue = extractStubValue(method);
-                            if (stubValue != null) {
-                                fakeMethods.put(method.getNameAsString(), stubValue);
+                            List<String> stubValues = extractStubValues(method);
+                            if (!stubValues.isEmpty()) {
+                                fakeMethods.put(method.getNameAsString(), stubValues);
                             }
                         });
                         
@@ -67,33 +67,36 @@ public class FakeExtractor {
         }
     }
 
-    private String extractStubValue(MethodDeclaration method) {
+    private List<String> extractStubValues(MethodDeclaration method) {
+        List<String> results = new java.util.ArrayList<>();
         // Look for throwing an exception
         List<ThrowStmt> throwsStmts = method.findAll(ThrowStmt.class);
         if (!throwsStmts.isEmpty()) {
-            return "throws RuntimeException"; // Simplified MVP assumption
+            results.add("throws RuntimeException"); // Simplified MVP assumption
         }
         
-        // Look for a return statement
+        // Look for return statements
         List<ReturnStmt> returns = method.findAll(ReturnStmt.class);
-        if (!returns.isEmpty()) {
-            ReturnStmt returnStmt = returns.get(0);
+        for (ReturnStmt returnStmt : returns) {
             if (returnStmt.getExpression().isPresent()) {
                 String exprStr = returnStmt.getExpression().get().toString();
                 if (exprStr.equals("null") || exprStr.equals("true") || exprStr.equals("false")) {
-                    return exprStr;
+                    if (!results.contains(exprStr)) results.add(exprStr);
                 } else {
                     String returnType = method.getType().asString();
                     if (returnType.contains(".")) {
                         returnType = returnType.substring(returnType.lastIndexOf('.') + 1);
                     }
+                    String val;
                     if (returnType.startsWith("Optional<")) {
-                        return exprStr.contains("empty()") ? "Optional.empty()" : "Optional(valid)";
+                        val = exprStr.contains("empty()") ? "Optional.empty()" : "Optional(valid)";
+                    } else {
+                        val = returnType + "(valid)";
                     }
-                    return returnType + "(valid)";
+                    if (!results.contains(val)) results.add(val);
                 }
             }
         }
-        return null; // Void or no clear return
+        return results;
     }
 }

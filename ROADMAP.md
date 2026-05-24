@@ -317,8 +317,8 @@ Both take one day each and put ScenarioLens where engineers already look.
 ### Features
 - [x] **Fake Discovery Mechanism**
       Scan `src/test/java` for Spring `@TestConfiguration` and `@Bean` definitions that return interface implementations (MVP shipped!).
-- [ ] **State-Mapping Engine (GA)**
-      Analyze the conditional return values of overridden methods in these fakes using symbolic execution.
+- [x] **State-Mapping Engine (GA)**
+      Analyze the conditional return values of overridden methods in these fakes using heuristic symbolic mapping (shipped!).
 - [x] **Scenario Matrix Integration**
       Treat a fake's deterministic return values exactly like Mockito stubs to fulfill CFG paths.
 - [ ] **Annotation-based Discovery**

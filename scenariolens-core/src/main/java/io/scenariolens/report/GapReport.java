@@ -14,8 +14,9 @@ public class GapReport {
     private final int assertionStrengthPercent;
     private final List<ScenarioRow> missingScenarios;
     private final List<ScenarioRow> coveredRows;
+    private final boolean usedHeuristicMapping;
 
-    public GapReport(String className, String methodName, String filePath, int lineNumber, int totalScenarios, int coveredScenarios, int scenarioCoveragePercent, int assertionStrengthPercent, List<ScenarioRow> missingScenarios, List<ScenarioRow> coveredRows) {
+    public GapReport(String className, String methodName, String filePath, int lineNumber, int totalScenarios, int coveredScenarios, int scenarioCoveragePercent, int assertionStrengthPercent, List<ScenarioRow> missingScenarios, List<ScenarioRow> coveredRows, boolean usedHeuristicMapping) {
         this.className = className;
         this.methodName = methodName;
         this.filePath = filePath;
@@ -26,6 +27,7 @@ public class GapReport {
         this.assertionStrengthPercent = assertionStrengthPercent;
         this.missingScenarios = missingScenarios;
         this.coveredRows = coveredRows;
+        this.usedHeuristicMapping = usedHeuristicMapping;
     }
 
     public String getClassName() { return className; }
@@ -38,4 +40,5 @@ public class GapReport {
     public int getAssertionStrengthPercent() { return assertionStrengthPercent; }
     public List<ScenarioRow> getMissingScenarios() { return missingScenarios; }
     public List<ScenarioRow> getCoveredRows() { return coveredRows; }
+    public boolean isUsedHeuristicMapping() { return usedHeuristicMapping; }
 }

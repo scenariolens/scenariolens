@@ -3,40 +3,27 @@ package io.scenariolens.gap;
 import io.scenariolens.matrix.ScenarioRow;
 import io.scenariolens.report.GapReport;
 import com.github.javaparser.ast.body.MethodDeclaration;
+import com.github.javaparser.ast.expr.MethodCallExpr;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.HashMap;
+import java.util.stream.Collectors;
 
 public class GapAnalyzer {
 
     private final MockitoStubExtractor extractor = new MockitoStubExtractor();
     private final AssertionClassifier classifier = new AssertionClassifier();
 
-    public GapReport analyze(String className, String methodName, String filePath, int lineNumber, List<ScenarioRow> matrix, List<MethodDeclaration> testMethods, Map<String, Map<String, String>> globalFakes) {
+    public GapReport analyze(String className, String methodName, String filePath, int lineNumber, List<ScenarioRow> matrix, List<MethodDeclaration> testMethods, Map<String, Map<String, List<String>>> globalFakes) {
         List<ScenarioRow> covered = new ArrayList<>();
         List<ScenarioRow> missing = new ArrayList<>(matrix);
         int strongCount = 0;
-
-        // Build the baseline fake stubs that apply to this method
-        java.util.Map<String, String> baseFakeStubs = new java.util.HashMap<>();
-        for (ScenarioRow row : matrix) {
-            for (io.scenariolens.matrix.StubVariation v : row.getStubs()) {
-                io.scenariolens.ast.CallNode call = v.getCallNode();
-                String interfaceName = call.getDeclaringType();
-                if (interfaceName.contains(".")) {
-                    interfaceName = interfaceName.substring(interfaceName.lastIndexOf('.') + 1);
-                }
-                if (globalFakes.containsKey(interfaceName)) {
-                    String fakeReturn = globalFakes.get(interfaceName).get(call.getMethodName());
-                    if (fakeReturn != null) {
-                        baseFakeStubs.put(call.getUniqueKey(), fakeReturn);
-                    }
-                }
-            }
-        }
+        boolean[] usedHeuristic = new boolean[1];
 
         if (testMethods.isEmpty()) {
+            Map<String, String> baseFakeStubs = buildFakeStubsForTest(matrix, globalFakes, false, usedHeuristic);
             if (!baseFakeStubs.isEmpty()) {
                 ScenarioRow matchedRow = matchRow(matrix, baseFakeStubs);
                 if (matchedRow != null && !covered.contains(matchedRow)) {
@@ -46,7 +33,11 @@ public class GapAnalyzer {
             }
         } else {
             for (MethodDeclaration test : testMethods) {
-                Map<String, String> stubs = new java.util.HashMap<>(baseFakeStubs);
+                boolean assertsException = !test.findAll(MethodCallExpr.class).stream()
+                        .filter(c -> c.getNameAsString().equals("assertThrows"))
+                        .collect(Collectors.toList()).isEmpty();
+
+                Map<String, String> stubs = buildFakeStubsForTest(matrix, globalFakes, assertsException, usedHeuristic);
                 stubs.putAll(extractor.extractStubs(test)); // Mockito overrides fakes
                 String assertionStrength = classifier.classify(test);
 
@@ -66,7 +57,36 @@ public class GapAnalyzer {
         int coveragePercent = matrix.isEmpty() ? 100 : (int) ((covered.size() * 100.0) / matrix.size());
         int strengthPercent = covered.isEmpty() ? 0 : (int) ((strongCount * 100.0) / covered.size());
 
-        return new GapReport(className, methodName, filePath, lineNumber, matrix.size(), covered.size(), coveragePercent, strengthPercent, missing, covered);
+        return new GapReport(className, methodName, filePath, lineNumber, matrix.size(), covered.size(), coveragePercent, strengthPercent, missing, covered, usedHeuristic[0]);
+    }
+
+    private Map<String, String> buildFakeStubsForTest(List<ScenarioRow> matrix, Map<String, Map<String, List<String>>> globalFakes, boolean assertsException, boolean[] usedHeuristic) {
+        Map<String, String> stubs = new HashMap<>();
+        for (ScenarioRow row : matrix) {
+            for (io.scenariolens.matrix.StubVariation v : row.getStubs()) {
+                io.scenariolens.ast.CallNode call = v.getCallNode();
+                String interfaceName = call.getDeclaringType();
+                if (interfaceName.contains(".")) {
+                    interfaceName = interfaceName.substring(interfaceName.lastIndexOf('.') + 1);
+                }
+                if (globalFakes.containsKey(interfaceName)) {
+                    List<String> fakeReturns = globalFakes.get(interfaceName).get(call.getMethodName());
+                    if (fakeReturns != null && !fakeReturns.isEmpty()) {
+                        String chosenReturn = fakeReturns.get(0);
+                        if (fakeReturns.size() > 1) {
+                            usedHeuristic[0] = true;
+                            if (assertsException) {
+                                chosenReturn = fakeReturns.stream().filter(r -> r.contains("throws")).findFirst().orElse(fakeReturns.get(0));
+                            } else {
+                                chosenReturn = fakeReturns.stream().filter(r -> !r.contains("throws")).findFirst().orElse(fakeReturns.get(0));
+                            }
+                        }
+                        stubs.put(call.getUniqueKey(), chosenReturn);
+                    }
+                }
+            }
+        }
+        return stubs;
     }
 
     private ScenarioRow matchRow(List<ScenarioRow> matrix, Map<String, String> stubs) {
